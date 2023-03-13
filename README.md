@@ -1,6 +1,6 @@
 # minicalc
 
-?
+A useful little Go GUI tool.
 
 ## License
 

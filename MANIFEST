@@ -1,4 +1,10 @@
+# TODO
+# /&ASCII\/&Calculator\/&Greek\/&NATO\/&Options\/&Unicode\
+#                                      e.g. scale
+
 minicalc.go
+window.go
+consts.go
 
 README.md
 

@@ -4,13 +4,11 @@
 package main
 
 import (
-    "fmt"
-    _ "embed"
-    )
-
-//go:embed Version.dat
-var Version string
+	"github.com/pwiecz/go-fltk"
+)
 
 func main() {
-    fmt.Printf("Hello minicalc v%s\n", Version)
+	window := makeWindow()
+	window.Show()
+	fltk.Run()
 }
