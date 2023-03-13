@@ -12,21 +12,8 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeWindow() *fltk.Window {
-	// TODO save/restore size/pos
-	window := fltk.NewWindow(512, 480)
-	window.SetLabel("MiniCalc")
-	icons := makeIcons([][]byte{icon16data, icon32data, icon64data})
-	if len(icons) > 0 {
-		window.SetIcons(icons)
-	}
-	// TODO
-	window.End()
-	return window
-}
-
-// NOTE until we get SVG icon support
-func makeIcons(iconData [][]byte) []*fltk.RgbImage {
+// NOTE only until we get SVG icon support
+func addIcons(window *fltk.Window, iconData [][]byte) {
 	runtime.LockOSThread()
 	icons := make([]*fltk.RgbImage, 0, 3)
 	for _, datum := range iconData {
@@ -36,5 +23,7 @@ func makeIcons(iconData [][]byte) []*fltk.RgbImage {
 			}
 		}
 	}
-	return icons
+	if len(icons) > 0 {
+		window.SetIcons(icons)
+	}
 }

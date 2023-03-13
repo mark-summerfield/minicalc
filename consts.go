@@ -10,6 +10,10 @@ import (
 //go:embed Version.dat
 var Version string
 
+const (
+	BUTTON_HEIGHT = 32
+)
+
 //go:embed images/icon16.png
 var icon16data []byte
 

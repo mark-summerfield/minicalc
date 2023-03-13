@@ -7,10 +7,8 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func main() {
-	fltk.SetScheme("oxy")
-	// TODO save/restore window size/pos
-	app := newApp()
-	app.Show()
-	fltk.Run()
+func makeGreekTab(x, y, width, height int) {
+	group := fltk.NewGroup(x, y, width, height, "&Greek")
+	// TODO
+	group.End()
 }
