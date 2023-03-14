@@ -35,20 +35,20 @@ func aboutHtml() string {
 	return fmt.Sprintf(
 		`<p><center><font size=6 color=navy><b>%s</b> v%s</font>
 </center></p>
-<p><center><font color=navy size=5>A useful little GUI
+<p><center><font color=navy size=4>A useful little GUI
 tool</font></center></p>
-<p><center><font size=5>
+<p><center><font size=4>
 <a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
 </font></center></p>
 <p><center>
-<font size=5 color=green>
+<font size=4 color=green>
 Copyright © %s Mark Summerfield.<br>
 All rights reserved.<br>
 License: GPLv3.</font>
 </center></p>
-<p><center><font size=5 color=#222>
+<p><center><font size=4 color=#222>
 %s %s/%s • go-fltk</font></center><br>
-<p><center><font size=5 color=#222>%s</font></center></p>`,
+<p><center><font size=4 color=#222>%s</font></center></p>`,
 		APPNAME, Version, year, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, distro)
 }
