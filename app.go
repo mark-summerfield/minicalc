@@ -14,7 +14,7 @@ type App struct {
 func newApp() *App {
 	app := &App{Window: nil}
 	app.Window = fltk.NewWindow(512, 480)
-	app.Window.SetLabel("MiniCalc")
+	app.Window.SetLabel(APPNAME)
 	addIcons(app.Window, iconSvg)
 	addTabs(app)
 	app.Window.End()

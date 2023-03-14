@@ -9,7 +9,8 @@ import (
 
 func main() {
 	fltk.SetScheme("oxy")
-	// TODO save/restore window size/pos
+	fltk.SetScreenScale(0, 1)
+	// TODO save/restore window size/pos & scale & last tab
 	app := newApp()
 	app.Show()
 	fltk.Run()

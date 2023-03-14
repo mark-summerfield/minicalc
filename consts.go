@@ -11,6 +11,7 @@ import (
 var Version string
 
 const (
+	APPNAME       = "MiniCalc"
 	BUTTON_HEIGHT = 32
 )
 
