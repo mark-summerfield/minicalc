@@ -14,11 +14,5 @@ const (
 	BUTTON_HEIGHT = 32
 )
 
-//go:embed images/icon16.png
-var icon16data []byte
-
-//go:embed images/icon32.png
-var icon32data []byte
-
-//go:embed images/icon64.png
-var icon64data []byte
+//go:embed images/icon.svg
+var iconSvg string

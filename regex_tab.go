@@ -7,8 +7,8 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeUnicodeTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&Unicode")
+func makeRegexTab(x, y, width, height int) {
+	group := fltk.NewGroup(x, y, width, height, "&Regex")
 	// TODO
 	group.End()
 }
