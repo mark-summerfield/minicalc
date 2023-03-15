@@ -26,6 +26,7 @@ func addTabs(app *App) {
 	width := app.Window.W()
 	height := app.Window.H()
 	tabs := fltk.NewTabs(0, 0, width, height)
+	tabs.Resizable(app.Window)
 	tabs.SetAlign(fltk.ALIGN_TOP)
 	height -= BUTTON_HEIGHT // Allow room for tab
 	makeAboutTab(0, BUTTON_HEIGHT, width, height)
