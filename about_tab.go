@@ -13,11 +13,12 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeAboutTab(x, y, width, height int) {
+func makeAboutTab(x, y, width, height int) *fltk.Group {
 	group := fltk.NewGroup(x, y, width, height, "A&bout")
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(aboutHtml())
 	group.End()
+	return group
 }
 
 func aboutHtml() string {

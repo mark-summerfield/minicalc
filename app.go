@@ -26,10 +26,9 @@ func addTabs(app *App) {
 	width := app.Window.W()
 	height := app.Window.H()
 	tabs := fltk.NewTabs(0, 0, width, height)
-	tabs.Resizable(app.Window)
 	tabs.SetAlign(fltk.ALIGN_TOP)
 	height -= BUTTON_HEIGHT // Allow room for tab
-	makeAboutTab(0, BUTTON_HEIGHT, width, height)
+	aboutGroup := makeAboutTab(0, BUTTON_HEIGHT, width, height)
 	makeAsciiTab(0, BUTTON_HEIGHT, width, height)
 	makeCalculatorTab(0, BUTTON_HEIGHT, width, height)
 	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
@@ -38,4 +37,5 @@ func addTabs(app *App) {
 	makeOptionsTab(0, BUTTON_HEIGHT, width, height)
 	makeRegexTab(0, BUTTON_HEIGHT, width, height)
 	tabs.End()
+	tabs.Resizable(aboutGroup)
 }
