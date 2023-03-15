@@ -30,8 +30,11 @@ func aboutHtml() string {
 		year = fmt.Sprintf("2023-%d", y-2000)
 	}
 	distro := ""
-	if out, err := exec.Command("lsb_release", "-ds").Output(); err == nil {
-		distro = strings.TrimSpace(string(out))
+	if runtime.GOOS == "linux" {
+		if out, err := exec.Command("lsb_release",
+			"-ds").Output(); err == nil {
+			distro = strings.TrimSpace(string(out))
+		}
 	}
 	return fmt.Sprintf(
 		`<p><center><font size=6 color=navy><b>%s</b> v%s</font>

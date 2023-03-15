@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"strings"
 
 	"github.com/pwiecz/go-fltk"
@@ -19,19 +20,48 @@ func makeAsciiTab(x, y, width, height int) {
 
 func asciiHtml() string {
 	var text strings.Builder
-	text.WriteString("<font face=courier size=4>")
-	populateAsciiLow(&text)
 	populateAsciiHigh(&text)
-	text.WriteString("</font>")
+	populateAsciiLow(&text)
 	return text.String()
 }
 
+func populateAsciiHigh(text *strings.Builder) {
+	text.WriteString("<p><font face=courier size=4>")
+	const start = 33
+	const end = 127
+	const step = 5
+	const stride = (end - start + 1) / step
+	for i := 0; i < stride; i++ {
+		text.WriteString("&nbsp;")
+		j := start + i
+		populateOne(text, rune(j+(0*stride)), false)
+		populateOne(text, rune(j+(1*stride)), false)
+		populateOne(text, rune(j+(2*stride)), false)
+		populateOne(text, rune(j+(3*stride)), false)
+		populateOne(text, rune(j+(4*stride)), true)
+	}
+	text.WriteString("</font></p>")
+}
+
+func populateOne(text *strings.Builder, i rune, isEnd bool) {
+	if i == 127 {
+		text.WriteString("7F backspace<br>")
+		return
+	}
+	var end string
+	if isEnd {
+		end = "<br>"
+	} else {
+		end = " <font color=#aaa>|</font> "
+	}
+	text.WriteString(fmt.Sprintf("%02X <font color=navy>%s</font>%s", i,
+		html.EscapeString(string(i)), end))
+}
+
 func populateAsciiLow(text *strings.Builder) {
+	text.WriteString("<p><font face=courier size=4>")
 	descForChar := getDescForChar()
 	for i := 0; i < len(descForChar); i++ {
-		if i == 33 {
-			i = 127
-		}
 		charDesc := descForChar[i]
 		c := charDesc.char
 		if c == "�" {
@@ -43,22 +73,11 @@ func populateAsciiLow(text *strings.Builder) {
 		} else if len(istr) == 2 {
 			istr = "&nbsp;" + istr
 		}
-		text.WriteString(fmt.Sprintf(`%02X&nbsp;%s&nbsp;%s&nbsp;%s<br>`,
-			i, c, istr, charDesc.desc))
+		text.WriteString(fmt.Sprintf(
+			`&nbsp;%02X&nbsp;<font color=navy>%s</font>
+			&nbsp;%s&nbsp;%s<br>`, i, c, istr, charDesc.desc))
 	}
-}
-
-func populateAsciiHigh(text *strings.Builder) {
-	/* // TODO
-	min := 33
-	max := 127
-	items := make([]string, max - min + 1)
-	step := 5
-	stride := len(items) / step
-	for i :=0;i<stride;i++{
-		item := fmt.Sprintf("%02X",
-	}
-	*/
+	text.WriteString("</font></p>")
 }
 
 type CharDesc struct {
@@ -66,47 +85,45 @@ type CharDesc struct {
 	desc string
 }
 
-func newCharDesc(char, desc string) CharDesc {
-	return CharDesc{char, desc}
-}
-
 type DescForCharMap map[int]CharDesc
 
 func getDescForChar() DescForCharMap {
 	descForChar := make(DescForCharMap)
-	descForChar[0] = newCharDesc("�", "NUL&nbsp;Null")
-	descForChar[1] = newCharDesc("�", "SOH&nbsp;Start of Header")
-	descForChar[2] = newCharDesc("�", "STX&nbsp;Start of Text")
-	descForChar[3] = newCharDesc("�", "ETX&nbsp;End of Text")
-	descForChar[4] = newCharDesc("�", "EOT&nbsp;End of Transmission")
-	descForChar[5] = newCharDesc("�", "ENQ&nbsp;Enquiry")
-	descForChar[6] = newCharDesc("�", "ACK&nbsp;Acknowledge")
-	descForChar[7] = newCharDesc("\\a", "BEL&nbsp;Bell")
-	descForChar[8] = newCharDesc("\\b", "BS&nbsp;&nbsp;Backspace")
-	descForChar[9] = newCharDesc("\\t", "HT&nbsp;&nbsp;Horizontal Tab")
-	descForChar[10] = newCharDesc("\\n", "LF&nbsp;&nbsp;Line Feed")
-	descForChar[11] = newCharDesc("\\t", "VT&nbsp;&nbsp;Vertical Tab")
-	descForChar[12] = newCharDesc("\\f", "FF&nbsp;&nbsp;Form Feed")
-	descForChar[13] = newCharDesc("\\r", "CR&nbsp;&nbsp;Carriage Return")
-	descForChar[14] = newCharDesc("�", "SO&nbsp;&nbsp;Shift Out")
-	descForChar[15] = newCharDesc("�", "SI&nbsp;&nbsp;Shift In")
-	descForChar[16] = newCharDesc("�", "DLE&nbsp;Data Link Escape")
-	descForChar[17] = newCharDesc("�", "DC1&nbsp;Device Control 1")
-	descForChar[18] = newCharDesc("�", "DC2&nbsp;Device Control 2")
-	descForChar[19] = newCharDesc("�", "DC3&nbsp;Device Control 3")
-	descForChar[20] = newCharDesc("�", "DC4&nbsp;Device Control 4")
-	descForChar[21] = newCharDesc("�", "NAK&nbsp;Negative Acknowledge")
-	descForChar[22] = newCharDesc("�", "SYN&nbsp;Synchronize")
-	descForChar[23] = newCharDesc("�", "ETB&nbsp;End of Transmission Block")
-	descForChar[24] = newCharDesc("�", "CAN&nbsp;Cancel")
-	descForChar[25] = newCharDesc("�", "EM&nbsp;&nbsp;End of Medium")
-	descForChar[26] = newCharDesc("�", "SUB&nbsp;Substitute")
-	descForChar[27] = newCharDesc("�", "ESC&nbsp;Escape")
-	descForChar[28] = newCharDesc("�", "FS&nbsp;&nbsp;File Separator")
-	descForChar[29] = newCharDesc("�", "GS&nbsp;&nbsp;Group Separator")
-	descForChar[30] = newCharDesc("�", "RS&nbsp;&nbsp;Record Separator")
-	descForChar[31] = newCharDesc("�", "US&nbsp;&nbsp;Unit Separator")
-	descForChar[32] = newCharDesc("&nbsp;&nbsp;", "space")
-	descForChar[127] = newCharDesc("␈", "backspace")
+	for i, charDesc := range []CharDesc{
+		{"�", "NUL&nbsp;Null"},
+		{"�", "SOH&nbsp;Start of Header"},
+		{"�", "STX&nbsp;Start of Text"},
+		{"�", "ETX&nbsp;End of Text"},
+		{"�", "EOT&nbsp;End of Transmission"},
+		{"�", "ENQ&nbsp;Enquiry"},
+		{"�", "ACK&nbsp;Acknowledge"},
+		{"\\a", "BEL&nbsp;Bell"},
+		{"\\b", "BS&nbsp;&nbsp;Backspace"},
+		{"\\t", "HT&nbsp;&nbsp;Horizontal Tab"},
+		{"\\n", "LF&nbsp;&nbsp;Line Feed"},
+		{"\\t", "VT&nbsp;&nbsp;Vertical Tab"},
+		{"\\f", "FF&nbsp;&nbsp;Form Feed"},
+		{"\\r", "CR&nbsp;&nbsp;Carriage Return"},
+		{"�", "SO&nbsp;&nbsp;Shift Out"},
+		{"�", "SI&nbsp;&nbsp;Shift In"},
+		{"�", "DLE&nbsp;Data Link Escape"},
+		{"�", "DC1&nbsp;Device Control 1"},
+		{"�", "DC2&nbsp;Device Control 2"},
+		{"�", "DC3&nbsp;Device Control 3"},
+		{"�", "DC4&nbsp;Device Control 4"},
+		{"�", "NAK&nbsp;Negative Acknowledge"},
+		{"�", "SYN&nbsp;Synchronize"},
+		{"�", "ETB&nbsp;End of Transmission Block"},
+		{"�", "CAN&nbsp;Cancel"},
+		{"�", "EM&nbsp;&nbsp;End of Medium"},
+		{"�", "SUB&nbsp;Substitute"},
+		{"�", "ESC&nbsp;Escape"},
+		{"�", "FS&nbsp;&nbsp;File Separator"},
+		{"�", "GS&nbsp;&nbsp;Group Separator"},
+		{"�", "RS&nbsp;&nbsp;Record Separator"},
+		{"�", "US&nbsp;&nbsp;Unit Separator"},
+		{"&nbsp;&nbsp;", "space"}} {
+		descForChar[i] = charDesc
+	}
 	return descForChar
 }
