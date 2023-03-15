@@ -34,7 +34,6 @@ func addTabs(app *App) {
 	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
 	makeGreekTab(0, BUTTON_HEIGHT, width, height)
 	makeNatoTab(0, BUTTON_HEIGHT, width, height)
-	makeOptionsTab(0, BUTTON_HEIGHT, width, height)
 	makeRegexTab(0, BUTTON_HEIGHT, width, height)
 	tabs.End()
 	tabs.Resizable(aboutGroup)

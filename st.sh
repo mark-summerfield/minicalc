@@ -1,5 +1,5 @@
 #!/bin/bash
-clc -s
+clc -s -e eval
 go mod tidy
 go fmt .
 staticcheck .

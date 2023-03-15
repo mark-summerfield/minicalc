@@ -1,15 +1,26 @@
+# TODO load save win size/pos/scale
+# TODO Greek
+# TODO NATO
+# TODO CPU/RAM
+# TODO Regex
 minicalc.go
 app.go
 about_tab.go
-ascii_tab.go # TODO
+ascii_tab.go
 calculator_tab.go
 cpu_ram_tab.go
 greek_tab.go
 nato_tab.go
-options_tab.go
 regex_tab.go
 util.go
 consts.go
+eval/ast.go
+eval/check.go
+eval/coverage_test.go
+eval/eval.go
+eval/eval_test.go
+eval/parse.go
+eval/print.go
 
 README.md
 
