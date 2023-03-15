@@ -34,11 +34,9 @@ func populateAsciiHigh(text *strings.Builder) {
 	for i := 0; i < stride; i++ {
 		text.WriteString("&nbsp;")
 		j := start + i
-		populateOne(text, rune(j+(0*stride)), false)
-		populateOne(text, rune(j+(1*stride)), false)
-		populateOne(text, rune(j+(2*stride)), false)
-		populateOne(text, rune(j+(3*stride)), false)
-		populateOne(text, rune(j+(4*stride)), true)
+		for k := 0; k < 5; k++ {
+			populateOne(text, rune(j+(k*stride)), k == 4)
+		}
 	}
 	text.WriteString("</font></p>")
 }

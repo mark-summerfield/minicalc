@@ -1,8 +1,9 @@
-# TODO load save win size/pos/scale
+# TODO load save win size/pos/scale/last tab
 # TODO Greek
 # TODO NATO
 # TODO CPU/RAM
 # TODO Regex
+
 minicalc.go
 app.go
 about_tab.go
@@ -14,6 +15,8 @@ nato_tab.go
 regex_tab.go
 util.go
 consts.go
+
+# TODO add % and round()
 eval/ast.go
 eval/check.go
 eval/coverage_test.go
