@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html"
 	"math"
+	"regexp"
 	"strings"
 
 	"github.com/mark-summerfield/gong"
@@ -44,67 +45,97 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
 	nextVarName string) ([]string, string) {
-	const maxPrevious = 5
 	const errTemplate = "<font color=red>Error: %s</font>"
-	var text strings.Builder
-	text.WriteString("<font size=4>")
-	limit := 0
-	if len(allPrevious) > maxPrevious {
-		limit = len(allPrevious) - maxPrevious
-	}
-	for _, previous := range allPrevious[limit:] {
-		text.WriteString(previous)
-	}
-	keys := gong.SortedMapKeys(calcEnv)
-	for _, key := range keys {
-		text.WriteString(fmt.Sprintf(
-			"<font color=blue>%s = %g</font><br>", key, calcEnv[key]))
-	}
+	autoVar := true
+	deletion := false
+	var text string
+	var err error
 	expression := calcInput.Value()
-	expr, err := eval.Parse(expression)
+	varName, expression, err := getVarNameAndExpression(expression)
 	if err != nil {
-		text.WriteString(fmt.Sprintf(errTemplate, html.EscapeString(
-			err.Error())))
-	} else {
-		err := expr.Check(map[eval.Var]bool{})
+		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
+	} else if varName != "" {
+		autoVar = false
+		if expression == "" {
+			deletion = true
+			delete(calcEnv, eval.Var(varName))
+			text = fmt.Sprintf(
+				"<font color=purple>deleted <b>%s</b></font>", varName)
+		}
+	}
+	if err == nil && !deletion {
+		expr, err := eval.Parse(expression)
 		if err != nil {
-			text.WriteString(fmt.Sprintf(errTemplate, html.EscapeString(
-				err.Error())))
+			text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 		} else {
-			value := expr.Eval(calcEnv)
-			text.WriteString(fmt.Sprintf(
-				"<font color=green>%s = %s → <b>%g</b></font>",
-				nextVarName,
-				expression, value))
-			calcEnv[eval.Var(nextVarName)] = value
-			nextVarName = getNextVarName(nextVarName)
-			allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
-				expression, value))
-			if calcCopyResultCheckbutton.Value() {
-				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
+			err := expr.Check(map[eval.Var]bool{})
+			if err != nil {
+				text = fmt.Sprintf(errTemplate, html.EscapeString(
+					err.Error()))
+			} else {
+				value := expr.Eval(calcEnv)
+				if autoVar {
+					varName = nextVarName
+					calcEnv[eval.Var(varName)] = 0
+					nextVarName = getNextVarName(calcEnv)
+				}
+				text = fmt.Sprintf(
+					"<font color=green>%s = %s → <b>%g</b></font>",
+					varName, expression, value)
+				calcEnv[eval.Var(varName)] = value
+				allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
+					expression, value))
+				if calcCopyResultCheckbutton.Value() {
+					fltk.CopyToClipboard(fmt.Sprintf("%g", value))
+				}
 			}
 		}
 	}
-	text.WriteString("</font>")
-	calcView.SetValue(text.String())
+	var textBuilder strings.Builder
+	textBuilder.WriteString("<font size=4>")
+	keys := gong.SortedMapKeys(calcEnv)
+	for _, key := range keys {
+		if string(key) != varName {
+			textBuilder.WriteString(fmt.Sprintf(
+				"<font color=blue>%s = %g</font><br>", key, calcEnv[key]))
+		}
+	}
+	textBuilder.WriteString(text)
+	textBuilder.WriteString("</font>")
+	calcView.SetValue(textBuilder.String())
 	return allPrevious, nextVarName
 }
 
-func getNextVarName(name string) string {
-	first := rune(name[0])
-	if len(name) == 1 {
-		if first < 'z' {
-			return string(first + 1)
+func getVarNameAndExpression(expression string) (string, string, error) {
+	identifierRx := regexp.MustCompile(`\pL[\pL\d_]*`)
+	parts := strings.SplitN(expression, "=", 2)
+	if len(parts) == 1 {
+		return "", strings.TrimSpace(expression), nil
+	}
+	varName := strings.TrimSpace(parts[0])
+	expression = strings.TrimSpace(parts[1])
+	if identifierRx.MatchString(varName) {
+		return varName, expression, nil
+	}
+	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
+}
+
+func getNextVarName(calcEnv eval.Env) string {
+	for i := 'a'; i <= 'z'; i++ {
+		varName := string(i)
+		if _, found := calcEnv[eval.Var(varName)]; !found {
+			return varName
 		}
-		return "aa"
 	}
-	second := rune(name[1])
-	if second == 'z' {
-		first++
-	} else {
-		second++
+	for i := 'a'; i <= 'z'; i++ {
+		for j := 'a'; j <= 'z'; j++ {
+			varName := string(i) + string(j)
+			if _, found := calcEnv[eval.Var(varName)]; !found {
+				return varName
+			}
+		}
 	}
-	return string(first) + string(second)
+	panic("more than 700 variables!")
 }
 
 const CALC_HELP_HTML = `<p><font size=4>Type an expression and press
