@@ -14,34 +14,34 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeCalculatorTab(x, y, width, height int) {
+func makeCalculatorTab(app *App, x, y, width, height int) {
 	allPrevious := make([]string, 0)
 	nextVarName := "a"
 	calcEnv := eval.Env{"pi": math.Pi}
-	group := fltk.NewGroup(x, y, width, height, "&Calculator")
+	group := fltk.NewGroup(x, y, width, height, "&1 Calculator")
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
-	calcView.ClearVisibleFocus()
-	calcInput := fltk.NewInput(x, y+height-hoffset, width, BUTTON_HEIGHT)
-	autoCopyCheckButton := fltk.NewCheckButton(x, y+height-BUTTON_HEIGHT,
-		width, BUTTON_HEIGHT, "A&uto Copy Result to Clipboard")
-	autoCopyCheckButton.SetValue(true)
-	autoCopyCheckButton.ClearVisibleFocus()
-	calcInput.SetCallbackCondition(fltk.WhenEnterKey)
-	calcInput.SetCallback(func() {
+	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
+		BUTTON_HEIGHT)
+	app.calcCopyResultCheckbutton = fltk.NewCheckButton(x,
+		y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT,
+		"&Copy Each Result to the Clipboard")
+	app.calcCopyResultCheckbutton.SetValue(true)
+	app.calcInput.SetCallbackCondition(fltk.WhenEnterKey)
+	app.calcInput.SetCallback(func() {
 		allPrevious, nextVarName = onCalc(allPrevious, calcEnv, calcView,
-			calcInput, autoCopyCheckButton, nextVarName)
+			app.calcInput, app.calcCopyResultCheckbutton, nextVarName)
 	})
 	vbox.End()
 	vbox.Resizable(calcView) // TODO Doesn't work: need Flex
 	group.End()
 	group.Resizable(vbox)
-	// TODO calcInput.TakeFocus()
+	app.calcInput.TakeFocus()
 }
 
 func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
-	calcInput *fltk.Input, autoCopyCheckButton *fltk.CheckButton,
+	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
 	nextVarName string) ([]string, string) {
 	const maxPrevious = 5
 	const errTemplate = "<font color=red>Error: %s</font>"
@@ -79,7 +79,7 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 			nextVarName = getNextVarName(nextVarName)
 			allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
 				expression, value))
-			if autoCopyCheckButton.Value() {
+			if calcCopyResultCheckbutton.Value() {
 				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
 			}
 		}

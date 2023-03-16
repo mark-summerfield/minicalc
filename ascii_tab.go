@@ -12,7 +12,7 @@ import (
 )
 
 func makeAsciiTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&ASCII")
+	group := fltk.NewGroup(x, y, width, height, "&4 ASCII")
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(asciiHtml())
 	group.End()

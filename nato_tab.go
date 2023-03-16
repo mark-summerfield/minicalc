@@ -8,7 +8,7 @@ import (
 )
 
 func makeNatoTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&NATO")
+	group := fltk.NewGroup(x, y, width, height, "&6 NATO")
 	// TODO
 	group.End()
 }

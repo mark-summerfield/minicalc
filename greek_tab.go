@@ -8,7 +8,7 @@ import (
 )
 
 func makeGreekTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&Greek")
+	group := fltk.NewGroup(x, y, width, height, "&5 Greek")
 	// TODO
 	group.End()
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func makeCpuRamTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "C&PU/RAM")
+	group := fltk.NewGroup(x, y, width, height, "&3 CPU/RAM")
 	// TODO
 	group.End()
 }

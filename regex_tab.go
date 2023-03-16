@@ -7,8 +7,37 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeRegexTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&Regex")
-	// TODO
+func makeRegexTab(app *App, x, y, width, height int) {
+	group := fltk.NewGroup(x, y, width, height, "&2 Regex")
+	vbox := fltk.NewPack(x, y, width, height)
+	hoffset := 2 * BUTTON_HEIGHT
+	woffset := 60
+	regexView := fltk.NewHelpView(x, y, width, height-hoffset)
+
+	hbox := fltk.NewPack(x, height-hoffset, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.HORIZONTAL)
+	regexLabel := makeAccelLabel(0, 0, woffset, BUTTON_HEIGHT, "&Regex")
+	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-woffset,
+		BUTTON_HEIGHT)
+	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
+	app.regexInput.SetCallbackCondition(fltk.WhenEnterKey)
+	// TODO SetCallback
+	hbox.End()
+
+	hbox = fltk.NewPack(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.HORIZONTAL)
+	textLabel := makeAccelLabel(0, 0, woffset, BUTTON_HEIGHT, "&Text")
+	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-woffset,
+		BUTTON_HEIGHT)
+	textLabel.SetCallback(func() { textInput.TakeFocus() })
+	textInput.SetCallbackCondition(fltk.WhenEnterKey)
+	// TODO SetCallback
+	hbox.End()
+
+	vbox.End()
+	vbox.Resizable(regexView) // TODO Doesn't work: need Flex
 	group.End()
+	group.Resizable(vbox)
+	group.End()
+	app.regexInput.TakeFocus()
 }

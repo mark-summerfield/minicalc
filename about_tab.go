@@ -14,7 +14,7 @@ import (
 )
 
 func makeAboutTab(x, y, width, height int) *fltk.Group {
-	group := fltk.NewGroup(x, y, width, height, "A&bout")
+	group := fltk.NewGroup(x, y, width, height, "&7 About")
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(aboutHtml())
 	group.End()
@@ -50,9 +50,9 @@ Copyright © %s Mark Summerfield.<br>
 All rights reserved.<br>
 License: GPLv3.</font>
 </center></p>
-<p><center><font size=4 color=#222>
-%s %s/%s • go-fltk</font></center><br>
+<p><center><font size=4 color=#222>%s %s/%s</font></center><br>
+<center><font size=4 color=#222>go-fltk %s • FLTK %s</font></center></p>
 <p><center><font size=4 color=#222>%s</font></center></p>`,
 		APPNAME, Version, year, runtime.Version(), runtime.GOOS,
-		runtime.GOARCH, distro)
+		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

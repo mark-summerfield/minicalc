@@ -1,6 +1,6 @@
 github.com/mark-summerfield/gong v0.9.6 h1:c02VmTVkTZrlJpB8OjBrSfilDnDUAIB3CMogDdNzSu0=
 github.com/mark-summerfield/gong v0.9.6/go.mod h1:OMPM4lS/+CaYfrEBvSOA72k+DukYJHpy+GlEw0FdPHI=
-github.com/pwiecz/go-fltk v0.0.0-20230314212022-e86c0ef33e76 h1:MtEDI2/pZyqppp9vv5js7IV1SxESJjKlPVkJNYgEhjQ=
-github.com/pwiecz/go-fltk v0.0.0-20230314212022-e86c0ef33e76/go.mod h1:uMK5daOr9p+ba2BPs5QadbfaqqrHR5TGj13yWGsAsmw=
-golang.org/x/exp v0.0.0-20230314191032-db074128a8ec h1:pAv+d8BM2JNnNctsLJ6nnZ6NqXT8N4+eauvZSb3P0I0=
-golang.org/x/exp v0.0.0-20230314191032-db074128a8ec/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
+github.com/pwiecz/go-fltk v0.0.0-20230315131211-17c1004b1225 h1:yVd2Qdo4M1gSq+R11BbkHFZLy26oRAPdVlZhYmqlPgI=
+github.com/pwiecz/go-fltk v0.0.0-20230315131211-17c1004b1225/go.mod h1:uMK5daOr9p+ba2BPs5QadbfaqqrHR5TGj13yWGsAsmw=
+golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0 h1:pVgRXcIictcr+lBQIFeiwuwtDIs4eL21OuM9nyAADmo=
+golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
