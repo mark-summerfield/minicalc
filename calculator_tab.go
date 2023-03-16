@@ -23,7 +23,7 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
-	calcView.SetValue(CALC_HELP_HTML)
+	calcView.SetValue(calcHelpHtml)
 	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
 	app.calcCopyResultCheckbutton = fltk.NewCheckButton(x,
@@ -45,7 +45,6 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
 	nextVarName string) ([]string, string) {
-	const errTemplate = "<font color=red>Error: %s</font>"
 	autoVar := true
 	deletion := false
 	var text string
@@ -55,59 +54,24 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
 		autoVar = false
-		if expression == "" {
+		if expression == "" { // varName=
 			deletion = true
 			delete(calcEnv, eval.Var(varName))
 			text = fmt.Sprintf(
 				"<font color=purple>deleted <b>%s</b></font>", varName)
 		}
 	}
-	if err == nil && !deletion {
-		expr, err := eval.Parse(expression)
-		if err != nil {
-			text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
-		} else {
-			err := expr.Check(map[eval.Var]bool{})
-			if err != nil {
-				text = fmt.Sprintf(errTemplate, html.EscapeString(
-					err.Error()))
-			} else {
-				value := expr.Eval(calcEnv)
-				if autoVar {
-					varName = nextVarName
-					calcEnv[eval.Var(varName)] = value
-					nextVarName = getNextVarName(calcEnv)
-				} else {
-					calcEnv[eval.Var(varName)] = value
-				}
-				text = fmt.Sprintf(
-					"<font color=green>%s = %s → <b>%g</b></font>",
-					varName, expression, value)
-				allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
-					expression, value))
-				if calcCopyResultCheckbutton.Value() {
-					fltk.CopyToClipboard(fmt.Sprintf("%g", value))
-				}
-			}
-		}
+	if err == nil && !deletion { // varName=expr _or_ expr
+		text, nextVarName, allPrevious = calculate(varName, nextVarName,
+			expression, autoVar, calcCopyResultCheckbutton, calcEnv,
+			allPrevious)
 	}
-	var textBuilder strings.Builder
-	textBuilder.WriteString("<font size=4>")
-	keys := gong.SortedMapKeys(calcEnv)
-	for _, key := range keys {
-		if string(key) != varName {
-			textBuilder.WriteString(fmt.Sprintf(
-				"<font color=blue>%s = %g</font><br>", key, calcEnv[key]))
-		}
-	}
-	textBuilder.WriteString(text)
-	textBuilder.WriteString("</font>")
-	calcView.SetValue(textBuilder.String())
+	populateView(varName, text, calcEnv, calcView)
 	return allPrevious, nextVarName
 }
 
 func getVarNameAndExpression(expression string) (string, string, error) {
-	identifierRx := regexp.MustCompile(`\pL[\pL\d_]*`)
+	identifierRx := regexp.MustCompile(`^\pL[\pL\d_]*$`)
 	parts := strings.SplitN(expression, "=", 2)
 	if len(parts) == 1 {
 		return "", strings.TrimSpace(expression), nil
@@ -118,6 +82,40 @@ func getVarNameAndExpression(expression string) (string, string, error) {
 		return varName, expression, nil
 	}
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
+}
+
+func calculate(varName, nextVarName, expression string, autoVar bool,
+	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env,
+	allPrevious []string) (string, string, []string) {
+	var text string
+	expr, err := eval.Parse(expression)
+	if err != nil {
+		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
+	} else {
+		err := expr.Check(map[eval.Var]bool{})
+		if err != nil {
+			text = fmt.Sprintf(errTemplate, html.EscapeString(
+				err.Error()))
+		} else {
+			value := expr.Eval(calcEnv)
+			if autoVar {
+				varName = nextVarName
+				calcEnv[eval.Var(varName)] = value
+				nextVarName = getNextVarName(calcEnv)
+			} else {
+				calcEnv[eval.Var(varName)] = value
+			}
+			text = fmt.Sprintf(
+				"<font color=green>%s = %s → <b>%g</b></font>",
+				varName, expression, value)
+			allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
+				expression, value))
+			if calcCopyResultCheckbutton.Value() {
+				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
+			}
+		}
+	}
+	return text, nextVarName, allPrevious
 }
 
 func getNextVarName(calcEnv eval.Env) string {
@@ -135,10 +133,28 @@ func getNextVarName(calcEnv eval.Env) string {
 			}
 		}
 	}
-	panic("more than 700 variables!")
+	panic("can't cope with more than 700 variables")
 }
 
-const CALC_HELP_HTML = `<p><font size=4>Type an expression and press
+func populateView(varName, text string, calcEnv eval.Env,
+	calcView *fltk.HelpView) {
+	var textBuilder strings.Builder
+	textBuilder.WriteString("<font size=4>")
+	keys := gong.SortedMapKeys(calcEnv)
+	for _, key := range keys {
+		if string(key) != varName {
+			textBuilder.WriteString(fmt.Sprintf(
+				"<font color=blue>%s = %g</font><br>", key, calcEnv[key]))
+		}
+	}
+	textBuilder.WriteString(text)
+	textBuilder.WriteString("</font>")
+	calcView.SetValue(textBuilder.String())
+}
+
+const (
+	errTemplate  = "<font color=red>Error: %s</font>"
+	calcHelpHtml = `<p><font size=4>Type an expression and press
 Enter.</font></p>
 <p><font size=4>Results are automatically assigned to successive variables,
 <tt>a</tt>, <tt>b</tt>, ... unless explicitly assigned with <tt>=</tt>.
@@ -155,3 +171,4 @@ Enter.</font></p>
 <tt>sqrt(<i>n</i>)</tt>.
 </font></p>
 </font>`
+)
