@@ -62,9 +62,9 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, nextVarName, allPrevious = calculate(varName, nextVarName,
-			expression, autoVar, calcCopyResultCheckbutton, calcEnv,
-			allPrevious)
+		text, varName, nextVarName, allPrevious = calculate(varName,
+			nextVarName, expression, autoVar, calcCopyResultCheckbutton,
+			calcEnv, allPrevious)
 	}
 	populateView(varName, text, calcEnv, calcView)
 	return allPrevious, nextVarName
@@ -86,7 +86,7 @@ func getVarNameAndExpression(expression string) (string, string, error) {
 
 func calculate(varName, nextVarName, expression string, autoVar bool,
 	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env,
-	allPrevious []string) (string, string, []string) {
+	allPrevious []string) (string, string, string, []string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -115,7 +115,7 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 			}
 		}
 	}
-	return text, nextVarName, allPrevious
+	return text, varName, nextVarName, allPrevious
 }
 
 func getNextVarName(calcEnv eval.Env) string {
@@ -155,10 +155,10 @@ func populateView(varName, text string, calcEnv eval.Env,
 const (
 	errTemplate  = "<font color=red>Error: %s</font>"
 	calcHelpHtml = `<p><font size=4>Type an expression and press
-Enter.</font></p>
+Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
 <p><font size=4>Results are automatically assigned to successive variables,
-<tt>a</tt>, <tt>b</tt>, ... unless explicitly assigned with <tt>=</tt>.
-</font></p>
+<tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with <tt>=</tt>,
+e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
 <p><font size=4>To delete a variable use <tt><i>varname</i>=</tt> and press
 Enter.</font></p>
 <p><font size=4>Supported operators: <tt>+ - * / %</tt>.
