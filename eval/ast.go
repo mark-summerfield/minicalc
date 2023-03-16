@@ -25,7 +25,7 @@ type unary struct {
 
 // A binary represents a binary operator expression, e.g., x+y.
 type binary struct {
-	op   rune // one of '+', '-', '*', '/'
+	op   rune // one of '+', '-', '*', '/', '%'
 	x, y Expr
 }
 

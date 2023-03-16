@@ -50,7 +50,7 @@ func TestEval(t *testing.T) {
 
 func TestErrors(t *testing.T) {
 	for _, test := range []struct{ expr, wantErr string }{
-		{"x % 2", "unexpected '%'"},
+		{"x @ 2", "unexpected '@'"},
 		{"math.Pi", "unexpected '.'"},
 		{"!true", "unexpected '!'"},
 		{`"hello"`, "unexpected '\"'"},

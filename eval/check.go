@@ -25,7 +25,7 @@ func (me unary) Check(vars map[Var]bool) error {
 }
 
 func (me binary) Check(vars map[Var]bool) error {
-	if !strings.ContainsRune("+-*/", me.op) {
+	if !strings.ContainsRune("+-*/%", me.op) {
 		return fmt.Errorf("unexpected binary op %q", me.op)
 	}
 	if err := me.x.Check(vars); err != nil {

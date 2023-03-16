@@ -13,6 +13,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	hoffset := 2 * BUTTON_HEIGHT
 	woffset := 60
 	regexView := fltk.NewHelpView(x, y, width, height-hoffset)
+	regexView.SetValue(REGEX_HELP_HTML)
 
 	hbox := fltk.NewPack(x, height-hoffset, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
@@ -41,3 +42,6 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	group.End()
 	app.regexInput.TakeFocus()
 }
+
+const REGEX_HELP_HTML = `<p><font size=4>Type a regular expression and
+some text to test it on and press Enter.</font></p>` // TODO complete

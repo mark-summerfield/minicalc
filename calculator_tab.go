@@ -22,6 +22,7 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
+	calcView.SetValue(CALC_HELP_HTML)
 	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
 	app.calcCopyResultCheckbutton = fltk.NewCheckButton(x,
@@ -105,3 +106,21 @@ func getNextVarName(name string) string {
 	}
 	return string(first) + string(second)
 }
+
+const CALC_HELP_HTML = `<p><font size=4>Type an expression and press
+Enter.</font></p>
+<p><font size=4>Results are automatically assigned to successive variables,
+<tt>a</tt>, <tt>b</tt>, ... unless explicitly assigned with <tt>=</tt>.
+</font></p>
+<p><font size=4>To delete a variable use <tt><i>varname</i>=</tt> and press
+Enter.</font></p>
+<p><font size=4>Supported operators: <tt>+ - * / %</tt>.
+</font></p>
+<p><font size=4>Predefined variables: <tt>pi</tt>.
+</font></p>
+<p><font size=4>Functions:
+<tt>pow(<i>x</i>, <i>y</i>)</tt>,
+<tt>sin(<i>n</i>)</tt>,
+<tt>sqrt(<i>n</i>)</tt>.
+</font></p>
+</font>`

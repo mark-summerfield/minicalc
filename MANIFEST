@@ -1,10 +1,7 @@
 # TODO load save win size/pos/scale/last tab/copy checkbox
-# TODO add % to eval
 # TODO Calculator:
-#   show help on initial HTML
 #   support: _var_ = expr; _var_ = (delete var)
 # TODO Regex
-#   show help on initial HTML
 # TODO CPU/RAM
 # TODO Greek
 # TODO NATO

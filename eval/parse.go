@@ -38,7 +38,7 @@ func (me *lexer) describe() string {
 
 func precedence(op rune) int {
 	switch op {
-	case '*', '/':
+	case '*', '/', '%':
 		return 2
 	case '+', '-':
 		return 1
@@ -50,12 +50,11 @@ func precedence(op rune) int {
 
 // Parse parses the input string as an arithmetic expression.
 //
-//   expr = num                         a literal number, e.g., 3.14159
-//        | id                          a variable name, e.g., x
-//        | id '(' expr ',' ... ')'     a function call
-//        | '-' expr                    a unary operator (+-)
-//        | expr '+' expr               a binary operator (+-*/)
-//
+//	expr = num                         a literal number, e.g., 3.14159
+//	     | id                          a variable name, e.g., x
+//	     | id '(' expr ',' ... ')'     a function call
+//	     | '-' expr                    a unary operator (+-)
+//	     | expr '+' expr               a binary operator (+-*/)
 func Parse(input string) (_ Expr, err error) {
 	defer func() {
 		switch x := recover().(type) {
@@ -74,7 +73,7 @@ func Parse(input string) (_ Expr, err error) {
 	lex.next() // initial lookahead
 	e := parseExpr(lex)
 	if lex.token != scanner.EOF {
-		return nil, fmt.Errorf("unexpected %s", lex.describe())
+		return nil, fmt.Errorf("unexpected token %s", lex.describe())
 	}
 	return e, nil
 }
@@ -108,9 +107,10 @@ func parseUnary(lex *lexer) Expr {
 }
 
 // primary = id
-//         | id '(' expr ',' ... ',' expr ')'
-//         | num
-//         | '(' expr ')'
+//
+//	| id '(' expr ',' ... ',' expr ')'
+//	| num
+//	| '(' expr ')'
 func parsePrimary(lex *lexer) Expr {
 	switch lex.token {
 	case scanner.Ident:

@@ -15,7 +15,7 @@ func TestCoverage(t *testing.T) {
 		env   Env
 		want  string // expected error from Parse/Check or result from Eval
 	}{
-		{"x % 2", nil, "unexpected '%'"},
+		{"x @ 2", nil, "unexpected '@'"},
 		{"!true", nil, "unexpected '!'"},
 		{"log(10)", nil, `unknown function "log"`},
 		{"sqrt(1, 2)", nil, "call to sqrt has 2 args, want 1"},
