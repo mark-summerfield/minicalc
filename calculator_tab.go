@@ -50,8 +50,7 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 	deletion := false
 	var text string
 	var err error
-	expression := calcInput.Value()
-	varName, expression, err := getVarNameAndExpression(expression)
+	varName, expression, err := getVarNameAndExpression(calcInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
@@ -76,13 +75,14 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 				value := expr.Eval(calcEnv)
 				if autoVar {
 					varName = nextVarName
-					calcEnv[eval.Var(varName)] = 0
+					calcEnv[eval.Var(varName)] = value
 					nextVarName = getNextVarName(calcEnv)
+				} else {
+					calcEnv[eval.Var(varName)] = value
 				}
 				text = fmt.Sprintf(
 					"<font color=green>%s = %s → <b>%g</b></font>",
 					varName, expression, value)
-				calcEnv[eval.Var(varName)] = value
 				allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
 					expression, value))
 				if calcCopyResultCheckbutton.Value() {
