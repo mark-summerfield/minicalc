@@ -9,42 +9,68 @@ import (
 
 type App struct {
 	*fltk.Window
+	config                    *Config
+	tabs                      *fltk.Tabs
 	calcInput                 *fltk.Input
 	calcCopyResultCheckbutton *fltk.CheckButton
 	regexInput                *fltk.Input
 }
 
-func newApp() *App {
-	app := &App{Window: nil}
-	app.Window = fltk.NewWindow(512, 480)
+func (me *App) onEvent(event fltk.Event) bool {
+	if event == fltk.KEY && fltk.EventKey() == KEY_ESC {
+		me.save()
+	}
+	return false
+}
+
+func (me *App) save() {
+	me.config.X = me.Window.X()
+	me.config.Y = me.Window.Y()
+	me.config.Width = me.Window.W()
+	me.config.Height = me.Window.H()
+	me.config.LastTab = me.tabs.Value()
+	me.config.Scale = fltk.ScreenScale(0)
+	me.config.save()
+}
+
+func newApp(config *Config) *App {
+	app := &App{Window: nil, config: config}
+	app.Window = fltk.NewWindow(config.Width, config.Height)
+	if config.X > -1 && config.Y > -1 {
+		app.Window.SetPosition(config.X, config.Y)
+	}
 	app.Window.Resizable(app.Window)
 	app.Window.SetLabel(APPNAME)
+	app.Window.SetEventHandler(app.onEvent)
 	addIcons(app.Window, iconSvg)
 	addTabs(app)
 	app.Window.End()
+	fltk.AddTimeout(0.1, func() { onTab(app) })
 	return app
 }
 
 func addTabs(app *App) {
 	width := app.Window.W()
 	height := app.Window.H()
-	tabs := fltk.NewTabs(0, 0, width, height)
-	tabs.SetAlign(fltk.ALIGN_TOP)
-	tabs.SetCallbackCondition(fltk.WhenChanged)
-	tabs.SetCallback(func() { onTab(app, tabs) })
+	app.tabs = fltk.NewTabs(0, 0, width, height)
+	app.tabs.SetAlign(fltk.ALIGN_TOP)
+	app.tabs.SetCallbackCondition(fltk.WhenChanged)
+	app.tabs.SetCallback(func() { onTab(app) })
 	height -= BUTTON_HEIGHT // Allow room for tab
 	makeCalculatorTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
 	makeAsciiTab(0, BUTTON_HEIGHT, width, height)
-	makeCustomTab(0, BUTTON_HEIGHT, width, height)
-	aboutGroup := makeAboutTab(0, BUTTON_HEIGHT, width, height)
-	tabs.End()
-	tabs.Resizable(aboutGroup)
+	makeCustomTab(app.config.CustomHtml, 0, BUTTON_HEIGHT, width, height)
+	aboutGroup := makeAboutTab(app.config.Filename, 0, BUTTON_HEIGHT, width,
+		height)
+	app.tabs.End()
+	app.tabs.Resizable(aboutGroup)
+	app.tabs.SetValue(app.config.LastTab)
 }
 
-func onTab(app *App, tabs *fltk.Tabs) {
-	switch tabs.Value() {
+func onTab(app *App) {
+	switch app.tabs.Value() {
 	case CALCULATOR_TAB:
 		app.calcInput.TakeFocus()
 	case REGEX_TAB:

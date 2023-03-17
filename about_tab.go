@@ -13,15 +13,15 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeAboutTab(x, y, width, height int) *fltk.Group {
+func makeAboutTab(filename string, x, y, width, height int) *fltk.Group {
 	group := fltk.NewGroup(x, y, width, height, "&6 About")
 	view := fltk.NewHelpView(x, y, width, height)
-	view.SetValue(aboutHtml())
+	view.SetValue(aboutHtml(filename))
 	group.End()
 	return group
 }
 
-func aboutHtml() string {
+func aboutHtml(filename string) string {
 	var year string
 	y := time.Now().Year()
 	if y == 2023 {
@@ -49,9 +49,17 @@ Copyright © %s Mark Summerfield.<br>
 All rights reserved.<br>
 License: GPLv3.</font>
 </center></p>
+<p>
+<center>
+<font size=4>
+Configuration file: <tt>%s</tt><br>
+(edit to change the Scale or the Custom tab's text)
+</font>
+</center>
+</p>
 <p><center><font size=4 color=#222>%s • %s/%s</font></center><br>
 <center><font size=4 color=#222>go-fltk %s • FLTK %s</font></center></p>
 <p><center><font size=4 color=#222>%s</font></center></p>`,
-		APPNAME, Version, year, runtime.Version(), runtime.GOOS,
+		APPNAME, Version, year, filename, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

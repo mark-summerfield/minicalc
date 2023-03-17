@@ -1,10 +1,8 @@
-# TODO ini load save win size/pos/scale/last tab/custom html text
 # TODO change the auto var algorithm to work 'a'..'z' and once full to
 # recycle using nextVarIndex int
 # TODO delete Copy ... Clipboard checkbox & replace with hbox Pack & two
 # buttons: [Copy &Result] [&Copy v] the latter a pop-up menu a-z of
 # vars.
-# TODO If ini has custom_html = """...""" use it for Custom tab
 # TODO Regex
 # TODO CPU/RAM
 
@@ -16,6 +14,7 @@ cpu_ram_tab.go
 ascii_tab.go
 custom_tab.go
 about_tab.go
+config.go
 util.go
 consts.go
 
@@ -28,6 +27,8 @@ eval/parse.go
 eval/print.go
 
 README.md
+
+minicalc.ini
 
 go.mod
 
