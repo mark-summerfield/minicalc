@@ -61,8 +61,8 @@ func addTabs(app *App) {
 	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
 	makeAsciiTab(0, BUTTON_HEIGHT, width, height)
-	makeCustomTab(app.config.CustomHtml, 0, BUTTON_HEIGHT, width, height)
-	aboutGroup := makeAboutTab(app.config.Filename, 0, BUTTON_HEIGHT, width,
+	makeCustomTab(app.config, 0, BUTTON_HEIGHT, width, height)
+	aboutGroup := makeAboutTab(app.config.filename, 0, BUTTON_HEIGHT, width,
 		height)
 	app.tabs.End()
 	app.tabs.Resizable(aboutGroup)

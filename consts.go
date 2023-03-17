@@ -19,6 +19,7 @@ const (
 	CPU_RAM_TAB    = 2
 	ASCII_TAB      = 3
 	CUSTOM_TAB     = 4
+	ABOUT_TAB      = 5
 
 	KEY_ESC = 65307
 
