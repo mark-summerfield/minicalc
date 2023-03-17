@@ -37,8 +37,7 @@ func addTabs(app *App) {
 	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
 	makeAsciiTab(0, BUTTON_HEIGHT, width, height)
-	makeGreekTab(0, BUTTON_HEIGHT, width, height)
-	makeNatoTab(0, BUTTON_HEIGHT, width, height)
+	makeCustomTab(0, BUTTON_HEIGHT, width, height)
 	aboutGroup := makeAboutTab(0, BUTTON_HEIGHT, width, height)
 	tabs.End()
 	tabs.Resizable(aboutGroup)
@@ -52,8 +51,7 @@ func onTab(app *App, tabs *fltk.Tabs) {
 		app.regexInput.TakeFocus()
 		//case CPU_RAM_TAB    :
 		//case ASCII_TAB      :
-		//case GREEK_TAB      :
-		//case NATO_TAB       :
+		//case CUSTOM      :
 		//case ABOUT_TAB      :
 	}
 }

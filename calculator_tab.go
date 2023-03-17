@@ -16,7 +16,6 @@ import (
 )
 
 func makeCalculatorTab(app *App, x, y, width, height int) {
-	allPrevious := make([]string, 0)
 	nextVarName := "a"
 	calcEnv := eval.Env{"pi": math.Pi}
 	group := fltk.NewGroup(x, y, width, height, "&1 Calculator")
@@ -32,8 +31,8 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	app.calcCopyResultCheckbutton.SetValue(true)
 	app.calcInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.calcInput.SetCallback(func() {
-		allPrevious, nextVarName = onCalc(allPrevious, calcEnv, calcView,
-			app.calcInput, app.calcCopyResultCheckbutton, nextVarName)
+		nextVarName = onCalc(calcEnv, calcView, app.calcInput,
+			app.calcCopyResultCheckbutton, nextVarName)
 	})
 	vbox.End()
 	vbox.Resizable(calcView) // TODO Doesn't work: need Flex
@@ -42,9 +41,9 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	app.calcInput.TakeFocus()
 }
 
-func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
+func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
-	nextVarName string) ([]string, string) {
+	nextVarName string) string {
 	autoVar := true
 	deletion := false
 	var text string
@@ -62,12 +61,11 @@ func onCalc(allPrevious []string, calcEnv eval.Env, calcView *fltk.HelpView,
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName, nextVarName, allPrevious = calculate(varName,
-			nextVarName, expression, autoVar, calcCopyResultCheckbutton,
-			calcEnv, allPrevious)
+		text, varName, nextVarName = calculate(varName, nextVarName,
+			expression, autoVar, calcCopyResultCheckbutton, calcEnv)
 	}
 	populateView(varName, text, calcEnv, calcView)
-	return allPrevious, nextVarName
+	return nextVarName
 }
 
 func getVarNameAndExpression(expression string) (string, string, error) {
@@ -85,8 +83,8 @@ func getVarNameAndExpression(expression string) (string, string, error) {
 }
 
 func calculate(varName, nextVarName, expression string, autoVar bool,
-	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env,
-	allPrevious []string) (string, string, string, []string) {
+	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env) (string,
+	string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -108,14 +106,12 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 			text = fmt.Sprintf(
 				"<font color=green>%s = %s → <b>%g</b></font>",
 				varName, expression, value)
-			allPrevious = append(allPrevious, fmt.Sprintf("%s → %g<br>",
-				expression, value))
 			if calcCopyResultCheckbutton.Value() {
 				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
 			}
 		}
 	}
-	return text, varName, nextVarName, allPrevious
+	return text, varName, nextVarName
 }
 
 func getNextVarName(calcEnv eval.Env) string {
