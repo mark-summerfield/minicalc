@@ -2,13 +2,11 @@ module github.com/mark-summerfield/minicalc
 
 go 1.20
 
-replace github.com/pwiecz/go-fltk => /home/mark/opt/go-fltk
-
 require (
 	github.com/go-ini/ini v1.67.0
 	github.com/mark-summerfield/gong v0.9.7
 	github.com/mark-summerfield/gset v0.8.0
-	github.com/pwiecz/go-fltk v0.0.0-20230315131211-17c1004b1225
+	github.com/pwiecz/go-fltk v0.0.0-20230318153250-5c93250aa40b
 )
 
 require (
