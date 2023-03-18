@@ -43,5 +43,5 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	app.regexInput.TakeFocus()
 }
 
-const REGEX_HELP_HTML = `<p><font size=4>Type a regular expression and
-some text to test it on and press Enter.</font></p>` // TODO complete
+const REGEX_HELP_HTML = `<p><font face=sans size=4>Type a regular
+expression and some text to test it on and press Enter.</font></p>` // TODO complete

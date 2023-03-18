@@ -37,29 +37,31 @@ func aboutHtml(filename string) string {
 		}
 	}
 	return fmt.Sprintf(
-		`<p><center><font size=6 color=navy><b>%s</b> v%s</font>
+		`<p><center><font face=sans size=6 color=navy><b>%s</b> v%s</font>
 </center></p>
-<p><center><font color=navy size=4>A little GUI tool</font></center></p>
-<p><center><font size=4>
+<p><center><font face=sans color=navy size=4>A little GUI
+tool</font></center></p>
+<p><center><font face=sans size=4>
 <a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
 </font></center></p>
 <p><center>
-<font size=4 color=green>
+<font face=sans size=4 color=green>
 Copyright © %s Mark Summerfield.<br>
 All rights reserved.<br>
 License: GPLv3.</font>
 </center></p>
 <p>
 <center>
-<font size=4>
+<font face=sans size=4>
 Configuration file: <tt>%s</tt><br>
 (edit to change the Scale or the Custom tab's text)
 </font>
 </center>
 </p>
-<p><center><font size=4 color=#222>%s • %s/%s</font></center><br>
-<center><font size=4 color=#222>go-fltk %s • FLTK %s</font></center></p>
-<p><center><font size=4 color=#222>%s</font></center></p>`,
+<p><center><font face=sans size=4 color=#222>%s • %s/%s</font></center><br>
+<center><font face=sans size=4 color=#222>go-fltk %s • FLTK
+%s</font></center></p>
+<p><center><font face=sans size=4 color=#222>%s</font></center></p>`,
 		APPNAME, Version, year, filename, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

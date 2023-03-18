@@ -61,7 +61,8 @@ func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 			delete(userVarNames, varName)
 			delete(calcEnv, eval.Var(varName))
 			text = fmt.Sprintf(
-				"<font color=purple>deleted <b>%s</b></font>", varName)
+				"<font face=sans color=purple>deleted <b>%s</b></font>",
+				varName)
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
@@ -111,7 +112,7 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 				calcEnv[eval.Var(varName)] = value
 			}
 			text = fmt.Sprintf(
-				"<font color=green>%s = %s → <b>%g</b></font>",
+				"<font face=sans color=green>%s = %s → <b>%g</b></font>",
 				varName, expression, value)
 			if calcCopyResultCheckbutton.Value() {
 				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
@@ -149,12 +150,13 @@ func getNextVarName(calcEnv eval.Env,
 func populateView(varName, text string, calcEnv eval.Env,
 	calcView *fltk.HelpView) {
 	var textBuilder strings.Builder
-	textBuilder.WriteString("<font size=4>")
+	textBuilder.WriteString("<font face=sans size=4>")
 	keys := gong.SortedMapKeys(calcEnv)
 	for _, key := range keys {
 		if string(key) != varName {
 			textBuilder.WriteString(fmt.Sprintf(
-				"<font color=blue>%s = %g</font><br>", key, calcEnv[key]))
+				"<font face=sans color=blue>%s = %g</font><br>", key,
+				calcEnv[key]))
 		}
 	}
 	textBuilder.WriteString(text)
@@ -163,19 +165,19 @@ func populateView(varName, text string, calcEnv eval.Env,
 }
 
 const (
-	errTemplate  = "<font color=red>Error: %s</font>"
-	calcHelpHtml = `<p><font size=4>Type an expression and press
+	errTemplate  = "<font face=sans color=red>Error: %s</font>"
+	calcHelpHtml = `<p><font face=sans size=4>Type an expression and press
 Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
-<p><font size=4>Results are automatically assigned to successive variables,
-<tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with <tt>=</tt>,
-e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
-<p><font size=4>To delete a variable use <tt><i>varname</i>=</tt> and press
-Enter.</font></p>
-<p><font size=4>Supported operators: <tt>+ - * / %</tt>.
+<p><font face=sans size=4>Results are automatically assigned to successive
+variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with
+<tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
+<p><font face=sans size=4>To delete a variable use <tt><i>varname</i>=</tt>
+and press Enter.</font></p>
+<p><font face=sans size=4>Supported operators: <tt>+ - * / %</tt>.
 </font></p>
-<p><font size=4>Predefined variables: <tt>pi</tt>.
+<p><font face=sans size=4>Predefined variables: <tt>pi</tt>.
 </font></p>
-<p><font size=4>Functions:
+<p><font face=sans size=4>Functions:
 <tt>pow(<i>x</i>, <i>y</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
 <tt>sqrt(<i>n</i>)</tt>.
