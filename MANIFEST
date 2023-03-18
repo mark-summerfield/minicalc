@@ -1,8 +1,6 @@
-# TODO change the auto var algorithm to work 'a'..'z' and once full to
-# recycle using nextVarIndex int
 # TODO delete Copy ... Clipboard checkbox & replace with hbox Pack & two
 # buttons: [Copy &Result] [&Copy v] the latter a pop-up menu a-z of
-# vars.
+# vars. -OR- One [Copy v] button with dynamic menu of last 7 results?
 # TODO Regex
 # TODO CPU/RAM
 

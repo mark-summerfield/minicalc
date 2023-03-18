@@ -21,8 +21,6 @@ const (
 	CUSTOM_TAB     = 4
 	ABOUT_TAB      = 5
 
-	KEY_ESC = 65307
-
 	customPlaceHolderTemplate = `<font color=navy size=4>
 To add custom content add</font>
 <p><font size=4

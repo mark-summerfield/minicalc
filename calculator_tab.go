@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/mark-summerfield/gong"
+	"github.com/mark-summerfield/gset"
 	"github.com/mark-summerfield/minicalc/eval"
 	"github.com/pwiecz/go-fltk"
 )
@@ -44,17 +45,20 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
 	nextVarName string) string {
+	userVarNames := gset.New[string]()
 	autoVar := true
 	deletion := false
 	var text string
 	var err error
-	varName, expression, err := getVarNameAndExpression(calcInput.Value())
+	varName, expression, err := getVarNameAndExpression(userVarNames,
+		calcInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
 		autoVar = false
 		if expression == "" { // varName=
 			deletion = true
+			delete(userVarNames, varName)
 			delete(calcEnv, eval.Var(varName))
 			text = fmt.Sprintf(
 				"<font color=purple>deleted <b>%s</b></font>", varName)
@@ -62,13 +66,15 @@ func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
 		text, varName, nextVarName = calculate(varName, nextVarName,
-			expression, autoVar, calcCopyResultCheckbutton, calcEnv)
+			expression, autoVar, calcCopyResultCheckbutton, calcEnv,
+			userVarNames)
 	}
 	populateView(varName, text, calcEnv, calcView)
 	return nextVarName
 }
 
-func getVarNameAndExpression(expression string) (string, string, error) {
+func getVarNameAndExpression(userVarNames gset.Set[string],
+	expression string) (string, string, error) {
 	identifierRx := regexp.MustCompile(`^\pL[\pL\d_]*$`)
 	parts := strings.SplitN(expression, "=", 2)
 	if len(parts) == 1 {
@@ -77,14 +83,15 @@ func getVarNameAndExpression(expression string) (string, string, error) {
 	varName := strings.TrimSpace(parts[0])
 	expression = strings.TrimSpace(parts[1])
 	if identifierRx.MatchString(varName) {
+		userVarNames.Add(varName)
 		return varName, expression, nil
 	}
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
 }
 
 func calculate(varName, nextVarName, expression string, autoVar bool,
-	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env) (string,
-	string, string) {
+	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env,
+	userVarNames gset.Set[string]) (string, string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -99,7 +106,7 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 			if autoVar {
 				varName = nextVarName
 				calcEnv[eval.Var(varName)] = value
-				nextVarName = getNextVarName(calcEnv)
+				nextVarName = getNextVarName(calcEnv, userVarNames)
 			} else {
 				calcEnv[eval.Var(varName)] = value
 			}
@@ -114,9 +121,13 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 	return text, varName, nextVarName
 }
 
-func getNextVarName(calcEnv eval.Env) string {
+func getNextVarName(calcEnv eval.Env,
+	userVarNames gset.Set[string]) string {
 	for i := 'a'; i <= 'z'; i++ {
 		varName := string(i)
+		if userVarNames.Contains(varName) {
+			continue
+		}
 		if _, found := calcEnv[eval.Var(varName)]; !found {
 			return varName
 		}
@@ -124,6 +135,9 @@ func getNextVarName(calcEnv eval.Env) string {
 	for i := 'a'; i <= 'z'; i++ {
 		for j := 'a'; j <= 'z'; j++ {
 			varName := string(i) + string(j)
+			if userVarNames.Contains(varName) {
+				continue
+			}
 			if _, found := calcEnv[eval.Var(varName)]; !found {
 				return varName
 			}

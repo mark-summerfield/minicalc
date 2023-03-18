@@ -17,7 +17,8 @@ type App struct {
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
-	if event == fltk.KEY && fltk.EventKey() == KEY_ESC {
+	if fltk.EventType() == fltk.CLOSE ||
+		(fltk.EventType() == fltk.KEY && fltk.EventKey() == fltk.ESCAPE) {
 		me.save()
 	}
 	return false
@@ -40,8 +41,8 @@ func newApp(config *Config) *App {
 		app.Window.SetPosition(config.X, config.Y)
 	}
 	app.Window.Resizable(app.Window)
-	app.Window.SetLabel(APPNAME)
 	app.Window.SetEventHandler(app.onEvent)
+	app.Window.SetLabel(APPNAME)
 	addIcons(app.Window, iconSvg)
 	addTabs(app)
 	app.Window.End()
@@ -75,9 +76,5 @@ func onTab(app *App) {
 		app.calcInput.TakeFocus()
 	case REGEX_TAB:
 		app.regexInput.TakeFocus()
-		//case CPU_RAM_TAB    :
-		//case ASCII_TAB      :
-		//case CUSTOM      :
-		//case ABOUT_TAB      :
 	}
 }
