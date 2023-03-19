@@ -26,14 +26,29 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	calcView.SetValue(calcHelpHtml)
 	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
-	app.calcCopyResultCheckbutton = fltk.NewCheckButton(x,
-		y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT,
-		"&Copy Each Result to the Clipboard")
-	app.calcCopyResultCheckbutton.SetValue(true)
+
+	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.HORIZONTAL)
+	hbox.SetSpacing(PAD)
+	wsize := (LABEL_WIDTH * 3) - (LABEL_WIDTH / 2)
+	copyResultButton := fltk.NewButton(0, 0, wsize, BUTTON_HEIGHT,
+		"Copy &Result")
+	copyResultButton.SetTooltip("Copy the Result to the Clipboard")
+	copyResultButton.ClearVisibleFocus()
+	copyResultButton.SetCallback(func() { onCopy(app, true) })
+	copyPrevResultButton := fltk.NewButton(0, wsize, wsize, BUTTON_HEIGHT,
+		"Copy &Prev. Result")
+	copyPrevResultButton.SetTooltip(
+		"Copy the Previous Result to the Clipboard")
+	copyPrevResultButton.ClearVisibleFocus()
+	copyPrevResultButton.SetCallback(func() { onCopy(app, false) })
+	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0, width-(PAD+(2*wsize)),
+		BUTTON_HEIGHT)
+	hbox.End()
+
 	app.calcInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.calcInput.SetCallback(func() {
-		nextVarName = onCalc(calcEnv, calcView, app.calcInput,
-			app.calcCopyResultCheckbutton, nextVarName)
+		nextVarName = onCalc(app, calcEnv, calcView, nextVarName)
 	})
 	vbox.End()
 	vbox.Resizable(calcView) // TODO Doesn't work: need Flex
@@ -42,8 +57,7 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	app.calcInput.TakeFocus()
 }
 
-func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
-	calcInput *fltk.Input, calcCopyResultCheckbutton *fltk.CheckButton,
+func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	nextVarName string) string {
 	userVarNames := gset.New[string]()
 	autoVar := true
@@ -51,7 +65,7 @@ func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 	var text string
 	var err error
 	varName, expression, err := getVarNameAndExpression(userVarNames,
-		calcInput.Value())
+		app.calcInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
@@ -66,9 +80,8 @@ func onCalc(calcEnv eval.Env, calcView *fltk.HelpView,
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName, nextVarName = calculate(varName, nextVarName,
-			expression, autoVar, calcCopyResultCheckbutton, calcEnv,
-			userVarNames)
+		text, varName, nextVarName = calculate(app, varName, nextVarName,
+			expression, autoVar, calcEnv, userVarNames)
 	}
 	populateView(varName, text, calcEnv, calcView)
 	return nextVarName
@@ -90,9 +103,9 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
 }
 
-func calculate(varName, nextVarName, expression string, autoVar bool,
-	calcCopyResultCheckbutton *fltk.CheckButton, calcEnv eval.Env,
-	userVarNames gset.Set[string]) (string, string, string) {
+func calculate(app *App, varName, nextVarName, expression string,
+	autoVar bool, calcEnv eval.Env, userVarNames gset.Set[string]) (string,
+	string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -114,9 +127,8 @@ func calculate(varName, nextVarName, expression string, autoVar bool,
 			text = fmt.Sprintf(
 				"<font face=sans color=green>%s = %s → <b>%g</b></font>",
 				varName, expression, value)
-			if calcCopyResultCheckbutton.Value() {
-				fltk.CopyToClipboard(fmt.Sprintf("%g", value))
-			}
+			app.calcPrevResult = app.calcResult
+			app.calcResult = value
 		}
 	}
 	return text, varName, nextVarName
@@ -162,6 +174,14 @@ func populateView(varName, text string, calcEnv eval.Env,
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
 	calcView.SetValue(textBuilder.String())
+}
+
+func onCopy(app *App, current bool) {
+	result := app.calcResult
+	if !current {
+		result = app.calcPrevResult
+	}
+	fltk.CopyToClipboard(fmt.Sprintf("%g", result))
 }
 
 const (

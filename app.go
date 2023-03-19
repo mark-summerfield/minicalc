@@ -9,22 +9,23 @@ import (
 
 type App struct {
 	*fltk.Window
-	config                    *Config
-	tabs                      *fltk.Tabs
-	calcInput                 *fltk.Input
-	calcCopyResultCheckbutton *fltk.CheckButton
-	regexInput                *fltk.Input
+	config         *Config
+	tabs           *fltk.Tabs
+	calcInput      *fltk.Input
+	calcResult     float64
+	calcPrevResult float64
+	regexInput     *fltk.Input
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
 	if fltk.EventType() == fltk.CLOSE ||
 		(fltk.EventType() == fltk.KEY && fltk.EventKey() == fltk.ESCAPE) {
-		me.save()
+		me.onQuit()
 	}
 	return false
 }
 
-func (me *App) save() {
+func (me *App) onQuit() {
 	me.config.X = me.Window.X()
 	me.config.Y = me.Window.Y()
 	me.config.Width = me.Window.W()

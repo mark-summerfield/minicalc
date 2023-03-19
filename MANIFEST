@@ -1,7 +1,4 @@
-# TODO delete Copy ... Clipboard checkbox & replace with hbox Pack & two
-# buttons: [Copy &Result] [&Copy v] the latter a pop-up menu a-z of
-# vars. -OR- One [Copy v] button with dynamic menu of last 7 results?
-# TODO add support for hex, i.e., 0xFF and hex(expr) ?
+# TODO add support for hex, i.e., 0xFF ?
 # TODO Regex
 # TODO CPU/RAM
 

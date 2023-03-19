@@ -13,6 +13,8 @@ var Version string
 const (
 	APPNAME       = "MiniCalc"
 	BUTTON_HEIGHT = 32
+	LABEL_WIDTH   = 60
+	PAD           = 3
 
 	CALCULATOR_TAB = 0
 	REGEX_TAB      = 1
