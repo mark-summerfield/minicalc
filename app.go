@@ -9,12 +9,11 @@ import (
 
 type App struct {
 	*fltk.Window
-	config         *Config
-	tabs           *fltk.Tabs
-	calcInput      *fltk.Input
-	calcResult     float64
-	calcPrevResult float64
-	regexInput     *fltk.Input
+	config     *Config
+	tabs       *fltk.Tabs
+	calcInput  *fltk.Input
+	calcResult float64
+	regexInput *fltk.Input
 }
 
 func (me *App) onEvent(event fltk.Event) bool {

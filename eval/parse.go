@@ -1,3 +1,5 @@
+// Modifications Copyright © 2023 Mark Summerfield. All rights reserved.
+// License: GPL-3
 // Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
 // License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
@@ -69,7 +71,8 @@ func Parse(input string) (_ Expr, err error) {
 	}()
 	lex := new(lexer)
 	lex.scan.Init(strings.NewReader(input))
-	lex.scan.Mode = scanner.ScanIdents | scanner.ScanInts | scanner.ScanFloats
+	lex.scan.Mode = scanner.ScanIdents | scanner.ScanInts |
+		scanner.ScanFloats
 	lex.next() // initial lookahead
 	e := parseExpr(lex)
 	if lex.token != scanner.EOF {
@@ -138,7 +141,19 @@ func parsePrimary(lex *lexer) Expr {
 		return call{id, args}
 
 	case scanner.Int, scanner.Float:
-		f, err := strconv.ParseFloat(lex.text(), 64)
+		var f float64
+		var err error
+		text := strings.ToLower(lex.text())
+		if strings.HasPrefix(text, "0x") || strings.HasPrefix(text, "0o") ||
+			strings.HasPrefix(text, "0b") {
+			var i int64
+			i, err = strconv.ParseInt(text, 0, 64)
+			if err == nil {
+				f = float64(i)
+			}
+		} else {
+			f, err = strconv.ParseFloat(text, 64)
+		}
 		if err != nil {
 			panic(lexPanic(err.Error()))
 		}

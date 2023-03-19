@@ -1,3 +1,5 @@
+// Modifications Copyright © 2023 Mark Summerfield. All rights reserved.
+// License: GPL-3
 // Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
 // License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
@@ -35,7 +37,7 @@ func (me binary) Check(vars map[Var]bool) error {
 }
 
 func (me call) Check(vars map[Var]bool) error {
-	arity, ok := numParams[me.fn]
+	arity, ok := arityForFunc[me.fn]
 	if !ok {
 		return fmt.Errorf("unknown function %q", me.fn)
 	}
@@ -51,4 +53,4 @@ func (me call) Check(vars map[Var]bool) error {
 	return nil
 }
 
-var numParams = map[string]int{"pow": 2, "sin": 1, "sqrt": 1}
+var arityForFunc = map[string]int{"pow": 2, "sin": 1, "sqrt": 1}

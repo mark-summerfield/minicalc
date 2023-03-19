@@ -9,6 +9,7 @@ import (
 	"math"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/mark-summerfield/gong"
 	"github.com/mark-summerfield/gset"
@@ -45,15 +46,14 @@ func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
 	wsize := (LABEL_WIDTH * 3) - (LABEL_WIDTH / 2)
 	makeCopyButton(app, calcEnv, 0, 0, wsize, BUTTON_HEIGHT,
 		"Copy &Result", "Copy the Result to the Clipboard", COPY_RESULT)
-	makeCopyButton(app, calcEnv, 0, wsize, wsize, BUTTON_HEIGHT,
-		"Copy &Prev. Result", "Copy the Previous Result to the Clipboard",
-		COPY_PREV_RESULT)
 	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
 		BUTTON_HEIGHT, "Copy &a", "Copy a's value to the Clipboard", COPY_A)
 	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
 		BUTTON_HEIGHT, "Copy &b", "Copy b's value to the Clipboard", COPY_B)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
+		BUTTON_HEIGHT, "Copy &c", "Copy c's value to the Clipboard", COPY_C)
 	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0,
-		width-((3*PAD)+(2*wsize)+(2*LABEL_WIDTH)), BUTTON_HEIGHT)
+		width-((3*PAD)+wsize+(3*LABEL_WIDTH)), BUTTON_HEIGHT)
 	hbox.End()
 }
 
@@ -132,14 +132,25 @@ func calculate(app *App, varName, nextVarName, expression string,
 			} else {
 				calcEnv[eval.Var(varName)] = value
 			}
-			text = fmt.Sprintf(
-				"<font face=sans color=green>%s = %s → <b>%g</b></font>",
-				varName, expression, value)
-			app.calcPrevResult = app.calcResult
 			app.calcResult = value
+			text = fmt.Sprintf(
+				"<font face=sans color=green>%s = %s → <b>%g</b>%s</font>",
+				varName, expression, value, getResultDetails(value))
 		}
 	}
 	return text, varName, nextVarName
+}
+
+func getResultDetails(value float64) string {
+	var text string
+	if value > 0 && math.Trunc(value) == value {
+		v := int64(value)
+		text += fmt.Sprintf(" • 0x%X", v)
+		if v > 32 && v <= unicode.MaxRune {
+			text += fmt.Sprintf(" • '%c'", v)
+		}
+	}
+	return text
 }
 
 func getNextVarName(calcEnv eval.Env,
@@ -174,9 +185,11 @@ func populateView(varName, text string, calcEnv eval.Env,
 	keys := gong.SortedMapKeys(calcEnv)
 	for _, key := range keys {
 		if string(key) != varName {
+			value := calcEnv[key]
 			textBuilder.WriteString(fmt.Sprintf(
-				"<font face=sans color=blue>%s = %g</font><br>", key,
-				calcEnv[key]))
+				`<font face=sans color=blue>%s = %g</font><font
+				face=sans color=#444>%s</font><br>`, key,
+				value, getResultDetails(value)))
 		}
 	}
 	textBuilder.WriteString(text)
@@ -187,12 +200,12 @@ func populateView(varName, text string, calcEnv eval.Env,
 func onCopy(app *App, calcEnv eval.Env, what CopyWhat) {
 	result := app.calcResult
 	switch what {
-	case COPY_PREV_RESULT:
-		result = app.calcPrevResult
 	case COPY_A:
 		result = calcEnv[eval.Var("a")]
 	case COPY_B:
 		result = calcEnv[eval.Var("b")]
+	case COPY_C:
+		result = calcEnv[eval.Var("c")]
 	}
 	fltk.CopyToClipboard(fmt.Sprintf("%g", result))
 }

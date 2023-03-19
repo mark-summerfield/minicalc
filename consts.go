@@ -40,9 +40,9 @@ type CopyWhat uint8
 
 const (
 	COPY_RESULT CopyWhat = iota
-	COPY_PREV_RESULT
 	COPY_A
 	COPY_B
+	COPY_C
 )
 
 //go:embed images/icon.svg
