@@ -11,15 +11,16 @@ import (
 )
 
 type Config struct {
-	filename    string
-	X           int
-	Y           int
-	Width       int
-	Height      int
-	Scale       float32
-	LastTab     int
-	CustomTitle string
-	CustomHtml  string
+	filename           string
+	X                  int
+	Y                  int
+	Width              int
+	Height             int
+	Scale              float32
+	LastTab            int
+	ShowIntialHelpText bool
+	CustomTitle        string
+	CustomHtml         string
 }
 
 func newConfig() *Config {
@@ -29,7 +30,7 @@ func newConfig() *Config {
 		if err != nil {
 			fmt.Println("newConfig #1", filename, err)
 		} else {
-			config := &Config{filename: filename}
+			config := &Config{filename: filename, ShowIntialHelpText: true}
 			err = cfg.MapTo(config)
 			if err != nil {
 				fmt.Println("newConfig #2", filename, err)
@@ -59,7 +60,7 @@ func newConfig() *Config {
 		}
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
-		Scale:      1.0,
+		Scale: 1.0, ShowIntialHelpText: true,
 		CustomHtml: fmt.Sprintf(customPlaceHolderTemplate, filename)}
 	return config
 }

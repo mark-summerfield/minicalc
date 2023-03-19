@@ -24,7 +24,9 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
-	calcView.SetValue(calcHelpHtml)
+	if app.config.ShowIntialHelpText {
+		calcView.SetValue(calcHelpHtml)
+	}
 	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
 	makeCopyButtons(app, calcEnv, x, y, width, height)

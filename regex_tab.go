@@ -12,7 +12,9 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	regexView := fltk.NewHelpView(x, y, width, height-hoffset)
-	regexView.SetValue(REGEX_HELP_HTML)
+	if app.config.ShowIntialHelpText {
+		regexView.SetValue(REGEX_HELP_HTML)
+	}
 
 	hbox := fltk.NewPack(x, height-hoffset, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
