@@ -26,26 +26,7 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	calcView.SetValue(calcHelpHtml)
 	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
-
-	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.HORIZONTAL)
-	hbox.SetSpacing(PAD)
-	wsize := (LABEL_WIDTH * 3) - (LABEL_WIDTH / 2)
-	copyResultButton := fltk.NewButton(0, 0, wsize, BUTTON_HEIGHT,
-		"Copy &Result")
-	copyResultButton.SetTooltip("Copy the Result to the Clipboard")
-	copyResultButton.ClearVisibleFocus()
-	copyResultButton.SetCallback(func() { onCopy(app, true) })
-	copyPrevResultButton := fltk.NewButton(0, wsize, wsize, BUTTON_HEIGHT,
-		"Copy &Prev. Result")
-	copyPrevResultButton.SetTooltip(
-		"Copy the Previous Result to the Clipboard")
-	copyPrevResultButton.ClearVisibleFocus()
-	copyPrevResultButton.SetCallback(func() { onCopy(app, false) })
-	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0, width-(PAD+(2*wsize)),
-		BUTTON_HEIGHT)
-	hbox.End()
-
+	makeCopyButtons(app, calcEnv, x, y, width, height)
 	app.calcInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.calcInput.SetCallback(func() {
 		nextVarName = onCalc(app, calcEnv, calcView, nextVarName)
@@ -55,6 +36,33 @@ func makeCalculatorTab(app *App, x, y, width, height int) {
 	group.End()
 	group.Resizable(vbox)
 	app.calcInput.TakeFocus()
+}
+
+func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
+	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.HORIZONTAL)
+	hbox.SetSpacing(PAD)
+	wsize := (LABEL_WIDTH * 3) - (LABEL_WIDTH / 2)
+	makeCopyButton(app, calcEnv, 0, 0, wsize, BUTTON_HEIGHT,
+		"Copy &Result", "Copy the Result to the Clipboard", COPY_RESULT)
+	makeCopyButton(app, calcEnv, 0, wsize, wsize, BUTTON_HEIGHT,
+		"Copy &Prev. Result", "Copy the Previous Result to the Clipboard",
+		COPY_PREV_RESULT)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
+		BUTTON_HEIGHT, "Copy &a", "Copy a's value to the Clipboard", COPY_A)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
+		BUTTON_HEIGHT, "Copy &b", "Copy b's value to the Clipboard", COPY_B)
+	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0,
+		width-((3*PAD)+(2*wsize)+(2*LABEL_WIDTH)), BUTTON_HEIGHT)
+	hbox.End()
+}
+
+func makeCopyButton(app *App, calcEnv eval.Env, x, y, width, height int,
+	label, tooltip string, what CopyWhat) {
+	button := fltk.NewButton(x, y, width, height, label)
+	button.SetTooltip(tooltip)
+	button.ClearVisibleFocus()
+	button.SetCallback(func() { onCopy(app, calcEnv, what) })
 }
 
 func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
@@ -176,10 +184,15 @@ func populateView(varName, text string, calcEnv eval.Env,
 	calcView.SetValue(textBuilder.String())
 }
 
-func onCopy(app *App, current bool) {
+func onCopy(app *App, calcEnv eval.Env, what CopyWhat) {
 	result := app.calcResult
-	if !current {
+	switch what {
+	case COPY_PREV_RESULT:
 		result = app.calcPrevResult
+	case COPY_A:
+		result = calcEnv[eval.Var("a")]
+	case COPY_B:
+		result = calcEnv[eval.Var("b")]
 	}
 	fltk.CopyToClipboard(fmt.Sprintf("%g", result))
 }
