@@ -4,16 +4,18 @@
 package main
 
 import (
+	"github.com/mark-summerfield/gset"
 	"github.com/pwiecz/go-fltk"
 )
 
 type App struct {
 	*fltk.Window
-	config     *Config
-	tabs       *fltk.Tabs
-	calcInput  *fltk.Input
-	calcResult float64
-	regexInput *fltk.Input
+	config       *Config
+	tabs         *fltk.Tabs
+	calcInput    *fltk.Input
+	calcResult   float64
+	userVarNames gset.Set[string]
+	regexInput   *fltk.Input
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
@@ -35,7 +37,8 @@ func (me *App) onQuit() {
 }
 
 func newApp(config *Config) *App {
-	app := &App{Window: nil, config: config}
+	app := &App{Window: nil, config: config,
+		userVarNames: gset.New[string]()}
 	app.Window = fltk.NewWindow(config.Width, config.Height)
 	if config.X > -1 && config.Y > -1 {
 		app.Window.SetPosition(config.X, config.Y)

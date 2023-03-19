@@ -69,12 +69,11 @@ func makeCopyButton(app *App, calcEnv eval.Env, x, y, width, height int,
 
 func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	nextVarName string) string {
-	userVarNames := gset.New[string]()
 	autoVar := true
 	deletion := false
 	var text string
 	var err error
-	varName, expression, err := getVarNameAndExpression(userVarNames,
+	varName, expression, err := getVarNameAndExpression(app.userVarNames,
 		app.calcInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
@@ -82,7 +81,7 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 		autoVar = false
 		if expression == "" { // varName=
 			deletion = true
-			delete(userVarNames, varName)
+			delete(app.userVarNames, varName)
 			delete(calcEnv, eval.Var(varName))
 			text = fmt.Sprintf(
 				"<font face=sans color=purple>deleted <b>%s</b></font>",
@@ -91,7 +90,7 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
 		text, varName, nextVarName = calculate(app, varName, nextVarName,
-			expression, autoVar, calcEnv, userVarNames)
+			expression, autoVar, calcEnv)
 	}
 	populateView(varName, text, calcEnv, calcView)
 	return nextVarName
@@ -114,8 +113,7 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 }
 
 func calculate(app *App, varName, nextVarName, expression string,
-	autoVar bool, calcEnv eval.Env, userVarNames gset.Set[string]) (string,
-	string, string) {
+	autoVar bool, calcEnv eval.Env) (string, string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -128,12 +126,10 @@ func calculate(app *App, varName, nextVarName, expression string,
 		} else {
 			value := expr.Eval(calcEnv)
 			if autoVar {
+				nextVarName = getNextVarName(calcEnv, app.userVarNames)
 				varName = nextVarName
-				calcEnv[eval.Var(varName)] = value
-				nextVarName = getNextVarName(calcEnv, userVarNames)
-			} else {
-				calcEnv[eval.Var(varName)] = value
 			}
+			calcEnv[eval.Var(varName)] = value
 			app.calcResult = value
 			text = fmt.Sprintf(
 				"<font face=sans color=green>%s = %s → <b>%g</b>%s</font>",
