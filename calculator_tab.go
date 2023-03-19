@@ -43,7 +43,7 @@ func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
 	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
 	hbox.SetSpacing(PAD)
-	wsize := (LABEL_WIDTH * 3) - (LABEL_WIDTH / 2)
+	wsize := (2 * LABEL_WIDTH) - (LABEL_WIDTH / 2)
 	makeCopyButton(app, calcEnv, 0, 0, wsize, BUTTON_HEIGHT,
 		"Copy &Result", "Copy the Result to the Clipboard", COPY_RESULT)
 	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
