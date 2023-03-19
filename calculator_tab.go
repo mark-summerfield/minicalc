@@ -69,11 +69,12 @@ func makeCopyButton(app *App, calcEnv eval.Env, x, y, width, height int,
 
 func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	nextVarName string) string {
+	userVarNames := gset.New[string]()
 	autoVar := true
 	deletion := false
 	var text string
 	var err error
-	varName, expression, err := getVarNameAndExpression(app.userVarNames,
+	varName, expression, err := getVarNameAndExpression(userVarNames,
 		app.calcInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
@@ -81,7 +82,7 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 		autoVar = false
 		if expression == "" { // varName=
 			deletion = true
-			delete(app.userVarNames, varName)
+			delete(userVarNames, varName)
 			delete(calcEnv, eval.Var(varName))
 			text = fmt.Sprintf(
 				"<font face=sans color=purple>deleted <b>%s</b></font>",
@@ -90,7 +91,7 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
 		text, varName, nextVarName = calculate(app, varName, nextVarName,
-			expression, autoVar, calcEnv)
+			expression, autoVar, calcEnv, userVarNames)
 	}
 	populateView(varName, text, calcEnv, calcView)
 	return nextVarName
@@ -113,7 +114,8 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 }
 
 func calculate(app *App, varName, nextVarName, expression string,
-	autoVar bool, calcEnv eval.Env) (string, string, string) {
+	autoVar bool, calcEnv eval.Env, userVarNames gset.Set[string]) (string,
+	string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -126,7 +128,7 @@ func calculate(app *App, varName, nextVarName, expression string,
 		} else {
 			value := expr.Eval(calcEnv)
 			if autoVar {
-				nextVarName = getNextVarName(calcEnv, app.userVarNames)
+				nextVarName = getNextVarName(calcEnv, userVarNames)
 				varName = nextVarName
 			}
 			calcEnv[eval.Var(varName)] = value
