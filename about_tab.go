@@ -54,7 +54,7 @@ License: GPLv3.</font>
 <center>
 <font face=sans size=4>
 Configuration file: <tt>%s</tt><br>
-(edit to change the Scale or the Custom tab's text)
+(edit to change the Scale, the Custom tab, etc.)
 </font>
 </center>
 </p>
