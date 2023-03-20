@@ -37,7 +37,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 		BUTTON_HEIGHT)
 	textInput.SetValue("scale: 1.15 width=24.5")
 	textLabel.SetCallback(func() { textInput.TakeFocus() })
-	textInput.SetCallbackCondition(fltk.WhenEnterKey)
+	textInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
 
 	vbox.End()
