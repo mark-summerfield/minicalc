@@ -18,10 +18,9 @@ const (
 
 	CALCULATOR_TAB = 0
 	REGEX_TAB      = 1
-	CPU_RAM_TAB    = 2
-	ASCII_TAB      = 3
-	CUSTOM_TAB     = 4
-	ABOUT_TAB      = 5
+	ASCII_TAB      = 2
+	CUSTOM_TAB     = 3
+	ABOUT_TAB      = 4
 
 	errTemplate               = "<font face=sans color=red size=4>Error: %s</font>"
 	customPlaceHolderTemplate = `<font color=navy size=4>

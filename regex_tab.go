@@ -12,7 +12,7 @@ import (
 )
 
 func makeRegexTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&2 Regex")
+	group := fltk.NewGroup(x, y, width, height, "&Regex")
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	regexView := fltk.NewHelpView(x, y, width, height-hoffset)
@@ -22,7 +22,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 
 	hbox := fltk.NewPack(x, height-hoffset, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
-	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Regex")
+	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "R&egex")
 	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
 		BUTTON_HEIGHT)
 	app.regexInput.SetValue(`\s*(\S+)\s*[=:]\s*(\S+)`)

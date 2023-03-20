@@ -4,15 +4,14 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeCustomTab(config *Config, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height,
-		fmt.Sprintf("&5 %s", config.CustomTitle))
+func makeCustomTab(config *Config, x, y, width, height int) *fltk.HelpView {
+	group := fltk.NewGroup(x, y, width, height, config.CustomTitle)
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(config.CustomHtml)
 	group.End()
+	view.TakeFocus()
+	return view
 }

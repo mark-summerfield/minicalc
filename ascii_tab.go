@@ -11,11 +11,13 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeAsciiTab(x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&4 ASCII")
+func makeAsciiTab(x, y, width, height int) *fltk.HelpView {
+	group := fltk.NewGroup(x, y, width, height, "&ASCII")
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(asciiHtml())
 	group.End()
+	view.TakeFocus()
+	return view
 }
 
 func asciiHtml() string {

@@ -1,4 +1,3 @@
-# TODO CPU/RAM
 # TODO calculator_tab: replace Copy buttons with a single dynamically
 # populated Copy menu button
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
@@ -8,7 +7,6 @@ minicalc.go
 app.go
 calculator_tab.go
 regex_tab.go
-cpu_ram_tab.go
 ascii_tab.go
 custom_tab.go
 about_tab.go

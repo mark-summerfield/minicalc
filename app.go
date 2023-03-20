@@ -14,6 +14,8 @@ type App struct {
 	calcInput  *fltk.Input
 	calcResult float64
 	regexInput *fltk.Input
+	asciiView  *fltk.HelpView
+	customView *fltk.HelpView
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
@@ -60,9 +62,9 @@ func addTabs(app *App) {
 	height -= BUTTON_HEIGHT // Allow room for tab
 	makeCalculatorTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
-	makeCpuRamTab(0, BUTTON_HEIGHT, width, height)
-	makeAsciiTab(0, BUTTON_HEIGHT, width, height)
-	makeCustomTab(app.config, 0, BUTTON_HEIGHT, width, height)
+	app.asciiView = makeAsciiTab(0, BUTTON_HEIGHT, width, height)
+	app.customView = makeCustomTab(app.config, 0, BUTTON_HEIGHT, width,
+		height)
 	aboutGroup := makeAboutTab(app.config.filename, 0, BUTTON_HEIGHT, width,
 		height)
 	app.tabs.End()
@@ -76,5 +78,9 @@ func onTab(app *App) {
 		app.calcInput.TakeFocus()
 	case REGEX_TAB:
 		app.regexInput.TakeFocus()
+	case ASCII_TAB:
+		app.asciiView.TakeFocus()
+	case CUSTOM_TAB:
+		app.customView.TakeFocus()
 	}
 }

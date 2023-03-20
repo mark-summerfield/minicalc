@@ -14,7 +14,7 @@ import (
 )
 
 func makeAboutTab(filename string, x, y, width, height int) *fltk.Group {
-	group := fltk.NewGroup(x, y, width, height, "&6 About")
+	group := fltk.NewGroup(x, y, width, height, "A&bout")
 	view := fltk.NewHelpView(x, y, width, height)
 	view.SetValue(aboutHtml(filename))
 	group.End()

@@ -20,7 +20,7 @@ import (
 func makeCalculatorTab(app *App, x, y, width, height int) {
 	nextVarName := "a"
 	calcEnv := eval.Env{"pi": math.Pi}
-	group := fltk.NewGroup(x, y, width, height, "&1 Calculator")
+	group := fltk.NewGroup(x, y, width, height, "&Calculator")
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
@@ -45,15 +45,19 @@ func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
 	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
 	hbox.SetSpacing(PAD)
-	wsize := (2 * LABEL_WIDTH) - (LABEL_WIDTH / 2)
+	wsize := 2 * LABEL_WIDTH
+	hsize := LABEL_WIDTH / 2
 	makeCopyButton(app, calcEnv, 0, 0, wsize, BUTTON_HEIGHT,
-		"Copy &Result", "Copy the Result to the Clipboard", COPY_RESULT)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
-		BUTTON_HEIGHT, "Copy &a", "Copy a's value to the Clipboard", COPY_A)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
-		BUTTON_HEIGHT, "Copy &b", "Copy b's value to the Clipboard", COPY_B)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH,
-		BUTTON_HEIGHT, "Copy &c", "Copy c's value to the Clipboard", COPY_C)
+		"&0 Copy Result", "Copy the Result to the Clipboard", COPY_RESULT)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+		BUTTON_HEIGHT, "&1 Copy a", "Copy a's value to the Clipboard",
+		COPY_A)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+		BUTTON_HEIGHT, "&2 Copy b", "Copy b's value to the Clipboard",
+		COPY_B)
+	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+		BUTTON_HEIGHT, "&3 Copy c", "Copy c's value to the Clipboard",
+		COPY_C)
 	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0,
 		width-((3*PAD)+wsize+(3*LABEL_WIDTH)), BUTTON_HEIGHT)
 	hbox.End()
@@ -184,13 +188,15 @@ func populateView(varName, text string, calcEnv eval.Env,
 	textBuilder.WriteString("<font face=sans size=4>")
 	keys := gong.SortedMapKeys(calcEnv)
 	for _, key := range keys {
-		if string(key) != varName {
-			value := calcEnv[key]
-			textBuilder.WriteString(fmt.Sprintf(
-				`<font face=sans color=blue>%s = %g</font><font
-				face=sans color=#444>%s</font><br>`, key,
-				value, getResultDetails(value)))
+		bs, be := "", ""
+		if string(key) == varName {
+			bs, be = "<b>", "</b>"
 		}
+		value := calcEnv[key]
+		textBuilder.WriteString(fmt.Sprintf(
+			`<font face=sans color=blue>%s%s%s = %g</font><font
+				face=sans color=#444>%s</font><br>`, bs, key, be,
+			value, getResultDetails(value)))
 	}
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
