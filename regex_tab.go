@@ -25,9 +25,9 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Regex")
 	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
 		BUTTON_HEIGHT)
-	app.regexInput.SetValue(`^\s*(\S+)\s*[=:]\s*(.*)$`)
+	app.regexInput.SetValue(`\s*(\S+)\s*[=:]\s*(\S+)`)
 	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
-	app.regexInput.SetCallbackCondition(fltk.WhenEnterKey)
+	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
 
 	hbox = fltk.NewPack(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
@@ -35,7 +35,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	textLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Text")
 	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
 		BUTTON_HEIGHT)
-	textInput.SetValue("scale: 1.15")
+	textInput.SetValue("scale: 1.15 width=24.5")
 	textLabel.SetCallback(func() { textInput.TakeFocus() })
 	textInput.SetCallbackCondition(fltk.WhenEnterKey)
 	hbox.End()
@@ -48,7 +48,9 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	callback := func() { onRegex(app.regexInput, textInput, regexView) }
 	app.regexInput.SetCallback(callback)
 	textInput.SetCallback(callback)
-	onRegex(app.regexInput, textInput, regexView)
+	if !app.config.ShowIntialHelpText {
+		onRegex(app.regexInput, textInput, regexView)
+	}
 	app.regexInput.TakeFocus()
 }
 
@@ -62,43 +64,50 @@ func onRegex(regexInput, textInput *fltk.Input, regexView *fltk.HelpView) {
 		} else {
 			empty := true
 			var textBuilder strings.Builder
-			textBuilder.WriteString("<font face=sans size=4>")
+			textBuilder.WriteString("<font color=blue face=sans size=4>")
 			if rx.MatchString(text) {
-				textBuilder.WriteString(
-					"<tt>MatchString(text)</tt> → true<br>")
+				textBuilder.WriteString(`<tt>MatchString(text)</tt> → <font
+					color=green>true</font><br>`)
+				empty = false
+			}
+			match := rx.FindString(text)
+			if match != "" {
+				textBuilder.WriteString(fmt.Sprintf(
+					`<tt>FindString(text) → <font color=green>%q
+					</font></tt><br>`, match))
 				empty = false
 			}
 			header := false
 			for i, match := range rx.FindAllString(text, -1) {
 				if !header {
-					textBuilder.WriteString(
-						"<tt>FindAllString(text, -1)</tt><br>")
+					textBuilder.WriteString(`<tt>FindAllString(text,
+					-1)</tt> → <tt>[]string</tt><br>`)
 					header = true
 					empty = false
 				}
 				textBuilder.WriteString(fmt.Sprintf(
-					"&nbsp;&nbsp;Found #%d: <tt>%q</tt><br>", i, match))
+					`&nbsp;&nbsp;&nbsp;&nbsp;[%d] =
+					<font color=green><tt>%q</tt></font><br>`, i, match))
 			}
 			header = false
 			for i, matches := range rx.FindAllStringSubmatch(text, -1) {
 				if !header {
-					textBuilder.WriteString(
-						"<tt>FindAllStringSubmatch(text, -1)</tt><br>")
+					textBuilder.WriteString(`<tt>FindAllStringSubmatch(text,
+					-1)</tt> → <tt>[][]string</tt><br>`)
 					header = true
 					empty = false
 				}
-				textBuilder.WriteString(fmt.Sprintf(
-					"&nbsp;&nbsp;Submatch #%d<br>", i))
 				for j, match := range matches {
 					textBuilder.WriteString(fmt.Sprintf(
-						`&nbsp;&nbsp;&nbsp;&nbsp;Found #%d:
-						<tt>%q</tt><br>`, j, match))
+						`&nbsp;&nbsp;&nbsp;&nbsp;[%d][%d] =
+						<font color=green><tt>%q</tt></font><br>`, i, j,
+						match))
 				}
 			}
 			textBuilder.WriteString("</font>")
 			output := textBuilder.String()
 			if empty {
-				output = `<font face=sans size=4>Valid regex does
+				output = `<font color=navy face=sans size=4>Valid regex does
 				<i>not</i> match the text.</font>`
 			}
 			regexView.SetValue(output)
@@ -107,4 +116,4 @@ func onRegex(regexInput, textInput *fltk.Input, regexView *fltk.HelpView) {
 }
 
 const REGEX_HELP_HTML = `<p><font face=sans size=4>Type a regular
-expression and some text to test it on and press Enter.</font></p>` // TODO complete
+expression and some text to test it on and press Enter.</font></p>`
