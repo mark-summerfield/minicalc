@@ -23,6 +23,7 @@ const (
 	CUSTOM_TAB     = 4
 	ABOUT_TAB      = 5
 
+	errTemplate               = "<font face=sans color=red size=4>Error: %s</font>"
 	customPlaceHolderTemplate = `<font color=navy size=4>
 To add custom content add</font>
 <p><font size=4

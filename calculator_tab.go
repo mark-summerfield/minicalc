@@ -211,7 +211,6 @@ func onCopy(app *App, calcEnv eval.Env, what CopyWhat) {
 }
 
 const (
-	errTemplate  = "<font face=sans color=red>Error: %s</font>"
 	calcHelpHtml = `<p><font face=sans size=4>Type an expression and press
 Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
 <p><font face=sans size=4>Results are automatically assigned to successive
