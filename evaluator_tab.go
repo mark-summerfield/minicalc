@@ -23,35 +23,28 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	evalEnv := eval.Env{"pi": math.Pi}
 	group := fltk.NewGroup(x, y, width, height, "E&valuator")
 	vbox := fltk.NewPack(x, y, width, height)
-	hoffset := 2 * BUTTON_HEIGHT
-	evalView := fltk.NewHelpView(x, y, width, height-hoffset)
+	evalView := fltk.NewHelpView(x, y, width, height-BUTTON_HEIGHT)
 	if app.config.ShowIntialHelpText {
 		evalView.SetValue(evalHelpHtml)
 	}
-	app.evalInput = fltk.NewInput(x, y+height-hoffset, width,
-		BUTTON_HEIGHT)
-	makeCopyButton(app, evalEnv, x, y, width, height)
+	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.HORIZONTAL)
+	app.evalInput = fltk.NewInput(x, y+height-BUTTON_HEIGHT,
+		width-LABEL_WIDTH, BUTTON_HEIGHT)
+	app.evalCopyButton = fltk.NewMenuButton(x, y+height-BUTTON_HEIGHT,
+		LABEL_WIDTH, BUTTON_HEIGHT, "&Copy")
+	app.evalCopyButton.ClearVisibleFocus()
+	app.evalCopyButton.Deactivate()
 	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.evalInput.SetCallback(func() {
 		nextVarName = onEval(app, evalEnv, evalView, nextVarName)
 	})
+	hbox.End()
 	vbox.End()
 	vbox.Resizable(evalView) // TODO Doesn't work: need Flex
 	group.End()
 	group.Resizable(vbox)
 	app.evalInput.TakeFocus()
-}
-
-func makeCopyButton(app *App, evalEnv eval.Env, x, y, width, height int) {
-	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.HORIZONTAL)
-	app.evalCopyButton = fltk.NewMenuButton(x, y, LABEL_WIDTH,
-		BUTTON_HEIGHT, "&Copy")
-	app.evalCopyButton.ClearVisibleFocus()
-	app.evalCopyButton.Deactivate()
-	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0, width-LABEL_WIDTH,
-		BUTTON_HEIGHT)
-	hbox.End()
 }
 
 func onEval(app *App, evalEnv eval.Env, evalView *fltk.HelpView,
