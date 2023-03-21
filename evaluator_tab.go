@@ -17,45 +17,45 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeCalculatorTab(app *App, x, y, width, height int) {
+func makeEvaluatorTab(app *App, x, y, width, height int) {
 	nextVarName := "a"
-	calcEnv := eval.Env{"pi": math.Pi}
-	group := fltk.NewGroup(x, y, width, height, "&Calculator")
+	evalEnv := eval.Env{"pi": math.Pi}
+	group := fltk.NewGroup(x, y, width, height, "E&valuator")
 	vbox := fltk.NewPack(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
-	calcView := fltk.NewHelpView(x, y, width, height-hoffset)
+	evalView := fltk.NewHelpView(x, y, width, height-hoffset)
 	if app.config.ShowIntialHelpText {
-		calcView.SetValue(calcHelpHtml)
+		evalView.SetValue(evalHelpHtml)
 	}
-	app.calcInput = fltk.NewInput(x, y+height-hoffset, width,
+	app.evalInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
-	makeCopyButtons(app, calcEnv, x, y, width, height)
-	app.calcInput.SetCallbackCondition(fltk.WhenEnterKey)
-	app.calcInput.SetCallback(func() {
-		nextVarName = onCalc(app, calcEnv, calcView, nextVarName)
+	makeCopyButtons(app, evalEnv, x, y, width, height)
+	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
+	app.evalInput.SetCallback(func() {
+		nextVarName = onEval(app, evalEnv, evalView, nextVarName)
 	})
 	vbox.End()
-	vbox.Resizable(calcView) // TODO Doesn't work: need Flex
+	vbox.Resizable(evalView) // TODO Doesn't work: need Flex
 	group.End()
 	group.Resizable(vbox)
-	app.calcInput.TakeFocus()
+	app.evalInput.TakeFocus()
 }
 
-func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
+func makeCopyButtons(app *App, evalEnv eval.Env, x, y, width, height int) {
 	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
 	hbox.SetSpacing(PAD)
 	wsize := 2 * LABEL_WIDTH
 	hsize := LABEL_WIDTH / 2
-	makeCopyButton(app, calcEnv, 0, 0, wsize, BUTTON_HEIGHT,
+	makeCopyButton(app, evalEnv, 0, 0, wsize, BUTTON_HEIGHT,
 		"&0 Copy Result", "Copy the Result to the Clipboard", COPY_RESULT)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
 		BUTTON_HEIGHT, "&1 Copy a", "Copy a's value to the Clipboard",
 		COPY_A)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
 		BUTTON_HEIGHT, "&2 Copy b", "Copy b's value to the Clipboard",
 		COPY_B)
-	makeCopyButton(app, calcEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
+	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
 		BUTTON_HEIGHT, "&3 Copy c", "Copy c's value to the Clipboard",
 		COPY_C)
 	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0,
@@ -63,15 +63,15 @@ func makeCopyButtons(app *App, calcEnv eval.Env, x, y, width, height int) {
 	hbox.End()
 }
 
-func makeCopyButton(app *App, calcEnv eval.Env, x, y, width, height int,
+func makeCopyButton(app *App, evalEnv eval.Env, x, y, width, height int,
 	label, tooltip string, what CopyWhat) {
 	button := fltk.NewButton(x, y, width, height, label)
 	button.SetTooltip(tooltip)
 	button.ClearVisibleFocus()
-	button.SetCallback(func() { onCopy(app, calcEnv, what) })
+	button.SetCallback(func() { onCopy(app, evalEnv, what) })
 }
 
-func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
+func onEval(app *App, evalEnv eval.Env, evalView *fltk.HelpView,
 	nextVarName string) string {
 	userVarNames := gset.New[string]()
 	autoVar := true
@@ -79,7 +79,7 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 	var text string
 	var err error
 	varName, expression, err := getVarNameAndExpression(userVarNames,
-		app.calcInput.Value())
+		app.evalInput.Value())
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
@@ -87,17 +87,17 @@ func onCalc(app *App, calcEnv eval.Env, calcView *fltk.HelpView,
 		if expression == "" { // varName=
 			deletion = true
 			delete(userVarNames, varName)
-			delete(calcEnv, eval.Var(varName))
+			delete(evalEnv, eval.Var(varName))
 			text = fmt.Sprintf(
 				"<font face=sans color=purple>deleted <b>%s</b></font>",
 				varName)
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName, nextVarName = calculate(app, varName, nextVarName,
-			expression, autoVar, calcEnv, userVarNames)
+		text, varName, nextVarName = evaluate(app, varName, nextVarName,
+			expression, autoVar, evalEnv, userVarNames)
 	}
-	populateView(varName, text, calcEnv, calcView)
+	populateView(varName, text, evalEnv, evalView)
 	return nextVarName
 }
 
@@ -117,8 +117,8 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
 }
 
-func calculate(app *App, varName, nextVarName, expression string,
-	autoVar bool, calcEnv eval.Env, userVarNames gset.Set[string]) (string,
+func evaluate(app *App, varName, nextVarName, expression string,
+	autoVar bool, evalEnv eval.Env, userVarNames gset.Set[string]) (string,
 	string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
@@ -130,13 +130,13 @@ func calculate(app *App, varName, nextVarName, expression string,
 			text = fmt.Sprintf(errTemplate, html.EscapeString(
 				err.Error()))
 		} else {
-			value := expr.Eval(calcEnv)
+			value := expr.Eval(evalEnv)
 			if autoVar {
-				nextVarName = getNextVarName(calcEnv, userVarNames)
+				nextVarName = getNextVarName(evalEnv, userVarNames)
 				varName = nextVarName
 			}
-			calcEnv[eval.Var(varName)] = value
-			app.calcResult = value
+			evalEnv[eval.Var(varName)] = value
+			app.evalResult = value
 			text = fmt.Sprintf(
 				"<font face=sans color=green>%s = %s → <b>%g</b>%s</font>",
 				varName, expression, value, getResultDetails(value))
@@ -157,14 +157,14 @@ func getResultDetails(value float64) string {
 	return text
 }
 
-func getNextVarName(calcEnv eval.Env,
+func getNextVarName(evalEnv eval.Env,
 	userVarNames gset.Set[string]) string {
 	for i := 'a'; i <= 'z'; i++ {
 		varName := string(i)
 		if userVarNames.Contains(varName) {
 			continue
 		}
-		if _, found := calcEnv[eval.Var(varName)]; !found {
+		if _, found := evalEnv[eval.Var(varName)]; !found {
 			return varName
 		}
 	}
@@ -174,7 +174,7 @@ func getNextVarName(calcEnv eval.Env,
 			if userVarNames.Contains(varName) {
 				continue
 			}
-			if _, found := calcEnv[eval.Var(varName)]; !found {
+			if _, found := evalEnv[eval.Var(varName)]; !found {
 				return varName
 			}
 		}
@@ -182,17 +182,17 @@ func getNextVarName(calcEnv eval.Env,
 	panic("can't cope with more than 700 variables")
 }
 
-func populateView(varName, text string, calcEnv eval.Env,
-	calcView *fltk.HelpView) {
+func populateView(varName, text string, evalEnv eval.Env,
+	evalView *fltk.HelpView) {
 	var textBuilder strings.Builder
 	textBuilder.WriteString("<font face=sans size=4>")
-	keys := gong.SortedMapKeys(calcEnv)
+	keys := gong.SortedMapKeys(evalEnv)
 	for _, key := range keys {
 		bs, be := "", ""
 		if string(key) == varName {
 			bs, be = "<b>", "</b>"
 		}
-		value := calcEnv[key]
+		value := evalEnv[key]
 		textBuilder.WriteString(fmt.Sprintf(
 			`<font face=sans color=blue>%s%s%s = %g</font><font
 				face=sans color=#444>%s</font><br>`, bs, key, be,
@@ -200,24 +200,24 @@ func populateView(varName, text string, calcEnv eval.Env,
 	}
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
-	calcView.SetValue(textBuilder.String())
+	evalView.SetValue(textBuilder.String())
 }
 
-func onCopy(app *App, calcEnv eval.Env, what CopyWhat) {
-	result := app.calcResult
+func onCopy(app *App, evalEnv eval.Env, what CopyWhat) {
+	result := app.evalResult
 	switch what {
 	case COPY_A:
-		result = calcEnv[eval.Var("a")]
+		result = evalEnv[eval.Var("a")]
 	case COPY_B:
-		result = calcEnv[eval.Var("b")]
+		result = evalEnv[eval.Var("b")]
 	case COPY_C:
-		result = calcEnv[eval.Var("c")]
+		result = evalEnv[eval.Var("c")]
 	}
 	fltk.CopyToClipboard(fmt.Sprintf("%g", result))
 }
 
 const (
-	calcHelpHtml = `<p><font face=sans size=4>Type an expression and press
+	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
 Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
 <p><font face=sans size=4>Results are automatically assigned to successive
 variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with

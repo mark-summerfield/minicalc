@@ -5,7 +5,7 @@
 
 minicalc.go
 app.go
-calculator_tab.go
+evaluator_tab.go
 regex_tab.go
 ascii_tab.go
 custom_tab.go

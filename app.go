@@ -11,8 +11,8 @@ type App struct {
 	*fltk.Window
 	config     *Config
 	tabs       *fltk.Tabs
-	calcInput  *fltk.Input
-	calcResult float64
+	evalInput  *fltk.Input
+	evalResult float64
 	regexInput *fltk.Input
 	asciiView  *fltk.HelpView
 	customView *fltk.HelpView
@@ -60,7 +60,7 @@ func addTabs(app *App) {
 	app.tabs.SetCallbackCondition(fltk.WhenChanged)
 	app.tabs.SetCallback(func() { onTab(app) })
 	height -= BUTTON_HEIGHT // Allow room for tab
-	makeCalculatorTab(app, 0, BUTTON_HEIGHT, width, height)
+	makeEvaluatorTab(app, 0, BUTTON_HEIGHT, width, height)
 	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
 	app.asciiView = makeAsciiTab(0, BUTTON_HEIGHT, width, height)
 	app.customView = makeCustomTab(app.config, 0, BUTTON_HEIGHT, width,
@@ -75,7 +75,7 @@ func addTabs(app *App) {
 func onTab(app *App) {
 	switch app.tabs.Value() {
 	case CALCULATOR_TAB:
-		app.calcInput.TakeFocus()
+		app.evalInput.TakeFocus()
 	case REGEX_TAB:
 		app.regexInput.TakeFocus()
 	case ASCII_TAB:
