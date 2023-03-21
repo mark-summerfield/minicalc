@@ -1,6 +1,5 @@
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
 # textInput with Choice's which show prev 7 entries.
-# TODO scroll evalView to the bottom once scroll bars are needed
 
 minicalc.go
 app.go
@@ -28,5 +27,8 @@ minicalc.ini
 go.mod
 
 st.sh
+
+# TODO scroll evalView to the bottom once scroll bars are needed (if
+# this becomes possible)
 
 # vim: syn=yaml

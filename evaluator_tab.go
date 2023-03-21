@@ -27,12 +27,13 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	if app.config.ShowIntialHelpText {
 		evalView.SetValue(evalHelpHtml)
 	}
+	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
 	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
 	app.evalInput = fltk.NewInput(x, y+height-BUTTON_HEIGHT,
-		width-LABEL_WIDTH, BUTTON_HEIGHT)
+		width-BUTTON_WIDTH, BUTTON_HEIGHT)
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-BUTTON_HEIGHT,
-		LABEL_WIDTH, BUTTON_HEIGHT, "&Copy")
+		BUTTON_WIDTH, BUTTON_HEIGHT, "&Copy")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
