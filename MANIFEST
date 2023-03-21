@@ -1,5 +1,6 @@
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
 # textInput with Choice's which show prev 7 entries.
+# Then comment on: https://github.com/pwiecz/go-fltk/issues/60
 
 minicalc.go
 app.go
@@ -27,8 +28,5 @@ minicalc.ini
 go.mod
 
 st.sh
-
-# TODO scroll evalView to the bottom once scroll bars are needed (if
-# this becomes possible)
 
 # vim: syn=yaml
