@@ -186,6 +186,7 @@ func populateView(varName, text string, evalEnv eval.Env,
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
 	evalView.SetValue(textBuilder.String())
+	evalView.SetAlign(fltk.ALIGN_BOTTOM)
 }
 
 func updateEvalCopyButton(app *App) {
