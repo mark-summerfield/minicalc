@@ -1,5 +1,3 @@
-# TODO calculator_tab: replace Copy buttons with a single dynamically
-# populated Copy menu button
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
 # textInput with Choice's which show prev 7 entries.
 

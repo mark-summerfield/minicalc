@@ -11,6 +11,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/mark-summerfield/accelhint"
 	"github.com/mark-summerfield/gong"
 	"github.com/mark-summerfield/gset"
 	"github.com/mark-summerfield/minicalc/eval"
@@ -29,7 +30,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	}
 	app.evalInput = fltk.NewInput(x, y+height-hoffset, width,
 		BUTTON_HEIGHT)
-	makeCopyButtons(app, evalEnv, x, y, width, height)
+	makeCopyButton(app, evalEnv, x, y, width, height)
 	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.evalInput.SetCallback(func() {
 		nextVarName = onEval(app, evalEnv, evalView, nextVarName)
@@ -41,34 +42,16 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	app.evalInput.TakeFocus()
 }
 
-func makeCopyButtons(app *App, evalEnv eval.Env, x, y, width, height int) {
+func makeCopyButton(app *App, evalEnv eval.Env, x, y, width, height int) {
 	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.HORIZONTAL)
-	hbox.SetSpacing(PAD)
-	wsize := 2 * LABEL_WIDTH
-	hsize := LABEL_WIDTH / 2
-	makeCopyButton(app, evalEnv, 0, 0, wsize, BUTTON_HEIGHT,
-		"&0 Copy Result", "Copy the Result to the Clipboard", COPY_RESULT)
-	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
-		BUTTON_HEIGHT, "&1 Copy a", "Copy a's value to the Clipboard",
-		COPY_A)
-	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
-		BUTTON_HEIGHT, "&2 Copy b", "Copy b's value to the Clipboard",
-		COPY_B)
-	makeCopyButton(app, evalEnv, 0, wsize+LABEL_WIDTH, LABEL_WIDTH+hsize,
-		BUTTON_HEIGHT, "&3 Copy c", "Copy c's value to the Clipboard",
-		COPY_C)
-	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0,
-		width-((3*PAD)+wsize+(3*LABEL_WIDTH)), BUTTON_HEIGHT)
+	app.evalCopyButton = fltk.NewMenuButton(x, y, LABEL_WIDTH,
+		BUTTON_HEIGHT, "&Copy")
+	app.evalCopyButton.ClearVisibleFocus()
+	app.evalCopyButton.Deactivate()
+	fltk.NewBox(fltk.NO_BOX, LABEL_WIDTH, 0, width-LABEL_WIDTH,
+		BUTTON_HEIGHT)
 	hbox.End()
-}
-
-func makeCopyButton(app *App, evalEnv eval.Env, x, y, width, height int,
-	label, tooltip string, what CopyWhat) {
-	button := fltk.NewButton(x, y, width, height, label)
-	button.SetTooltip(tooltip)
-	button.ClearVisibleFocus()
-	button.SetCallback(func() { onCopy(app, evalEnv, what) })
 }
 
 func onEval(app *App, evalEnv eval.Env, evalView *fltk.HelpView,
@@ -136,7 +119,9 @@ func evaluate(app *App, varName, nextVarName, expression string,
 				varName = nextVarName
 			}
 			evalEnv[eval.Var(varName)] = value
-			app.evalResult = value
+			app.evalResults = append(app.evalResults,
+				EvalResult{varName, value})
+			updateEvalCopyButton(app)
 			text = fmt.Sprintf(
 				"<font face=sans color=green>%s = %s → <b>%g</b>%s</font>",
 				varName, expression, value, getResultDetails(value))
@@ -203,21 +188,44 @@ func populateView(varName, text string, evalEnv eval.Env,
 	evalView.SetValue(textBuilder.String())
 }
 
-func onCopy(app *App, evalEnv eval.Env, what CopyWhat) {
-	result := app.evalResult
-	switch what {
-	case COPY_A:
-		result = evalEnv[eval.Var("a")]
-	case COPY_B:
-		result = evalEnv[eval.Var("b")]
-	case COPY_C:
-		result = evalEnv[eval.Var("c")]
+func updateEvalCopyButton(app *App) {
+	if len(app.evalResults) > maxCopyResults {
+		app.evalResults = app.evalResults[len(app.evalResults)-
+			maxCopyResults:]
 	}
-	fltk.CopyToClipboard(fmt.Sprintf("%g", result))
+	for i := app.evalCopyButton.Size() - 1; i >= 0; i-- {
+		app.evalCopyButton.Remove(i)
+	}
+	varNames := make([]string, 0, len(app.evalResults))
+	for _, evalResult := range app.evalResults {
+		varNames = append(varNames, evalResult.varName)
+	}
+	hinted, _, err := accelhint.Hinted(varNames)
+	for i, evalResult := range app.evalResults {
+		varName := evalResult.varName
+		if err == nil {
+			varName = hinted[i]
+		}
+		value := evalResult.value
+		app.evalCopyButton.AddEx(fmt.Sprintf(
+			"%s = %g", varName, value), 0,
+			func() { fltk.CopyToClipboard(fmt.Sprintf("%g", value)) }, 0)
+	}
+	if app.evalCopyButton.Size() > 0 {
+		app.evalCopyButton.Activate()
+	} else {
+		app.evalCopyButton.Deactivate()
+	}
+}
+
+type EvalResult struct {
+	varName string
+	value   float64
 }
 
 const (
-	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
+	maxCopyResults = 11
+	evalHelpHtml   = `<p><font face=sans size=4>Type an expression and press
 Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
 <p><font face=sans size=4>Results are automatically assigned to successive
 variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with

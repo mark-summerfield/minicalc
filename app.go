@@ -9,13 +9,14 @@ import (
 
 type App struct {
 	*fltk.Window
-	config     *Config
-	tabs       *fltk.Tabs
-	evalInput  *fltk.Input
-	evalResult float64
-	regexInput *fltk.Input
-	asciiView  *fltk.HelpView
-	customView *fltk.HelpView
+	config         *Config
+	tabs           *fltk.Tabs
+	evalInput      *fltk.Input
+	evalResults    []EvalResult
+	evalCopyButton *fltk.MenuButton
+	regexInput     *fltk.Input
+	asciiView      *fltk.HelpView
+	customView     *fltk.HelpView
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
@@ -37,7 +38,8 @@ func (me *App) onQuit() {
 }
 
 func newApp(config *Config) *App {
-	app := &App{Window: nil, config: config}
+	app := &App{Window: nil, config: config,
+		evalResults: make([]EvalResult, 0)}
 	app.Window = fltk.NewWindow(config.Width, config.Height)
 	if config.X > -1 && config.Y > -1 {
 		app.Window.SetPosition(config.X, config.Y)
