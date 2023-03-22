@@ -180,7 +180,9 @@ func populateView(varName, text string, evalEnv eval.Env,
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
 	evalView.SetValue(textBuilder.String())
-	evalView.SetAlign(fltk.ALIGN_BOTTOM)
+	// Scroll to end
+	evalView.SetTopLine(999999)
+	evalView.SetTopLine(evalView.TopLine() - evalView.H())
 }
 
 func updateEvalCopyButton(app *App) {
