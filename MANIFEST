@@ -1,3 +1,5 @@
+# TODO Switch from Pack to Flex widgets & see if that provides better
+# resizing behavior
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
 # textInput with Choice's which show prev 7 entries.
 # Then comment on: https://github.com/pwiecz/go-fltk/issues/60
