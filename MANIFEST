@@ -26,7 +26,8 @@ README.md
 
 minicalc.ini
 
-go.mod
+go.mod # TODO drop:
+# replace github.com/pwiecz/go-fltk => /home/mark/opt/go-fltk
 
 st.sh
 
