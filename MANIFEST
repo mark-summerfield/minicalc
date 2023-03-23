@@ -1,14 +1,17 @@
 # TODO Switch from Pack to Flex widgets & see if that provides better
 # resizing behavior
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
-# textInput with Choice's which show prev 7 entries.
+# textInput with Choice's which show prev 7 entries. Bind F2 to each
+# Choice to pop it up (unless F2 already works)
 # Then comment on: https://github.com/pwiecz/go-fltk/issues/60
 # TODO see https://go.dev/play/
-#   /Go &Sandbox\
+#   /&Sandbox\
 #   |multiline input text|
 #   /Stdout\/Stderr\
 #   |multiline output text|
-#   [&Run] [&Format]
+#   [&Run]
+# Run first adds gong & gset to imports (or creates these imports if no
+# imports), then runs goimport, then saves as a temp & runs.
 
 minicalc.go
 app.go
