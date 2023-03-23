@@ -1,5 +1,3 @@
-# TODO Switch from Pack to Flex widgets & see if that provides better
-# resizing behavior
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
 # textInput with Choice's which show prev 7 entries. Bind F2 to each
 # Choice to pop it up (unless F2 already works)

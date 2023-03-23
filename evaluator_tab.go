@@ -21,15 +21,15 @@ import (
 func makeEvaluatorTab(app *App, x, y, width, height int) {
 	nextVarName := "a"
 	evalEnv := eval.Env{"pi": math.Pi}
-	group := fltk.NewGroup(x, y, width, height, "E&valuator")
-	vbox := fltk.NewPack(x, y, width, height)
+	group := fltk.NewFlex(x, y, width, height, "E&valuator")
+	vbox := fltk.NewFlex(x, y, width, height)
 	evalView := fltk.NewHelpView(x, y, width, height-BUTTON_HEIGHT)
 	if app.config.ShowIntialHelpText {
 		evalView.SetValue(evalHelpHtml)
 	}
 	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
-	hbox := fltk.NewPack(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.HORIZONTAL)
+	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.ROW)
 	app.evalInput = fltk.NewInput(x, y+height-BUTTON_HEIGHT,
 		width-BUTTON_WIDTH, BUTTON_HEIGHT)
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-BUTTON_HEIGHT,
@@ -41,8 +41,9 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 		nextVarName = onEval(app, evalEnv, evalView, nextVarName)
 	})
 	hbox.End()
+	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
 	vbox.End()
-	vbox.Resizable(evalView) // TODO Doesn't work: need Flex
+	vbox.Fixed(hbox, BUTTON_HEIGHT)
 	group.End()
 	group.Resizable(vbox)
 	app.evalInput.TakeFocus()

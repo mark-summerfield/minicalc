@@ -12,16 +12,16 @@ import (
 )
 
 func makeRegexTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "Rege&x")
-	vbox := fltk.NewPack(x, y, width, height)
+	group := fltk.NewFlex(x, y, width, height, "Rege&x")
+	vbox := fltk.NewFlex(x, y, width, height)
 	hoffset := 2 * BUTTON_HEIGHT
 	regexView := fltk.NewHelpView(x, y, width, height-hoffset)
 	if app.config.ShowIntialHelpText {
 		regexView.SetValue(REGEX_HELP_HTML)
 	}
 
-	hbox := fltk.NewPack(x, height-hoffset, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.HORIZONTAL)
+	hbox := fltk.NewFlex(x, height-hoffset, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.ROW)
 	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Regex")
 	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
 		BUTTON_HEIGHT)
@@ -29,9 +29,11 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
 	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
+	hbox.Fixed(regexLabel, LABEL_WIDTH)
+	vbox.Fixed(hbox, BUTTON_HEIGHT)
 
-	hbox = fltk.NewPack(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.HORIZONTAL)
+	hbox = fltk.NewFlex(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.ROW)
 	textLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Text")
 	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
 		BUTTON_HEIGHT)
@@ -39,9 +41,10 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	textLabel.SetCallback(func() { textInput.TakeFocus() })
 	textInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
+	hbox.Fixed(textLabel, LABEL_WIDTH)
+	vbox.Fixed(hbox, BUTTON_HEIGHT)
 
 	vbox.End()
-	vbox.Resizable(regexView) // TODO Doesn't work: need Flex
 	group.End()
 	group.Resizable(vbox)
 	group.End()
