@@ -36,14 +36,5 @@ face=courier>CustomHtml="""&lt;html&gt;<br>
 to</font> <font size=4 face=courier>%s</font></p>`
 )
 
-type CopyWhat uint8
-
-const (
-	COPY_RESULT CopyWhat = iota
-	COPY_A
-	COPY_B
-	COPY_C
-)
-
 //go:embed images/icon.svg
 var iconSvg string

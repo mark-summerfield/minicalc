@@ -2,14 +2,6 @@
 # textInput with InputChoice's which show prev 7 entries. Bind F2 to each
 # Choice to pop it up (unless F2 already works)
 # Then comment on: https://github.com/pwiecz/go-fltk/issues/60
-# TODO see https://go.dev/play/
-#   /&Sandbox\
-#   |multiline input text|
-#   /Stdout\/Stderr\
-#   |multiline output text|
-#   [&Run]
-# Run first adds gong & gset to imports (or creates these imports if no
-# imports), then runs goimport, then saves as a temp & runs.
 
 minicalc.go
 app.go
