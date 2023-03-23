@@ -23,9 +23,11 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	evalEnv := eval.Env{"pi": math.Pi}
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	vbox := fltk.NewFlex(x, y, width, height)
-	evalView := fltk.NewHelpView(x, y, width, height-BUTTON_HEIGHT)
+	app.evalView = fltk.NewHelpView(x, y, width, height-BUTTON_HEIGHT)
 	if app.config.ShowIntialHelpText {
-		evalView.SetValue(evalHelpHtml)
+		app.evalView.SetValue(evalHelpHtml)
+	} else {
+		app.evalView.SetValue(evalShortHelp)
 	}
 	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
 	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
@@ -38,7 +40,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	app.evalCopyButton.Deactivate()
 	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
 	app.evalInput.SetCallback(func() {
-		nextVarName = onEval(app, evalEnv, evalView, nextVarName)
+		nextVarName = onEval(app, evalEnv, nextVarName)
 	})
 	hbox.End()
 	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
@@ -49,15 +51,14 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	app.evalInput.TakeFocus()
 }
 
-func onEval(app *App, evalEnv eval.Env, evalView *fltk.HelpView,
-	nextVarName string) string {
+func onEval(app *App, evalEnv eval.Env, nextVarName string) string {
+	input := strings.TrimSpace(app.evalInput.Value())
 	userVarNames := gset.New[string]()
 	autoVar := true
 	deletion := false
 	var text string
 	var err error
-	varName, expression, err := getVarNameAndExpression(userVarNames,
-		app.evalInput.Value())
+	varName, expression, err := getVarNameAndExpression(userVarNames, input)
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else if varName != "" {
@@ -75,7 +76,7 @@ func onEval(app *App, evalEnv eval.Env, evalView *fltk.HelpView,
 		text, varName, nextVarName = evaluate(app, varName, nextVarName,
 			expression, autoVar, evalEnv, userVarNames)
 	}
-	populateView(varName, text, evalEnv, evalView)
+	populateView(varName, text, evalEnv, app.evalView)
 	return nextVarName
 }
 
@@ -118,8 +119,9 @@ func evaluate(app *App, varName, nextVarName, expression string,
 				EvalResult{varName, value})
 			updateEvalCopyButton(app)
 			text = fmt.Sprintf(
-				"<font face=sans color=green>%s = %s → <b>%g</b>%s</font>",
-				varName, expression, value, getResultDetails(value))
+				`<font face=sans color=green>%s = %s → </font><font
+				face=sans color=blue><b>%g</b>%s</font>`, varName,
+				expression, value, getResultDetails(value))
 		}
 	}
 	return text, varName, nextVarName
@@ -174,9 +176,9 @@ func populateView(varName, text string, evalEnv eval.Env,
 		}
 		value := evalEnv[key]
 		textBuilder.WriteString(fmt.Sprintf(
-			`<font face=sans color=blue>%s%s%s = %g</font><font
-				face=sans color=#444>%s</font><br>`, bs, key, be,
-			value, getResultDetails(value)))
+			`<font face=sans color=green>%s%s%s = <font face=sans
+			color=blue>%g</font><font face=sans color=#444>%s</font><br>`,
+			bs, key, be, value, getResultDetails(value)))
 	}
 	textBuilder.WriteString(text)
 	textBuilder.WriteString("</font>")
@@ -223,19 +225,22 @@ type EvalResult struct {
 
 const (
 	maxCopyResults = 11
-	evalHelpHtml   = `<p><font face=sans size=4>Type an expression and press
+	evalShortHelp  = `<p><font color=#888 face=sans size=4>Type an
+	expression then press Enter or press F1 for help.</font></p>`
+	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
 Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
 <p><font face=sans size=4>Results are automatically assigned to successive
 variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with
 <tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
 <p><font face=sans size=4>To delete a variable use <tt><i>varname</i>=</tt>
-and press Enter.</font></p>
+and press Enter—or just reassign to it.</font></p>
 <p><font face=sans size=4>Supported operators: <tt>+ - * / %</tt>.
 </font></p>
 <p><font face=sans size=4>Predefined variables: <tt>pi</tt>.
 </font></p>
 <p><font face=sans size=4>Functions:
 <tt>pow(<i>x</i>, <i>y</i>)</tt>,
+<tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
 <tt>sqrt(<i>n</i>)</tt>.
 </font></p>

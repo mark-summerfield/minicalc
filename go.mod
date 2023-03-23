@@ -2,6 +2,8 @@ module github.com/mark-summerfield/minicalc
 
 go 1.20
 
+replace github.com/pwiecz/go-fltk => /home/mark/opt/go-fltk
+
 require (
 	github.com/go-ini/ini v1.67.0
 	github.com/mark-summerfield/accelhint v0.7.6

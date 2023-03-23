@@ -9,6 +9,7 @@ package eval
 import (
 	"fmt"
 	"math"
+	"math/rand"
 )
 
 type Env map[Var]float64
@@ -51,6 +52,10 @@ func (me call) Eval(env Env) float64 {
 	switch me.fn {
 	case "pow":
 		return math.Pow(me.args[0].Eval(env), me.args[1].Eval(env))
+	case "rand":
+		return rand.Float64()
+	case "randint":
+		return float64(rand.Intn(int(me.args[0].Eval(env))))
 	case "sin":
 		return math.Sin(me.args[0].Eval(env))
 	case "sqrt":

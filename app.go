@@ -11,9 +11,11 @@ type App struct {
 	*fltk.Window
 	config         *Config
 	tabs           *fltk.Tabs
+	evalView       *fltk.HelpView
 	evalInput      *fltk.Input
 	evalResults    []EvalResult
 	evalCopyButton *fltk.MenuButton
+	regexView      *fltk.HelpView
 	regexInput     *fltk.Input
 	asciiView      *fltk.HelpView
 	customView     *fltk.HelpView
@@ -23,6 +25,19 @@ func (me *App) onEvent(event fltk.Event) bool {
 	if fltk.EventType() == fltk.CLOSE ||
 		(fltk.EventType() == fltk.KEY && fltk.EventKey() == fltk.ESCAPE) {
 		me.onQuit()
+	}
+	if fltk.EventType() == fltk.KEY {
+		switch fltk.EventKey() {
+		case fltk.HELP, fltk.F1:
+			switch me.tabs.Value() {
+			case CALCULATOR_TAB:
+				me.evalView.SetValue(evalHelpHtml)
+				return true
+			case REGEX_TAB:
+				me.regexView.SetValue(regexHelpHtml)
+				return true
+			}
+		}
 	}
 	return false
 }

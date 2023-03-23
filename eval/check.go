@@ -53,4 +53,5 @@ func (me call) Check(vars map[Var]bool) error {
 	return nil
 }
 
-var arityForFunc = map[string]int{"pow": 2, "sin": 1, "sqrt": 1}
+var arityForFunc = map[string]int{"pow": 2, "rand": 0, "randint": 1,
+	"sin": 1, "sqrt": 1}
