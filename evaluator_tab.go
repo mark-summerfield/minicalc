@@ -228,27 +228,3 @@ type EvalResult struct {
 	varName string
 	value   float64
 }
-
-const (
-	maxCopyResults = 11
-	evalShortHelp  = `<p><font color=#888 face=sans size=4>Type an
-	expression then press Enter or press F1 for help.</font></p>`
-	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
-Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
-<p><font face=sans size=4>Results are automatically assigned to successive
-variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with
-<tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
-<p><font face=sans size=4>To delete a variable use <tt><i>varname</i>=</tt>
-and press Enter—or just reassign to it.</font></p>
-<p><font face=sans size=4>Supported operators: <tt>+ - * / %</tt>.
-</font></p>
-<p><font face=sans size=4>Predefined variables: <tt>pi</tt>.
-</font></p>
-<p><font face=sans size=4>Functions:
-<tt>pow(<i>x</i>, <i>y</i>)</tt>,
-<tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
-<tt>sin(<i>n</i>)</tt>,
-<tt>sqrt(<i>n</i>)</tt>.
-</font></p>
-</font>`
-)

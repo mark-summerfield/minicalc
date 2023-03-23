@@ -29,10 +29,12 @@ func asciiHtml() string {
 
 func populateAsciiHigh(text *strings.Builder) {
 	text.WriteString("<p><font face=courier size=4>")
-	const start = 33
-	const end = 127
-	const step = 5
-	const stride = (end - start + 1) / step
+	const (
+		start  = 33
+		end    = 127
+		step   = 5
+		stride = (end - start + 1) / step
+	)
 	for i := 0; i < stride; i++ {
 		text.WriteString("&nbsp;")
 		j := start + i

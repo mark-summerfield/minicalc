@@ -125,6 +125,3 @@ func onRegex(app *App, textInput *fltk.Input) {
 		}
 	}
 }
-
-const regexHelpHtml = `<p><font face=sans size=4>Type a regular
-expression and some text to test it on and press Enter.</font></p>`
