@@ -29,6 +29,16 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	} else {
 		app.evalView.SetValue(evalShortHelp)
 	}
+	hbox := makeBottomRow(app, x, y, width, height, nextVarName, evalEnv)
+	vbox.End()
+	vbox.Fixed(hbox, BUTTON_HEIGHT)
+	group.End()
+	group.Resizable(vbox)
+	app.evalInput.TakeFocus()
+}
+
+func makeBottomRow(app *App, x, y, width, height int,
+	nextVarName string, evalEnv eval.Env) *fltk.Flex {
 	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
 	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.ROW)
@@ -44,11 +54,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	})
 	hbox.End()
 	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
-	vbox.End()
-	vbox.Fixed(hbox, BUTTON_HEIGHT)
-	group.End()
-	group.Resizable(vbox)
-	app.evalInput.TakeFocus()
+	return hbox
 }
 
 func onEval(app *App, evalEnv eval.Env, nextVarName string) string {

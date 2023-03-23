@@ -19,31 +19,10 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	if app.config.ShowIntialHelpText {
 		app.regexView.SetValue(regexHelpHtml)
 	}
-
-	hbox := fltk.NewFlex(x, height-hoffset, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.ROW)
-	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Regex")
-	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
-		BUTTON_HEIGHT)
-	app.regexInput.SetValue(`\s*(\S+)\s*[=:]\s*(\S+)`)
-	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
-	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
-	hbox.End()
-	hbox.Fixed(regexLabel, LABEL_WIDTH)
+	hbox := makeRegexRow(app, x, y, width, height, hoffset)
 	vbox.Fixed(hbox, BUTTON_HEIGHT)
-
-	hbox = fltk.NewFlex(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
-	hbox.SetType(fltk.ROW)
-	textLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Text")
-	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
-		BUTTON_HEIGHT)
-	textInput.SetValue("scale: 1.15 width=24.5")
-	textLabel.SetCallback(func() { textInput.TakeFocus() })
-	textInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
-	hbox.End()
-	hbox.Fixed(textLabel, LABEL_WIDTH)
+	textInput, hbox := makeTextRow(app, x, y, width, height, hoffset)
 	vbox.Fixed(hbox, BUTTON_HEIGHT)
-
 	vbox.End()
 	group.End()
 	group.Resizable(vbox)
@@ -55,6 +34,35 @@ func makeRegexTab(app *App, x, y, width, height int) {
 		onRegex(app, textInput)
 	}
 	app.regexInput.TakeFocus()
+}
+
+func makeRegexRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, height-hoffset, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.ROW)
+	regexLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Regex")
+	app.regexInput = fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
+		BUTTON_HEIGHT)
+	app.regexInput.SetValue(`\s*(\S+)\s*[=:]\s*(\S+)`)
+	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
+	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
+	hbox.End()
+	hbox.Fixed(regexLabel, LABEL_WIDTH)
+	return hbox
+}
+
+func makeTextRow(app *App, x, y, width, height, hoffset int) (*fltk.Input,
+	*fltk.Flex) {
+	hbox := fltk.NewFlex(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox.SetType(fltk.ROW)
+	textLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Text")
+	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
+		BUTTON_HEIGHT)
+	textInput.SetValue("scale: 1.15 width=24.5")
+	textLabel.SetCallback(func() { textInput.TakeFocus() })
+	textInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
+	hbox.End()
+	hbox.Fixed(textLabel, LABEL_WIDTH)
+	return textInput, hbox
 }
 
 func onRegex(app *App, textInput *fltk.Input) {
