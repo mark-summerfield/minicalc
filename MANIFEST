@@ -1,5 +1,5 @@
 # TODO calculator_tab & regex_tab: replace calcInput and regexInput and
-# textInput with Choice's which show prev 7 entries. Bind F2 to each
+# textInput with InputChoice's which show prev 7 entries. Bind F2 to each
 # Choice to pop it up (unless F2 already works)
 # Then comment on: https://github.com/pwiecz/go-fltk/issues/60
 # TODO see https://go.dev/play/
