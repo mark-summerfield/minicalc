@@ -39,6 +39,7 @@ func updateInputChoice(choice *fltk.InputChoice) {
 	}
 	for _, text := range texts {
 		text := text
-		menu.AddEx(text, 0, func() { choice.Input().SetValue(text) }, 0)
+		escText := strings.ReplaceAll(text, "\\", "\\\\")
+		menu.AddEx(escText, 0, func() { choice.Input().SetValue(text) }, 0)
 	}
 }

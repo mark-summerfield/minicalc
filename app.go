@@ -4,8 +4,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -72,7 +70,6 @@ func (me *App) onEvent(event fltk.Event) bool {
 }
 
 func (me *App) onQuit() {
-	fmt.Println("onQuit")
 	me.config.X = me.Window.X()
 	me.config.Y = me.Window.Y()
 	me.config.Width = me.Window.W()
