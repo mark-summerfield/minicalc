@@ -1,11 +1,10 @@
-# minicalc
+# MiniCalc
 
 A little Go GUI tool.
 
-It shows the ASCII codes (and names for < 32) and also provides a simple
-evaluating calculator and a Go Regexp evaluator. It also has a CPU/RAM
-monitor, and optionally a custom page of HTML (for which see `minicalc.ini`
-for an example).
+MiniCalc provides an evaluating calculator and a Go Regexp evaluator. It
+also shows the ASCII codes (and names for < 32) and also provides a custom
+page (which I use to show some of my Git and Go aliases).
 
 ![Screenshot](images/screenshot.png)
 
