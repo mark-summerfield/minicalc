@@ -48,9 +48,6 @@ func makeBottomRow(app *App, x, y, width, height int,
 		BUTTON_WIDTH, BUTTON_HEIGHT, "&Copy")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
-	text := "pi"
-	app.evalInput.MenuButton().AddEx(text, 0,
-		func() { app.evalInput.Input().SetValue(text) }, 0)
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKey)
 	app.evalInput.Input().SetCallback(func() {
 		updateInputChoice(app.evalInput)

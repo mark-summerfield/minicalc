@@ -23,12 +23,11 @@ type App struct {
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
-	if fltk.EventType() == fltk.CLOSE ||
-		(fltk.EventType() == fltk.KEY && fltk.EventKey() == fltk.ESCAPE) {
-		me.onQuit()
-	}
-	if fltk.EventType() == fltk.KEY {
+	switch fltk.EventType() {
+	case fltk.KEY:
 		switch fltk.EventKey() {
+		case fltk.ESCAPE:
+			return true
 		case fltk.HELP, fltk.F1:
 			switch me.tabs.Value() {
 			case EVALUATOR_TAB:
@@ -41,11 +40,28 @@ func (me *App) onEvent(event fltk.Event) bool {
 		case fltk.F2:
 			switch me.tabs.Value() {
 			case EVALUATOR_TAB:
-				me.evalInput.MenuButton().Popup()
+				menu := me.evalInput.MenuButton()
+				if menu != nil && menu.Size() > 0 {
+					menu.Popup()
+				}
 			case REGEX_TAB:
-				me.regexInput.MenuButton().Popup()
+				var menu *fltk.MenuButton
+				if fltk.EventState()&fltk.SHIFT == 0 {
+					menu = me.regexInput.MenuButton()
+				} else {
+					menu = me.regexTextInput.MenuButton()
+				}
+				if menu != nil && menu.Size() > 0 {
+					menu.Popup()
+				}
 			}
+		case 'q', 'Q': // only triggered with CTRL!
+			me.onQuit()
 		}
+	case fltk.SHORTCUT:
+		return false
+	case fltk.CLOSE:
+		me.onQuit()
 	}
 	return false
 }
@@ -58,6 +74,7 @@ func (me *App) onQuit() {
 	me.config.LastTab = me.tabs.Value()
 	me.config.Scale = fltk.ScreenScale(0)
 	me.config.save()
+	me.Window.Destroy()
 }
 
 func newApp(config *Config) *App {

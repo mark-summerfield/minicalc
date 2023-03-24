@@ -59,9 +59,17 @@ and press Enter—or just reassign to it.</font></p>
 <p><font face=sans size=4>
 Click the menu button or press <b>F2</b> to choose a previous expression.
 </font></p>
+<p><font face=sans size=4>
+Click the X close button or press <b>Ctrl+Q</b> to quit.
+</font></p>
 </font>`
 	regexHelpHtml = `<p><font face=sans size=4>Type a regular
-expression and some text to test it on and press Enter.</font></p>`
+expression and some text to test it on and press Enter.<br>
+Press F2 to choose a previous regex and Shift+F2 to choose a previous
+text</font></p>
+<p><font face=sans size=4>
+Click the X close button or press <b>Ctrl+Q</b> to quit.
+</font></p>`
 )
 
 //go:embed images/icon.svg
