@@ -58,8 +58,6 @@ func (me *App) onEvent(event fltk.Event) bool {
 		case 'q', 'Q': // only triggered with CTRL!
 			me.onQuit()
 		}
-	case fltk.SHORTCUT:
-		return false
 	case fltk.CLOSE:
 		me.onQuit()
 	}
