@@ -12,11 +12,11 @@ type App struct {
 	config         *Config
 	tabs           *fltk.Tabs
 	evalView       *fltk.HelpView
-	evalInput      *fltk.Input
+	evalInput      *fltk.InputChoice
 	evalResults    []EvalResult
 	evalCopyButton *fltk.MenuButton
 	regexView      *fltk.HelpView
-	regexInput     *fltk.Input
+	regexInput     *fltk.InputChoice
 	asciiView      *fltk.HelpView
 	customView     *fltk.HelpView
 }
@@ -30,12 +30,19 @@ func (me *App) onEvent(event fltk.Event) bool {
 		switch fltk.EventKey() {
 		case fltk.HELP, fltk.F1:
 			switch me.tabs.Value() {
-			case CALCULATOR_TAB:
+			case EVALUATOR_TAB:
 				me.evalView.SetValue(evalHelpHtml)
 				return true
 			case REGEX_TAB:
 				me.regexView.SetValue(regexHelpHtml)
 				return true
+			}
+		case fltk.F2:
+			switch me.tabs.Value() {
+			case EVALUATOR_TAB:
+				me.evalInput.MenuButton().Popup()
+			case REGEX_TAB:
+				me.regexInput.MenuButton().Popup()
 			}
 		}
 	}
@@ -91,7 +98,7 @@ func addTabs(app *App) {
 
 func onTab(app *App) {
 	switch app.tabs.Value() {
-	case CALCULATOR_TAB:
+	case EVALUATOR_TAB:
 		app.evalInput.TakeFocus()
 	case REGEX_TAB:
 		app.regexInput.TakeFocus()

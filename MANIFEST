@@ -1,8 +1,3 @@
-# TODO calculator_tab & regex_tab: replace calcInput and regexInput and
-# textInput with InputChoice's which show prev 7 entries. Bind F2 to each
-# Choice to pop it up (unless F2 already works)
-# Then comment on: https://github.com/pwiecz/go-fltk/issues/60
-
 minicalc.go
 app.go
 evaluator_tab.go
@@ -26,8 +21,7 @@ README.md
 
 minicalc.ini
 
-go.mod # TODO drop:
-# replace github.com/pwiecz/go-fltk => /home/mark/opt/go-fltk
+go.mod
 
 st.sh
 

@@ -4,7 +4,7 @@
 package main
 
 import (
-	_ "image/png"
+	"strings"
 
 	"github.com/pwiecz/go-fltk"
 )
@@ -22,4 +22,23 @@ func makeAccelLabel(x, y, w, h int, label string) *fltk.Button {
 	button.SetBox(fltk.NO_BOX)
 	button.ClearVisibleFocus()
 	return button
+}
+
+func updateInputChoice(choice *fltk.InputChoice) {
+	current := choice.Value()
+	menu := choice.MenuButton()
+	texts := []string{current}
+	for i := 0; i < menu.Size(); i++ {
+		text := menu.Text(i)
+		if current != text && !strings.Contains(current, text) {
+			texts = append(texts, text)
+		}
+	}
+	for i := menu.Size() - 1; i >= 0; i-- {
+		menu.Remove(i)
+	}
+	for _, text := range texts {
+		text := text
+		menu.AddEx(text, 0, func() { choice.Input().SetValue(text) }, 0)
+	}
 }

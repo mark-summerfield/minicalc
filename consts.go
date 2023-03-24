@@ -16,11 +16,11 @@ const (
 	LABEL_WIDTH   = 60
 	PAD           = 3
 
-	CALCULATOR_TAB = 0
-	REGEX_TAB      = 1
-	ASCII_TAB      = 2
-	CUSTOM_TAB     = 3
-	ABOUT_TAB      = 4
+	EVALUATOR_TAB = 0
+	REGEX_TAB     = 1
+	ASCII_TAB     = 2
+	CUSTOM_TAB    = 3
+	ABOUT_TAB     = 4
 
 	errTemplate               = "<font face=sans color=red size=4>Error: %s</font>"
 	customPlaceHolderTemplate = `<font color=navy size=4>
@@ -36,6 +36,7 @@ face=courier>CustomHtml="""&lt;html&gt;<br>
 to</font> <font size=4 face=courier>%s</font></p>`
 
 	maxCopyResults = 11
+	maxMenuTexts   = 9
 	evalShortHelp  = `<p><font color=#888 face=sans size=4>Type an
 	expression then press Enter or press F1 for help.</font></p>`
 	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
@@ -54,6 +55,9 @@ and press Enter—or just reassign to it.</font></p>
 <tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
 <tt>sqrt(<i>n</i>)</tt>.
+</font></p>
+<p><font face=sans size=4>
+Click the menu button or press <b>F2</b> to choose a previous expression.
 </font></p>
 </font>`
 	regexHelpHtml = `<p><font face=sans size=4>Type a regular

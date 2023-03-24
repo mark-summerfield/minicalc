@@ -42,14 +42,18 @@ func makeBottomRow(app *App, x, y, width, height int,
 	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
 	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.ROW)
-	app.evalInput = fltk.NewInput(x, y+height-BUTTON_HEIGHT,
+	app.evalInput = fltk.NewInputChoice(x, y+height-BUTTON_HEIGHT,
 		width-BUTTON_WIDTH, BUTTON_HEIGHT)
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-BUTTON_HEIGHT,
 		BUTTON_WIDTH, BUTTON_HEIGHT, "&Copy")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
-	app.evalInput.SetCallbackCondition(fltk.WhenEnterKey)
-	app.evalInput.SetCallback(func() {
+	text := "pi"
+	app.evalInput.MenuButton().AddEx(text, 0,
+		func() { app.evalInput.Input().SetValue(text) }, 0)
+	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKey)
+	app.evalInput.Input().SetCallback(func() {
+		updateInputChoice(app.evalInput)
 		nextVarName = onEval(app, evalEnv, nextVarName)
 	})
 	hbox.End()
