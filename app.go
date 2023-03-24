@@ -17,6 +17,7 @@ type App struct {
 	evalCopyButton *fltk.MenuButton
 	regexView      *fltk.HelpView
 	regexInput     *fltk.InputChoice
+	regexTextInput *fltk.InputChoice
 	asciiView      *fltk.HelpView
 	customView     *fltk.HelpView
 }

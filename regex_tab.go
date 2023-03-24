@@ -21,7 +21,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	}
 	hbox := makeRegexRow(app, x, y, width, height, hoffset)
 	vbox.Fixed(hbox, BUTTON_HEIGHT)
-	textInput, hbox := makeTextRow(app, x, y, width, height, hoffset)
+	hbox = makeTextRow(app, x, y, width, height, hoffset)
 	vbox.Fixed(hbox, BUTTON_HEIGHT)
 	vbox.End()
 	group.End()
@@ -29,11 +29,14 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	group.End()
 	app.regexInput.SetCallback(func() {
 		updateInputChoice(app.regexInput)
-		onRegex(app, textInput)
+		onRegex(app)
 	})
-	textInput.SetCallback(func() { onRegex(app, textInput) })
+	app.regexTextInput.SetCallback(func() {
+		updateInputChoice(app.regexTextInput)
+		onRegex(app)
+	})
 	if !app.config.ShowIntialHelpText {
-		onRegex(app, textInput)
+		onRegex(app)
 	}
 	app.regexInput.TakeFocus()
 }
@@ -55,24 +58,26 @@ func makeRegexRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
 	return hbox
 }
 
-func makeTextRow(app *App, x, y, width, height, hoffset int) (*fltk.Input,
-	*fltk.Flex) {
+func makeTextRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.ROW)
 	textLabel := makeAccelLabel(0, 0, LABEL_WIDTH, BUTTON_HEIGHT, "&Text")
-	textInput := fltk.NewInput(0, BUTTON_HEIGHT, width-LABEL_WIDTH,
-		BUTTON_HEIGHT)
-	textInput.SetValue("scale: 1.15 width=24.5")
-	textLabel.SetCallback(func() { textInput.TakeFocus() })
-	textInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
+	app.regexTextInput = fltk.NewInputChoice(0, BUTTON_HEIGHT,
+		width-LABEL_WIDTH, BUTTON_HEIGHT)
+	text := "scale: 1.15 width=24.5"
+	app.regexTextInput.SetValue(text)
+	app.regexTextInput.MenuButton().AddEx(text, 0,
+		func() { app.regexTextInput.Input().SetValue(text) }, 0)
+	textLabel.SetCallback(func() { app.regexTextInput.TakeFocus() })
+	app.regexTextInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
 	hbox.Fixed(textLabel, LABEL_WIDTH)
-	return textInput, hbox
+	return hbox
 }
 
-func onRegex(app *App, textInput *fltk.Input) {
+func onRegex(app *App) {
 	regex := app.regexInput.Value()
-	text := textInput.Value()
+	text := app.regexTextInput.Value()
 	if regex != "" {
 		rx, err := regexp.Compile(regex)
 		if err != nil {
