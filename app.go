@@ -55,7 +55,7 @@ func (me *App) onEvent(event fltk.Event) bool {
 					menu.Popup()
 				}
 			}
-		case 'q', 'Q': // only triggered with CTRL!
+		case 'q', 'Q': // only triggered with CTRL — which is what I want!
 			me.onQuit()
 		}
 	case fltk.CLOSE:
