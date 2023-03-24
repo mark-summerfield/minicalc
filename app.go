@@ -4,6 +4,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -23,11 +25,14 @@ type App struct {
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
+	key := fltk.EventKey()
 	switch fltk.EventType() {
-	case fltk.KEY:
-		switch fltk.EventKey() {
-		case fltk.ESCAPE:
+	case fltk.SHORTCUT:
+		if key == fltk.ESCAPE {
 			return true
+		}
+	case fltk.KEY:
+		switch key {
 		case fltk.HELP, fltk.F1:
 			switch me.tabs.Value() {
 			case EVALUATOR_TAB:
@@ -55,8 +60,10 @@ func (me *App) onEvent(event fltk.Event) bool {
 					menu.Popup()
 				}
 			}
-		case 'q', 'Q': // only triggered with CTRL — which is what I want!
-			me.onQuit()
+		case 'q', 'Q':
+			if fltk.EventState()&fltk.CTRL != 0 {
+				me.onQuit()
+			}
 		}
 	case fltk.CLOSE:
 		me.onQuit()
@@ -65,6 +72,7 @@ func (me *App) onEvent(event fltk.Event) bool {
 }
 
 func (me *App) onQuit() {
+	fmt.Println("onQuit")
 	me.config.X = me.Window.X()
 	me.config.Y = me.Window.Y()
 	me.config.Width = me.Window.W()
