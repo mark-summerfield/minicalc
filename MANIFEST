@@ -1,5 +1,7 @@
 minicalc.go
 app.go
+# TODO comment out all userVarNames uses to try to track down the bug
+# TODO failing that rewrite var name handling from scratch
 evaluator_tab.go
 regex_tab.go
 ascii_tab.go
