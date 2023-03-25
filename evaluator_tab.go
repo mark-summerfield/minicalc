@@ -40,6 +40,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 func makeBottomRow(app *App, x, y, width, height int,
 	nextVarName string, evalEnv eval.Env) *fltk.Flex {
 	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
+	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
 	hbox.SetType(fltk.ROW)
 	app.evalInput = fltk.NewInputChoice(x, y+height-BUTTON_HEIGHT,
@@ -49,7 +50,6 @@ func makeBottomRow(app *App, x, y, width, height int,
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)
-	userVarNames := gset.New[string]()
 	app.evalInput.Input().SetCallback(func() {
 		updateInputChoice(app.evalInput)
 		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
