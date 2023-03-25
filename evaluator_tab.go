@@ -48,7 +48,7 @@ func makeBottomRow(app *App, x, y, width, height int,
 		BUTTON_WIDTH, BUTTON_HEIGHT, "&Copy")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
-	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKey)
+	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)
 	app.evalInput.Input().SetCallback(func() {
 		updateInputChoice(app.evalInput)
 		nextVarName = onEval(app, evalEnv, nextVarName)
@@ -196,6 +196,15 @@ func populateView(varName, text string, evalEnv eval.Env,
 }
 
 func updateEvalCopyButton(app *App) {
+	seen := gset.New[float64]()
+	filtered := make([]EvalResult, 0, len(app.evalResults))
+	for _, evalResult := range app.evalResults {
+		if !seen.Contains(evalResult.value) {
+			seen.Add(evalResult.value)
+			filtered = append(filtered, evalResult)
+		}
+	}
+	app.evalResults = filtered
 	if len(app.evalResults) > maxCopyResults {
 		app.evalResults = app.evalResults[len(app.evalResults)-
 			maxCopyResults:]

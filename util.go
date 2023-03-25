@@ -30,7 +30,8 @@ func updateInputChoice(choice *fltk.InputChoice) {
 	texts := []string{current}
 	for i := 0; i < menu.Size(); i++ {
 		text := menu.Text(i)
-		if current != text && !strings.Contains(current, text) {
+		if !(current == text || strings.Contains(current, text) ||
+			strings.Contains(text, current)) {
 			texts = append(texts, text)
 		}
 	}
@@ -39,7 +40,8 @@ func updateInputChoice(choice *fltk.InputChoice) {
 	}
 	for _, text := range texts {
 		text := text
-		escText := strings.ReplaceAll(text, "\\", "\\\\")
+		escText := strings.ReplaceAll(
+			strings.ReplaceAll(text, "\\", "\\\\"), "/", `\/`)
 		menu.AddEx(escText, 0, func() { choice.Input().SetValue(text) }, 0)
 	}
 }

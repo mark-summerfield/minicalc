@@ -35,7 +35,7 @@ face=courier>CustomHtml="""&lt;html&gt;<br>
 <p><font color=navy size=4>
 to</font> <font size=4 face=courier>%s</font></p>`
 
-	maxCopyResults = 11
+	maxCopyResults = 9
 	maxMenuTexts   = 9
 	evalShortHelp  = `<p><font color=#888 face=sans size=4>Type an
 	expression then press Enter or press F1 for help.</font></p>`
