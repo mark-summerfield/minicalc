@@ -62,6 +62,6 @@ Configuration file: <tt>%s</tt><br>
 <center><font face=sans size=4 color=#222>go-fltk %s • FLTK
 %s</font></center><br>
 <center><font face=sans size=4 color=#222>%s</font></center></p>`,
-		APPNAME, Version, year, filename, runtime.Version(), runtime.GOOS,
+		appName, Version, year, filename, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

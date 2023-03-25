@@ -23,7 +23,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	evalEnv := eval.Env{"pi": math.Pi}
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	vbox := fltk.NewFlex(x, y, width, height)
-	app.evalView = fltk.NewHelpView(x, y, width, height-BUTTON_HEIGHT)
+	app.evalView = fltk.NewHelpView(x, y, width, height-buttonHeight)
 	if app.config.ShowIntialHelpText {
 		app.evalView.SetValue(evalHelpHtml)
 	} else {
@@ -31,7 +31,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	}
 	hbox := makeBottomRow(app, x, y, width, height, nextVarName, evalEnv)
 	vbox.End()
-	vbox.Fixed(hbox, BUTTON_HEIGHT)
+	vbox.Fixed(hbox, buttonHeight)
 	group.End()
 	group.Resizable(vbox)
 	app.evalInput.TakeFocus()
@@ -39,14 +39,14 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 
 func makeBottomRow(app *App, x, y, width, height int,
 	nextVarName string, evalEnv eval.Env) *fltk.Flex {
-	const BUTTON_WIDTH = LABEL_WIDTH + (2 * PAD)
+	const BUTTON_WIDTH = labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
-	hbox := fltk.NewFlex(x, y+height-BUTTON_HEIGHT, width, BUTTON_HEIGHT)
+	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
-	app.evalInput = fltk.NewInputChoice(x, y+height-BUTTON_HEIGHT,
-		width-BUTTON_WIDTH, BUTTON_HEIGHT)
-	app.evalCopyButton = fltk.NewMenuButton(x, y+height-BUTTON_HEIGHT,
-		BUTTON_WIDTH, BUTTON_HEIGHT, "&Copy")
+	app.evalInput = fltk.NewInputChoice(x, y+height-buttonHeight,
+		width-BUTTON_WIDTH, buttonHeight)
+	app.evalCopyButton = fltk.NewMenuButton(x, y+height-buttonHeight,
+		BUTTON_WIDTH, buttonHeight, "&Copy")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)

@@ -24,7 +24,7 @@ type Config struct {
 }
 
 func newConfig() *Config {
-	filename, found := gong.GetIniFilename(APPNAME)
+	filename, found := gong.GetIniFilename(appName)
 	if found {
 		cfg, err := ini.Load(filename)
 		if err != nil {
@@ -51,7 +51,7 @@ func newConfig() *Config {
 				if config.Scale < 0.5 || config.Scale > 5 {
 					config.Scale = 1
 				}
-				if config.LastTab < 0 || config.LastTab > ABOUT_TAB {
+				if config.LastTab < 0 || config.LastTab > aboutTabIndex {
 					config.LastTab = 0
 				}
 				return config

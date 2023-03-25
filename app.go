@@ -33,21 +33,21 @@ func (me *App) onEvent(event fltk.Event) bool {
 		switch key {
 		case fltk.HELP, fltk.F1:
 			switch me.tabs.Value() {
-			case EVALUATOR_TAB:
+			case evaluatorTabIndex:
 				me.evalView.SetValue(evalHelpHtml)
 				return true
-			case REGEX_TAB:
+			case regexTabIndex:
 				me.regexView.SetValue(regexHelpHtml)
 				return true
 			}
 		case fltk.F2:
 			switch me.tabs.Value() {
-			case EVALUATOR_TAB:
+			case evaluatorTabIndex:
 				menu := me.evalInput.MenuButton()
 				if menu != nil && menu.Size() > 0 {
 					menu.Popup()
 				}
-			case REGEX_TAB:
+			case regexTabIndex:
 				var menu *fltk.MenuButton
 				if fltk.EventState()&fltk.SHIFT == 0 {
 					menu = me.regexInput.MenuButton()
@@ -89,7 +89,7 @@ func newApp(config *Config) *App {
 	}
 	app.Window.Resizable(app.Window)
 	app.Window.SetEventHandler(app.onEvent)
-	app.Window.SetLabel(APPNAME)
+	app.Window.SetLabel(appName)
 	addIcons(app.Window, iconSvg)
 	addTabs(app)
 	app.Window.End()
@@ -104,13 +104,13 @@ func addTabs(app *App) {
 	app.tabs.SetAlign(fltk.ALIGN_TOP)
 	app.tabs.SetCallbackCondition(fltk.WhenChanged)
 	app.tabs.SetCallback(func() { onTab(app) })
-	height -= BUTTON_HEIGHT // Allow room for tab
-	makeEvaluatorTab(app, 0, BUTTON_HEIGHT, width, height)
-	makeRegexTab(app, 0, BUTTON_HEIGHT, width, height)
-	app.asciiView = makeAsciiTab(0, BUTTON_HEIGHT, width, height)
-	app.customView = makeCustomTab(app.config, 0, BUTTON_HEIGHT, width,
+	height -= buttonHeight // Allow room for tab
+	makeEvaluatorTab(app, 0, buttonHeight, width, height)
+	makeRegexTab(app, 0, buttonHeight, width, height)
+	app.asciiView = makeAsciiTab(0, buttonHeight, width, height)
+	app.customView = makeCustomTab(app.config, 0, buttonHeight, width,
 		height)
-	aboutGroup := makeAboutTab(app.config.filename, 0, BUTTON_HEIGHT, width,
+	aboutGroup := makeAboutTab(app.config.filename, 0, buttonHeight, width,
 		height)
 	app.tabs.End()
 	app.tabs.Resizable(aboutGroup)
@@ -119,13 +119,13 @@ func addTabs(app *App) {
 
 func onTab(app *App) {
 	switch app.tabs.Value() {
-	case EVALUATOR_TAB:
+	case evaluatorTabIndex:
 		app.evalInput.TakeFocus()
-	case REGEX_TAB:
+	case regexTabIndex:
 		app.regexInput.TakeFocus()
-	case ASCII_TAB:
+	case asciiTabIndex:
 		app.asciiView.TakeFocus()
-	case CUSTOM_TAB:
+	case customTabIndex:
 		app.customView.TakeFocus()
 	}
 }

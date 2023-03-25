@@ -11,16 +11,16 @@ import (
 var Version string
 
 const (
-	APPNAME       = "MiniCalc"
-	BUTTON_HEIGHT = 32
-	LABEL_WIDTH   = 60
-	PAD           = 3
+	appName      = "MiniCalc"
+	buttonHeight = 32
+	labelWidth   = 60
+	pad          = 3
 
-	EVALUATOR_TAB = 0
-	REGEX_TAB     = 1
-	ASCII_TAB     = 2
-	CUSTOM_TAB    = 3
-	ABOUT_TAB     = 4
+	evaluatorTabIndex = 0
+	regexTabIndex     = 1
+	asciiTabIndex     = 2
+	customTabIndex    = 3
+	aboutTabIndex     = 4
 
 	errTemplate               = "<font face=sans color=red size=4>Error: %s</font>"
 	customPlaceHolderTemplate = `<font color=navy size=4>
