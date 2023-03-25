@@ -49,18 +49,19 @@ func makeBottomRow(app *App, x, y, width, height int,
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)
+	userVarNames := gset.New[string]()
 	app.evalInput.Input().SetCallback(func() {
 		updateInputChoice(app.evalInput)
-		nextVarName = onEval(app, evalEnv, nextVarName)
+		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
 	})
 	hbox.End()
 	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
 	return hbox
 }
 
-func onEval(app *App, evalEnv eval.Env, nextVarName string) string {
+func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
+	nextVarName string) string {
 	input := strings.TrimSpace(app.evalInput.Value())
-	userVarNames := gset.New[string]()
 	autoVar := true
 	deletion := false
 	var text string
