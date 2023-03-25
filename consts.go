@@ -68,6 +68,11 @@ expression and some text to test it on and press Enter.<br>
 Press F2 to choose a previous regex and Shift+F2 to choose a previous
 text</font></p>
 <p><font face=sans size=4>
+See also the Go regex
+<a href="https://pkg.go.dev/regexp/syntax">syntax</a> and
+<a href="https://pkg.go.dev/regexp">API</a>.
+</font></p>
+<p><font face=sans size=4>
 Click the X close button or press <b>Ctrl+Q</b> to quit.
 </font></p>`
 )
