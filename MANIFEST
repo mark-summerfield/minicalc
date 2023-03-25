@@ -1,7 +1,9 @@
 minicalc.go
 app.go
-# TODO comment out all userVarNames uses to try to track down the bug
-# TODO failing that rewrite var name handling from scratch
+# NOTE the bug is in onEval or one of its callees
+# TODO (1) try _not_ passing app to onEval and instead just pass what's needed
+# TODO (2) comment out all userVarNames uses to try to track down the bug
+# TODO (3) failing that rewrite var name handling from scratch
 evaluator_tab.go
 regex_tab.go
 ascii_tab.go

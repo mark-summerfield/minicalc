@@ -50,7 +50,10 @@ func makeBottomRow(app *App, x, y, width, height int,
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)
+	i := new(int)
 	app.evalInput.Input().SetCallback(func() {
+		*i++
+		fmt.Printf("Enter #%d\n", *i)
 		updateInputChoice(app.evalInput)
 		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
 	})
