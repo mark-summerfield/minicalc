@@ -56,7 +56,9 @@ func makeBottomRow(app *App, x, y, width, height int,
 		text := fmt.Sprintf("Enter #%d", *i)
 		fmt.Println(text)
 		updateInputChoice(app.evalInput)
-		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
+		nextVarName, app.evalResults = onEval(app.evalInput.Value(),
+			app.evalCopyButton, app.evalView, app.evalResults, userVarNames,
+			evalEnv, nextVarName)
 		if strings.TrimSpace(app.evalInput.Value()) == "" {
 			app.evalView.SetValue(fmt.Sprintf(
 				"<font face=sans size=4 color=red><b>%s</b></font>", text))
@@ -67,9 +69,11 @@ func makeBottomRow(app *App, x, y, width, height int,
 	return hbox
 }
 
-func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
-	nextVarName string) string {
-	input := strings.TrimSpace(app.evalInput.Value())
+func onEval(input string, evalCopyButton *fltk.MenuButton,
+	evalView *fltk.HelpView, evalResults []EvalResult,
+	userVarNames gset.Set[string], evalEnv eval.Env,
+	nextVarName string) (string, []EvalResult) {
+	input = strings.TrimSpace(input)
 	autoVar := true
 	deletion := false
 	var text string
@@ -89,11 +93,12 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName, nextVarName = evaluate(app, varName, nextVarName,
-			expression, autoVar, evalEnv, userVarNames)
+		evalResults, text, varName, nextVarName = evaluate(evalResults,
+			evalCopyButton, varName, nextVarName, expression, autoVar,
+			evalEnv, userVarNames)
 	}
-	populateView(varName, text, evalEnv, app.evalView)
-	return nextVarName
+	populateView(varName, text, evalEnv, evalView)
+	return nextVarName, evalResults
 }
 
 func getVarNameAndExpression(userVarNames gset.Set[string],
@@ -112,9 +117,9 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
 }
 
-func evaluate(app *App, varName, nextVarName, expression string,
-	autoVar bool, evalEnv eval.Env, userVarNames gset.Set[string]) (string,
-	string, string) {
+func evaluate(evalResults []EvalResult, evalCopyButton *fltk.MenuButton,
+	varName, nextVarName, expression string, autoVar bool, evalEnv eval.Env,
+	userVarNames gset.Set[string]) ([]EvalResult, string, string, string) {
 	var text string
 	expr, err := eval.Parse(expression)
 	if err != nil {
@@ -131,16 +136,15 @@ func evaluate(app *App, varName, nextVarName, expression string,
 				varName = nextVarName
 			}
 			evalEnv[eval.Var(varName)] = value
-			app.evalResults = append(app.evalResults,
-				EvalResult{varName, value})
-			updateEvalCopyButton(app)
+			evalResults = append(evalResults, EvalResult{varName, value})
+			evalResults = updateEvalCopyButton(evalResults, evalCopyButton)
 			text = fmt.Sprintf(
 				`<font face=sans color=green>%s = %s → </font><font
 				face=sans color=blue><b>%g</b>%s</font>`, varName,
 				expression, value, getResultDetails(value))
 		}
 	}
-	return text, varName, nextVarName
+	return evalResults, text, varName, nextVarName
 }
 
 func getResultDetails(value float64) string {
@@ -204,43 +208,43 @@ func populateView(varName, text string, evalEnv eval.Env,
 	evalView.SetTopLine(evalView.TopLine() - evalView.H())
 }
 
-func updateEvalCopyButton(app *App) {
+func updateEvalCopyButton(evalResults []EvalResult,
+	evalCopyButton *fltk.MenuButton) []EvalResult {
 	seen := gset.New[float64]()
-	filtered := make([]EvalResult, 0, len(app.evalResults))
-	for _, evalResult := range app.evalResults {
+	filtered := make([]EvalResult, 0, len(evalResults))
+	for _, evalResult := range evalResults {
 		if !seen.Contains(evalResult.value) {
 			seen.Add(evalResult.value)
 			filtered = append(filtered, evalResult)
 		}
 	}
-	app.evalResults = filtered
-	if len(app.evalResults) > maxCopyResults {
-		app.evalResults = app.evalResults[len(app.evalResults)-
-			maxCopyResults:]
+	evalResults = filtered
+	if len(evalResults) > maxCopyResults {
+		evalResults = evalResults[len(evalResults)-maxCopyResults:]
 	}
-	for i := app.evalCopyButton.Size() - 1; i >= 0; i-- {
-		app.evalCopyButton.Remove(i)
+	for i := evalCopyButton.Size() - 1; i >= 0; i-- {
+		evalCopyButton.Remove(i)
 	}
-	varNames := make([]string, 0, len(app.evalResults))
-	for _, evalResult := range app.evalResults {
+	varNames := make([]string, 0, len(evalResults))
+	for _, evalResult := range evalResults {
 		varNames = append(varNames, evalResult.varName)
 	}
 	hinted, _, err := accelhint.Hinted(varNames)
-	for i, evalResult := range app.evalResults {
+	for i, evalResult := range evalResults {
 		varName := evalResult.varName
 		if err == nil {
 			varName = hinted[i]
 		}
 		value := evalResult.value
-		app.evalCopyButton.AddEx(fmt.Sprintf(
-			"%s = %g", varName, value), 0,
+		evalCopyButton.AddEx(fmt.Sprintf("%s = %g", varName, value), 0,
 			func() { fltk.CopyToClipboard(fmt.Sprintf("%g", value)) }, 0)
 	}
-	if app.evalCopyButton.Size() > 0 {
-		app.evalCopyButton.Activate()
+	if evalCopyButton.Size() > 0 {
+		evalCopyButton.Activate()
 	} else {
-		app.evalCopyButton.Deactivate()
+		evalCopyButton.Deactivate()
 	}
+	return evalResults
 }
 
 type EvalResult struct {
