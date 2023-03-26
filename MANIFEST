@@ -1,7 +1,5 @@
 minicalc.go
 app.go
-# NOTE the bug is in onEval or one of its callees
-# TODO failing that rewrite var name handling from scratch
 evaluator_tab.go
 regex_tab.go
 ascii_tab.go
