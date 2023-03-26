@@ -5,9 +5,9 @@ go 1.20
 require (
 	github.com/go-ini/ini v1.67.0
 	github.com/mark-summerfield/accelhint v0.7.6
-	github.com/mark-summerfield/gong v1.0.1
+	github.com/mark-summerfield/gong v1.1.0
 	github.com/mark-summerfield/gset v0.8.0
-	github.com/pwiecz/go-fltk v0.0.0-20230323234806-8da0fbc7e30e
+	github.com/pwiecz/go-fltk v0.0.0-20230324184923-bbcb6d0a1620
 )
 
 require (
