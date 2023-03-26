@@ -53,9 +53,14 @@ func makeBottomRow(app *App, x, y, width, height int,
 	i := new(int)
 	app.evalInput.Input().SetCallback(func() {
 		*i++
-		fmt.Printf("Enter #%d\n", *i)
+		text := fmt.Sprintf("Enter #%d", *i)
+		fmt.Println(text)
 		updateInputChoice(app.evalInput)
 		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
+		if strings.TrimSpace(app.evalInput.Value()) == "" {
+			app.evalView.SetValue(fmt.Sprintf(
+				"<font face=sans size=4 color=red><b>%s</b></font>", text))
+		}
 	})
 	hbox.End()
 	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
