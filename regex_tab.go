@@ -47,7 +47,8 @@ func makeRegexRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
 	regexLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Regex")
 	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
-	app.regexInput.Input().SetValue(`\s*(\S+)\s*[=:]\s*(\S+)`)
+	app.regexInput.Input().SetValue(
+		`\s*(?P<key>\S+)\s*[=:]\s*(?P<value>\S+)`)
 	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
 	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
@@ -121,6 +122,22 @@ func onRegex(app *App) {
 						<font color=blue><tt>%q</tt></font><br>`, i, j,
 						match))
 				}
+			}
+			for i, name := range rx.SubexpNames() {
+				if i == 0 || name == "" {
+					continue
+				}
+				match := rx.FindStringSubmatch(text)
+				if len(match) == 0 {
+					continue
+				}
+				textBuilder.WriteString(fmt.Sprintf(`<tt>SubexpNames()[%d]
+				</tt> → <font color=blue><tt>%q</tt></font>
+				<br>&nbsp;&nbsp;&nbsp;&nbsp;
+				<tt>FindStringSubmatch(text)[%d]</tt> →
+				<font color=blue><tt>%q</tt></font><br>`, i, name, i,
+					match[i]))
+				empty = false
 			}
 			textBuilder.WriteString("</font>")
 			output := textBuilder.String()
