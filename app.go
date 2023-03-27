@@ -110,10 +110,9 @@ func addTabs(app *App) {
 	app.asciiView = makeAsciiTab(0, buttonHeight, width, height)
 	app.customView = makeCustomTab(app.config, 0, buttonHeight, width,
 		height)
-	aboutGroup := makeAboutTab(app.config.filename, 0, buttonHeight, width,
-		height)
+	makeAboutTab(app.config.filename, 0, buttonHeight, width, height)
 	app.tabs.End()
-	app.tabs.Resizable(aboutGroup)
+	app.tabs.Resizable(app.Window)
 	app.tabs.SetValue(app.config.LastTab)
 }
 
