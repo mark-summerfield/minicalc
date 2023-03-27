@@ -26,12 +26,12 @@ const (
 	customPlaceHolderTemplate = `<font color=navy size=4>
 To add custom content add</font>
 <p><font size=4
-face=courier>CustomHtml="""&lt;html&gt;<br>
+face=courier>CustomHtml=&quot;&quot;&quot;&lt;html&gt;<br>
 &lt;body&gt;<br>
 ...<br>
 &lt;/body&gt;<br>
 &lt;/html&gt;<br>
-"""</font></p>
+&quot;&quot;&quot;</font></p>
 <p><font color=navy size=4>
 to</font> <font size=4 face=courier>%s</font></p>`
 

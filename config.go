@@ -60,7 +60,7 @@ func newConfig() *Config {
 		}
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
-		Scale: 1.0, ShowIntialHelpText: true,
+		Scale: 1.0, ShowIntialHelpText: true, CustomTitle: "&Custom",
 		CustomHtml: fmt.Sprintf(customPlaceHolderTemplate, filename)}
 	return config
 }
