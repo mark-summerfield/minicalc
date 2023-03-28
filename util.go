@@ -45,3 +45,11 @@ func updateInputChoice(choice *fltk.InputChoice) {
 		menu.AddEx(escText, 0, func() { choice.Input().SetValue(text) }, 0)
 	}
 }
+
+func makeTextEditor(x, y, width, height int) (*fltk.TextEditor,
+	*fltk.TextBuffer) {
+	buffer := fltk.NewTextBuffer()
+	editor := fltk.NewTextEditor(x, y, width, height)
+	editor.SetBuffer(buffer)
+	return editor, buffer
+}

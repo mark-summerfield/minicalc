@@ -14,14 +14,14 @@ import (
 func makeRegexTab(app *App, x, y, width, height int) {
 	group := fltk.NewFlex(x, y, width, height, "Rege&x")
 	vbox := fltk.NewFlex(x, y, width, height)
-	const hoffset = 2 * buttonHeight
-	app.regexView = fltk.NewHelpView(x, y, width, height-hoffset)
+	const yoffset = 2 * buttonHeight
+	app.regexView = fltk.NewHelpView(x, y, width, height-yoffset)
 	if app.config.ShowIntialHelpText {
 		app.regexView.SetValue(regexHelpHtml)
 	}
-	hbox := makeRegexRow(app, x, y, width, height, hoffset)
+	hbox := makeRegexRow(app, x, y, width, height, yoffset)
 	vbox.Fixed(hbox, buttonHeight)
-	hbox = makeTextRow(app, x, y, width, height, hoffset)
+	hbox = makeTextRow(app, x, y, width, height, yoffset)
 	vbox.Fixed(hbox, buttonHeight)
 	vbox.End()
 	group.End()
@@ -41,8 +41,8 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	app.regexInput.TakeFocus()
 }
 
-func makeRegexRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
-	hbox := fltk.NewFlex(x, height-hoffset, width, buttonHeight)
+func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, height-yoffset, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	regexLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Regex")
 	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
@@ -56,7 +56,7 @@ func makeRegexRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
 	return hbox
 }
 
-func makeTextRow(app *App, x, y, width, height, hoffset int) *fltk.Flex {
+func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	textLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Text")

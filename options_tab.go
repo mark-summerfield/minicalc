@@ -10,21 +10,21 @@ import (
 const optionsLabelWidth = (labelWidth * 5) / 3
 
 func makeOptionsTab(app *App, x, y, width, height int) {
-	hoffset := 2 * buttonHeight
+	yoffset := 2 * buttonHeight
 	group := fltk.NewGroup(x, y, width, height, "&Options")
 	vbox := fltk.NewFlex(x, y, width, height)
-	hbox := makeScaleRow(app, x, hoffset, width, buttonHeight)
+	hbox := makeScaleRow(app, x, yoffset, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
-	hoffset += buttonHeight
-	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, hoffset, width,
+	yoffset += buttonHeight
+	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, yoffset, width,
 		buttonHeight, "Show &Initial Help Text")
 	app.showInitialHelpCheckButton.SetValue(app.config.ShowIntialHelpText)
 	vbox.Fixed(app.showInitialHelpCheckButton, buttonHeight)
-	hoffset += buttonHeight
-	hbox = makeCustomTitleRow(app, x, y, hoffset, buttonHeight)
+	yoffset += buttonHeight
+	hbox = makeCustomTitleRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
-	hoffset += buttonHeight
-	button := makeCustomTextRows(app, x, y, hoffset, buttonHeight)
+	yoffset += buttonHeight
+	button := makeCustomTextRows(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(button, buttonHeight)
 	vbox.End()
 	group.End()
@@ -70,9 +70,8 @@ func makeCustomTitleRow(app *App, x, y, width, height int) *fltk.Flex {
 func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 	textLabel := makeAccelLabel(x, y, labelWidth, buttonHeight,
 		"Custom &Text:")
-	app.customTextBuffer = fltk.NewTextBuffer()
-	app.customTextEditor = fltk.NewTextEditor(x, y, width, height*5)
-	app.customTextEditor.SetBuffer(app.customTextBuffer)
+	app.customTextEditor, app.customTextBuffer = makeTextEditor(x, y, width,
+		height*5)
 	app.customTextBuffer.SetText(app.config.CustomHtml)
 	app.customTextEditor.SetCallback(func() {
 		app.customView.SetValue(app.customTextBuffer.Text())
