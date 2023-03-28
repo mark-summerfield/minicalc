@@ -16,13 +16,13 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	hbox := makeScaleRow(app, x, yoffset, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
+	hbox = makeThemeRow(app, x, y, yoffset, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	yoffset += buttonHeight
 	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, yoffset, width,
 		buttonHeight, "Show &Initial Help Text")
 	app.showInitialHelpCheckButton.SetValue(app.config.ShowIntialHelpText)
 	vbox.Fixed(app.showInitialHelpCheckButton, buttonHeight)
-	yoffset += buttonHeight
-	hbox = makeThemeRow(app, x, y, yoffset, buttonHeight)
-	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
 	hbox = makeCustomTitleRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
