@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	fltk.SetScheme("oxy")
 	config := newConfig()
+	fltk.SetScheme(config.Theme)
 	fltk.SetScreenScale(0, config.Scale)
 	app := newApp(config)
 	app.Show()

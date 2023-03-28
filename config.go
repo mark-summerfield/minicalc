@@ -16,6 +16,7 @@ type Config struct {
 	Y                  int
 	Width              int
 	Height             int
+	Theme              string
 	Scale              float32
 	LastTab            int
 	ShowIntialHelpText bool
@@ -50,6 +51,16 @@ func newConfig() *Config {
 				if config.Scale < 0.5 || config.Scale > 5 {
 					config.Scale = 1
 				}
+				found := false
+				for _, theme := range themes {
+					if config.Theme == theme {
+						found = true
+						break
+					}
+				}
+				if !found {
+					config.Theme = themes[defaultThemeIndex]
+				}
 				if config.LastTab < 0 || config.LastTab > aboutTabIndex {
 					config.LastTab = 0
 				}
@@ -59,7 +70,8 @@ func newConfig() *Config {
 		}
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
-		Scale: 1.0, ShowIntialHelpText: true, CustomTitle: "&Custom",
+		Theme: themes[defaultThemeIndex], Scale: 1.0,
+		ShowIntialHelpText: true, CustomTitle: "&Custom",
 		CustomHtml: customPlaceHolderText}
 	return config
 }

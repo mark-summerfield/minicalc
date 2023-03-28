@@ -20,6 +20,7 @@ type App struct {
 	regexTextInput             *fltk.InputChoice
 	asciiView                  *fltk.HelpView
 	scaleSpinner               *fltk.Spinner
+	themeChoice                *fltk.Choice
 	showInitialHelpCheckButton *fltk.CheckButton
 	customTitleInput           *fltk.Input
 	customTextEditor           *fltk.TextEditor
@@ -82,6 +83,7 @@ func (me *App) onQuit() {
 	me.config.Height = me.Window.H()
 	me.config.LastTab = me.tabs.Value()
 	me.config.Scale = fltk.ScreenScale(0)
+	// config.Theme is set in callback
 	me.config.ShowIntialHelpText = me.showInitialHelpCheckButton.Value()
 	me.config.CustomTitle = me.customTitleInput.Value()
 	me.config.CustomHtml = me.customTextBuffer.Text()

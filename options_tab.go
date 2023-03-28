@@ -21,6 +21,9 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	app.showInitialHelpCheckButton.SetValue(app.config.ShowIntialHelpText)
 	vbox.Fixed(app.showInitialHelpCheckButton, buttonHeight)
 	yoffset += buttonHeight
+	hbox = makeThemeRow(app, x, y, yoffset, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	yoffset += buttonHeight
 	hbox = makeCustomTitleRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
@@ -47,6 +50,27 @@ func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 	})
 	scaleLabel.SetCallback(func() { app.scaleSpinner.TakeFocus() })
 	hbox.Fixed(scaleLabel, optionsLabelWidth)
+	hbox.End()
+	return hbox
+}
+
+func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	themeLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "The&me")
+	app.themeChoice = fltk.NewChoice(0, 0, optionsLabelWidth, buttonHeight)
+	for i, theme := range themes {
+		theme := theme
+		if theme == app.config.Theme {
+			app.themeChoice.SetValue(i)
+		}
+		app.themeChoice.AddEx(theme, 0, func() {
+			app.config.Theme = theme
+			fltk.SetScheme(theme)
+		}, 0)
+	}
+	themeLabel.SetCallback(func() { app.themeChoice.TakeFocus() })
+	hbox.Fixed(themeLabel, optionsLabelWidth)
 	hbox.End()
 	return hbox
 }

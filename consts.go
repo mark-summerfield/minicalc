@@ -10,6 +10,8 @@ import (
 //go:embed Version.dat
 var Version string
 
+var themes = []string{"Base", "Gleam", "Gtk", "Oxy", "Plastic"}
+
 const (
 	appName      = "MiniCalc"
 	buttonHeight = 32
@@ -23,6 +25,8 @@ const (
 	customTabIndex     = 4
 	optionsTabIndex    = 5
 	aboutTabIndex      = 6
+
+	defaultThemeIndex = 3
 
 	maxCopyResults = 9
 	maxMenuTexts   = 9
