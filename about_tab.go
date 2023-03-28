@@ -49,14 +49,8 @@ Copyright © %s Mark Summerfield.<br>
 All rights reserved.<br>
 License: GPLv3.</font>
 </center></p>
-<p>
-<center>
-<font face=sans size=4>
-Configuration file: <tt>%s</tt><br>
-(edit to change the Scale, the Custom tab, etc.)
-</font>
-</center>
-</p>
+<p><center><font face=sans size=4>
+Configuration file:<br><tt>%s</tt></font></center></p>
 <p><center><font face=sans size=4 color=#222>%s • %s/%s</font></center><br>
 <center><font face=sans size=4 color=#222>go-fltk %s • FLTK
 %s</font></center><br>

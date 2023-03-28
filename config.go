@@ -39,8 +39,7 @@ func newConfig() *Config {
 					config.CustomTitle = "Custom"
 				}
 				if config.CustomHtml == "" {
-					config.CustomHtml = fmt.Sprintf(
-						customPlaceHolderTemplate, filename)
+					config.CustomHtml = customPlaceHolderText
 				}
 				if config.Width < 100 || config.Width > 768 {
 					config.Width = 512
@@ -61,7 +60,7 @@ func newConfig() *Config {
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
 		Scale: 1.0, ShowIntialHelpText: true, CustomTitle: "&Custom",
-		CustomHtml: fmt.Sprintf(customPlaceHolderTemplate, filename)}
+		CustomHtml: customPlaceHolderText}
 	return config
 }
 

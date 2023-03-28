@@ -45,3 +45,4 @@ zig-cache
 dist/
 build/
 minicalc
+rsrc_windows*.syso
