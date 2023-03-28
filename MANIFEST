@@ -1,5 +1,5 @@
-# TODO /&Options\
 # TODO /Accel &Hints\
+# TODO color syntax highlighting for custom text (when supported)
 minicalc.go
 app.go
 evaluator_tab.go
@@ -7,7 +7,7 @@ regex_tab.go
 ascii_tab.go
 accel_hints_tab.go
 custom_tab.go
-options_tab.go # TODO color syntax highlighting for custom text
+options_tab.go
 about_tab.go
 config.go
 util.go
