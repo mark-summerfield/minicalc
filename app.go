@@ -9,17 +9,23 @@ import (
 
 type App struct {
 	*fltk.Window
-	config         *Config
-	tabs           *fltk.Tabs
-	evalView       *fltk.HelpView
-	evalInput      *fltk.InputChoice
-	evalResults    []EvalResult
-	evalCopyButton *fltk.MenuButton
-	regexView      *fltk.HelpView
-	regexInput     *fltk.InputChoice
-	regexTextInput *fltk.InputChoice
-	asciiView      *fltk.HelpView
-	customView     *fltk.HelpView
+	config                     *Config
+	tabs                       *fltk.Tabs
+	evalView                   *fltk.HelpView
+	evalInput                  *fltk.InputChoice
+	evalResults                []EvalResult
+	evalCopyButton             *fltk.MenuButton
+	regexView                  *fltk.HelpView
+	regexInput                 *fltk.InputChoice
+	regexTextInput             *fltk.InputChoice
+	asciiView                  *fltk.HelpView
+	scaleSpinner               *fltk.Spinner
+	showInitialHelpCheckButton *fltk.CheckButton
+	customTitleInput           *fltk.Input
+	customTextEditor           *fltk.TextEditor
+	customTextBuffer           *fltk.TextBuffer
+	customGroup                *fltk.Group
+	customView                 *fltk.HelpView
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
@@ -76,6 +82,9 @@ func (me *App) onQuit() {
 	me.config.Height = me.Window.H()
 	me.config.LastTab = me.tabs.Value()
 	me.config.Scale = fltk.ScreenScale(0)
+	me.config.ShowIntialHelpText = me.showInitialHelpCheckButton.Value()
+	me.config.CustomTitle = me.customTitleInput.Value()
+	me.config.CustomHtml = me.customTextBuffer.Text()
 	me.config.save()
 	me.Window.Destroy()
 }
@@ -108,8 +117,9 @@ func addTabs(app *App) {
 	makeEvaluatorTab(app, 0, buttonHeight, width, height)
 	makeRegexTab(app, 0, buttonHeight, width, height)
 	app.asciiView = makeAsciiTab(0, buttonHeight, width, height)
-	app.customView = makeCustomTab(app.config, 0, buttonHeight, width,
-		height)
+	makeAccelHintsTab(0, buttonHeight, width, height)
+	makeCustomTab(app, 0, buttonHeight, width, height)
+	makeOptionsTab(app, 0, buttonHeight, width, height)
 	makeAboutTab(app.config.filename, 0, buttonHeight, width, height)
 	app.tabs.End()
 	app.tabs.Resizable(app.Window)
@@ -122,9 +132,12 @@ func onTab(app *App) {
 		app.evalInput.TakeFocus()
 	case regexTabIndex:
 		app.regexInput.TakeFocus()
+	case accelHintsTabIndex:
 	case asciiTabIndex:
 		app.asciiView.TakeFocus()
 	case customTabIndex:
 		app.customView.TakeFocus()
+	case optionsTabIndex:
+		app.scaleSpinner.TakeFocus()
 	}
 }

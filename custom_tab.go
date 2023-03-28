@@ -7,11 +7,11 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeCustomTab(config *Config, x, y, width, height int) *fltk.HelpView {
-	group := fltk.NewGroup(x, y, width, height, config.CustomTitle)
-	view := fltk.NewHelpView(x, y, width, height)
-	view.SetValue(config.CustomHtml)
-	group.End()
-	view.TakeFocus()
-	return view
+func makeCustomTab(app *App, x, y, width, height int) {
+	app.customGroup = fltk.NewGroup(x, y, width, height,
+		app.config.CustomTitle)
+	app.customView = fltk.NewHelpView(x, y, width, height)
+	app.customView.SetValue(app.config.CustomHtml)
+	app.customGroup.End()
+	app.customView.TakeFocus()
 }

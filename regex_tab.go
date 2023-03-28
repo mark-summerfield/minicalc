@@ -14,7 +14,7 @@ import (
 func makeRegexTab(app *App, x, y, width, height int) {
 	group := fltk.NewFlex(x, y, width, height, "Rege&x")
 	vbox := fltk.NewFlex(x, y, width, height)
-	hoffset := 2 * buttonHeight
+	const hoffset = 2 * buttonHeight
 	app.regexView = fltk.NewHelpView(x, y, width, height-hoffset)
 	if app.config.ShowIntialHelpText {
 		app.regexView.SetValue(regexHelpHtml)

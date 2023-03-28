@@ -16,11 +16,13 @@ const (
 	labelWidth   = 60
 	pad          = 3
 
-	evaluatorTabIndex = 0
-	regexTabIndex     = 1
-	asciiTabIndex     = 2
-	customTabIndex    = 3
-	aboutTabIndex     = 4
+	evaluatorTabIndex  = 0
+	regexTabIndex      = 1
+	asciiTabIndex      = 2
+	accelHintsTabIndex = 3
+	customTabIndex     = 4
+	optionsTabIndex    = 5
+	aboutTabIndex      = 6
 
 	maxCopyResults = 9
 	maxMenuTexts   = 9
