@@ -7,7 +7,7 @@ require (
 	github.com/mark-summerfield/accelhint v0.7.6
 	github.com/mark-summerfield/gong v1.1.3
 	github.com/mark-summerfield/gset v0.8.0
-	github.com/pwiecz/go-fltk v0.0.0-20230324184923-bbcb6d0a1620
+	github.com/pwiecz/go-fltk v0.0.0-20230328210026-8ecafdba718a
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 )
 
