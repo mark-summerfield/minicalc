@@ -9,31 +9,33 @@ import (
 
 type App struct {
 	*fltk.Window
-	config                     *Config
-	tabs                       *fltk.Tabs
-	evalView                   *fltk.HelpView
-	evalInput                  *fltk.InputChoice
-	evalResults                []EvalResult
-	evalCopyButton             *fltk.MenuButton
-	regexView                  *fltk.HelpView
-	regexInput                 *fltk.InputChoice
-	regexTextInput             *fltk.InputChoice
-	accelTextEditor            *fltk.TextEditor
-	accelTextBuffer            *fltk.TextBuffer
-	accelAlphabetInput         *fltk.Input
-	accelStatusOutput          *fltk.Output
-	accelView                  *fltk.HelpView
-	asciiView                  *fltk.HelpView
-	scaleSpinner               *fltk.Spinner
-	themeChoice                *fltk.Choice
-	sizeSpinner                *fltk.Spinner
-	showInitialHelpCheckButton *fltk.CheckButton
-	customTitleInput           *fltk.Input
-	customTextEditor           *fltk.TextEditor
-	customTextBuffer           *fltk.TextBuffer
-	customGroup                *fltk.Group
-	customView                 *fltk.HelpView
-	aboutView                  *fltk.HelpView
+	config                      *Config
+	tabs                        *fltk.Tabs
+	evalView                    *fltk.HelpView
+	evalInput                   *fltk.InputChoice
+	evalResults                 []EvalResult
+	evalCopyButton              *fltk.MenuButton
+	regexView                   *fltk.HelpView
+	regexInput                  *fltk.InputChoice
+	regexTextInput              *fltk.InputChoice
+	accelTextEditor             *fltk.TextEditor
+	accelTextBuffer             *fltk.TextBuffer
+	accelAlphabetInput          *fltk.Input
+	accelStatusOutput           *fltk.Output
+	accelView                   *fltk.HelpView
+	accelShowLettersCheckButton *fltk.CheckButton
+	accelShowIndexesCheckButton *fltk.CheckButton
+	asciiView                   *fltk.HelpView
+	scaleSpinner                *fltk.Spinner
+	themeChoice                 *fltk.Choice
+	sizeSpinner                 *fltk.Spinner
+	showInitialHelpCheckButton  *fltk.CheckButton
+	customTitleInput            *fltk.Input
+	customTextEditor            *fltk.TextEditor
+	customTextBuffer            *fltk.TextBuffer
+	customGroup                 *fltk.Group
+	customView                  *fltk.HelpView
+	aboutView                   *fltk.HelpView
 }
 
 func (me *App) onEvent(event fltk.Event) bool {

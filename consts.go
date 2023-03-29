@@ -28,10 +28,22 @@ const (
 
 	defaultThemeIndex = 3
 
-	maxCopyResults = 9
-	maxMenuTexts   = 9
+	defaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"
+	escMarker       = "&&"
+	placeholder     = "||"
+	maxCopyResults  = 9
+	maxMenuTexts    = 9
 
-	errTemplate           = "<font color=red size=4>Error: %s</font>"
+	errTemplate     = "<font color=red size=4>Error: %s</font>"
+	defaultUnhinted = `Undo
+Redo
+Copy
+Cu&t
+Paste
+Find
+Find Again
+Find && Replace`
+
 	customPlaceHolderText = `<p>
 <font color=red><i>Default custom text: go to the Options tab to
 customize this text (and this tab's title).</i></font></p>
