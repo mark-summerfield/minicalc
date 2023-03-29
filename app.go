@@ -122,6 +122,7 @@ func addTabs(app *App) {
 	height := app.Window.H()
 	app.tabs = fltk.NewTabs(0, 0, width, height)
 	app.tabs.SetOverflow(fltk.OverflowPulldown)
+	app.tabs.SetSelectionColor(fltk.BACKGROUND2_COLOR)
 	app.tabs.SetAlign(fltk.ALIGN_TOP)
 	app.tabs.SetCallbackCondition(fltk.WhenChanged)
 	app.tabs.SetCallback(func() { onTab(app) })
