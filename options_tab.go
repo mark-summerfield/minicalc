@@ -4,6 +4,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -98,7 +100,8 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 		height*5)
 	app.customTextBuffer.SetText(app.config.CustomHtml)
 	app.customTextEditor.SetCallback(func() {
-		app.customView.SetValue(app.customTextBuffer.Text())
+		app.customView.SetValue(strings.ReplaceAll(
+			app.customTextBuffer.Text(), "\"\"\"", "&quot;&quot;&quot;"))
 	})
 	textLabel.SetCallback(func() { app.customTextEditor.TakeFocus() })
 	return textLabel
