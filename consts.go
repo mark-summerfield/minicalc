@@ -20,8 +20,8 @@ const (
 
 	evaluatorTabIndex  = 0
 	regexTabIndex      = 1
-	asciiTabIndex      = 2
-	accelHintsTabIndex = 3
+	accelHintsTabIndex = 2
+	asciiTabIndex      = 3
 	customTabIndex     = 4
 	optionsTabIndex    = 5
 	aboutTabIndex      = 6
