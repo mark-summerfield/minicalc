@@ -12,7 +12,9 @@ Can be built for Linux and Windows.
 `minicalc.exe` is a Windows 64-bit binary (4.3MB SHA256
 ca28788701857e51a567df7baba891ff335fa27862390ba203d3b95c645490c1).
 
-![Screenshot](images/screenshot.png)
+![Screenshot (Regex tab)](images/regex-screenshot.png)
+
+![Screenshot (Accel Hints tab)](images/accel-screenshot.png)
 
 ## License
 
