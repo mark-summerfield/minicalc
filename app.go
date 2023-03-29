@@ -21,12 +21,14 @@ type App struct {
 	asciiView                  *fltk.HelpView
 	scaleSpinner               *fltk.Spinner
 	themeChoice                *fltk.Choice
+	sizeSpinner                *fltk.Spinner
 	showInitialHelpCheckButton *fltk.CheckButton
 	customTitleInput           *fltk.Input
 	customTextEditor           *fltk.TextEditor
 	customTextBuffer           *fltk.TextBuffer
 	customGroup                *fltk.Group
 	customView                 *fltk.HelpView
+	aboutView                  *fltk.HelpView
 }
 
 func (me *App) onEvent(event fltk.Event) bool {
@@ -118,11 +120,11 @@ func addTabs(app *App) {
 	height -= buttonHeight // Allow room for tab
 	makeEvaluatorTab(app, 0, buttonHeight, width, height)
 	makeRegexTab(app, 0, buttonHeight, width, height)
-	app.asciiView = makeAsciiTab(0, buttonHeight, width, height)
+	makeAsciiTab(app, 0, buttonHeight, width, height)
 	makeAccelHintsTab(0, buttonHeight, width, height)
 	makeCustomTab(app, 0, buttonHeight, width, height)
 	makeOptionsTab(app, 0, buttonHeight, width, height)
-	makeAboutTab(app.config.filename, 0, buttonHeight, width, height)
+	makeAboutTab(app, 0, buttonHeight, width, height)
 	app.tabs.End()
 	app.tabs.Resizable(app.Window)
 	app.tabs.SetValue(app.config.LastTab)

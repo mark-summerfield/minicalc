@@ -20,6 +20,7 @@ type Config struct {
 	Scale              float32
 	LastTab            int
 	ShowIntialHelpText bool
+	ViewFontSize       int
 	CustomTitle        string
 	CustomHtml         string
 }
@@ -51,6 +52,10 @@ func newConfig() *Config {
 				if config.Scale < 0.5 || config.Scale > 5 {
 					config.Scale = 1
 				}
+				if config.ViewFontSize < 10 ||
+					config.ViewFontSize > 20 {
+					config.ViewFontSize = 14
+				}
 				found := false
 				for _, theme := range themes {
 					if config.Theme == theme {
@@ -70,7 +75,7 @@ func newConfig() *Config {
 		}
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
-		Theme: themes[defaultThemeIndex], Scale: 1.0,
+		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
 		ShowIntialHelpText: true, CustomTitle: "&Custom",
 		CustomHtml: customPlaceHolderText}
 	return config

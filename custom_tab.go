@@ -11,6 +11,8 @@ func makeCustomTab(app *App, x, y, width, height int) {
 	app.customGroup = fltk.NewGroup(x, y, width, height,
 		app.config.CustomTitle)
 	app.customView = fltk.NewHelpView(x, y, width, height)
+	app.customView.TextFont(fltk.HELVETICA)
+	app.customView.TextSize(app.config.ViewFontSize)
 	app.customView.SetValue(app.config.CustomHtml)
 	app.customGroup.End()
 	app.customView.TakeFocus()

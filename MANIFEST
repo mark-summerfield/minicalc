@@ -1,3 +1,4 @@
+# TODO Options: View Base &Font Size
 # TODO /Accel &Hints\
 # TODO color syntax highlighting for custom text (when supported)
 minicalc.go
@@ -8,8 +9,8 @@ ascii_tab.go
 accel_hints_tab.go
 custom_tab.go
 options_tab.go
-about_tab.go
 config.go
+about_tab.go
 util.go
 consts.go
 

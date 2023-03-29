@@ -11,13 +11,14 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeAsciiTab(x, y, width, height int) *fltk.HelpView {
+func makeAsciiTab(app *App, x, y, width, height int) {
 	group := fltk.NewGroup(x, y, width, height, "&ASCII")
-	view := fltk.NewHelpView(x, y, width, height)
-	view.SetValue(asciiHtml())
+	app.asciiView = fltk.NewHelpView(x, y, width, height)
+	app.asciiView.TextFont(fltk.COURIER)
+	app.asciiView.TextSize(app.config.ViewFontSize)
+	app.asciiView.SetValue(asciiHtml())
 	group.End()
-	view.TakeFocus()
-	return view
+	app.asciiView.TakeFocus()
 }
 
 func asciiHtml() string {
@@ -28,7 +29,7 @@ func asciiHtml() string {
 }
 
 func populateAsciiHigh(text *strings.Builder) {
-	text.WriteString("<p><font face=courier size=4>")
+	text.WriteString("<p>")
 	const (
 		start  = 33
 		end    = 127
@@ -42,7 +43,7 @@ func populateAsciiHigh(text *strings.Builder) {
 			populateOne(text, rune(j+(k*stride)), k == 4)
 		}
 	}
-	text.WriteString("</font></p>")
+	text.WriteString("</p>")
 }
 
 func populateOne(text *strings.Builder, i rune, isEnd bool) {
@@ -61,7 +62,7 @@ func populateOne(text *strings.Builder, i rune, isEnd bool) {
 }
 
 func populateAsciiLow(text *strings.Builder) {
-	text.WriteString("<p><font face=courier size=4>")
+	text.WriteString("<p>")
 	descForChar := getDescForChar()
 	for i := 0; i < len(descForChar); i++ {
 		charDesc := descForChar[i]
@@ -79,7 +80,7 @@ func populateAsciiLow(text *strings.Builder) {
 			`&nbsp;%02X&nbsp;<font color=navy>%s</font>
 			&nbsp;%s&nbsp;%s<br>`, i, c, istr, charDesc.desc))
 	}
-	text.WriteString("</font></p>")
+	text.WriteString("</p>")
 }
 
 type CharDesc struct {

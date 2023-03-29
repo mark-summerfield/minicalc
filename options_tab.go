@@ -4,12 +4,13 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/pwiecz/go-fltk"
 )
 
-const optionsLabelWidth = (labelWidth * 5) / 3
+const optionsLabelWidth = labelWidth * 2
 
 func makeOptionsTab(app *App, x, y, width, height int) {
 	yoffset := 2 * buttonHeight
@@ -19,6 +20,9 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
 	hbox = makeThemeRow(app, x, y, yoffset, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	yoffset += buttonHeight
+	hbox = makeFontSizeRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
 	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, yoffset, width,
@@ -43,6 +47,7 @@ func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox.SetType(fltk.ROW)
 	scaleLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Scale")
 	app.scaleSpinner = fltk.NewSpinner(0, 0, labelWidth, buttonHeight)
+	app.scaleSpinner.SetType(fltk.SPINNER_FLOAT_INPUT)
 	app.scaleSpinner.SetMinimum(0.5)
 	app.scaleSpinner.SetMaximum(3.5)
 	app.scaleSpinner.SetStep(0.1)
@@ -73,6 +78,33 @@ func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 	}
 	themeLabel.SetCallback(func() { app.themeChoice.TakeFocus() })
 	hbox.Fixed(themeLabel, optionsLabelWidth)
+	hbox.End()
+	return hbox
+}
+
+func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	sizeLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight,
+		"View &Font Size")
+	app.sizeSpinner = fltk.NewSpinner(0, 0, labelWidth, buttonHeight)
+	app.sizeSpinner.SetType(fltk.SPINNER_INT_INPUT)
+	app.sizeSpinner.SetMinimum(10)
+	app.sizeSpinner.SetMaximum(20)
+	app.sizeSpinner.SetValue(float64(app.config.ViewFontSize))
+	app.sizeSpinner.SetCallback(func() {
+		size := int(app.sizeSpinner.Value())
+		app.config.ViewFontSize = size
+		fmt.Println(size)
+		for _, widget := range []*fltk.HelpView{app.evalView, app.regexView,
+			app.asciiView, app.customView, app.aboutView} {
+			if widget != nil {
+				widget.TextSize(size)
+			}
+		}
+	})
+	sizeLabel.SetCallback(func() { app.sizeSpinner.TakeFocus() })
+	hbox.Fixed(sizeLabel, optionsLabelWidth)
 	hbox.End()
 	return hbox
 }

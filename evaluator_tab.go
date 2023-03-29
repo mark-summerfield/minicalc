@@ -24,6 +24,8 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	vbox := fltk.NewFlex(x, y, width, height)
 	app.evalView = fltk.NewHelpView(x, y, width, height-buttonHeight)
+	app.evalView.TextFont(fltk.COURIER)
+	app.evalView.TextSize(app.config.ViewFontSize)
 	if app.config.ShowIntialHelpText {
 		app.evalView.SetValue(evalHelpHtml)
 	} else {
@@ -76,8 +78,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
 			delete(userVarNames, varName)
 			delete(evalEnv, eval.Var(varName))
 			text = fmt.Sprintf(
-				"<font face=sans color=purple>deleted <b>%s</b></font>",
-				varName)
+				"<font color=purple>deleted <b>%s</b></font>", varName)
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
@@ -126,10 +127,9 @@ func evaluate(app *App, varName, nextVarName, expression string,
 			app.evalResults = append(app.evalResults,
 				EvalResult{varName, value})
 			updateEvalCopyButton(app)
-			text = fmt.Sprintf(
-				`<font face=sans color=green>%s = %s → </font><font
-				face=sans color=blue><b>%g</b>%s</font>`, varName,
-				expression, value, getResultDetails(value))
+			text = fmt.Sprintf(`<font color=green>%s = %s → </font><font
+				color=blue><b>%g</b>%s</font>`, varName, expression, value,
+				getResultDetails(value))
 		}
 	}
 	return text, varName, nextVarName
@@ -175,7 +175,6 @@ func getNextVarName(evalEnv eval.Env,
 func populateView(varName, text string, evalEnv eval.Env,
 	evalView *fltk.HelpView) {
 	var textBuilder strings.Builder
-	textBuilder.WriteString("<font face=sans size=4>")
 	keys := gong.SortedMapKeys(evalEnv)
 	for _, key := range keys {
 		bs, be := "", ""
@@ -184,12 +183,11 @@ func populateView(varName, text string, evalEnv eval.Env,
 		}
 		value := evalEnv[key]
 		textBuilder.WriteString(fmt.Sprintf(
-			`<font face=sans color=green>%s%s%s = <font face=sans
-			color=blue>%g</font><font face=sans color=#444>%s</font><br>`,
-			bs, key, be, value, getResultDetails(value)))
+			`<font color=green>%s%s%s = <font color=blue>%g</font><font
+			color=#444>%s</font><br>`, bs, key, be, value,
+			getResultDetails(value)))
 	}
 	textBuilder.WriteString(text)
-	textBuilder.WriteString("</font>")
 	evalView.SetValue(textBuilder.String())
 	// Scroll to end
 	evalView.SetTopLine(999999)

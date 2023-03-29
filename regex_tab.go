@@ -16,6 +16,8 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	vbox := fltk.NewFlex(x, y, width, height)
 	const yoffset = 2 * buttonHeight
 	app.regexView = fltk.NewHelpView(x, y, width, height-yoffset)
+	app.regexView.TextFont(fltk.COURIER)
+	app.regexView.TextSize(app.config.ViewFontSize)
 	if app.config.ShowIntialHelpText {
 		app.regexView.SetValue(regexHelpHtml)
 	}
@@ -83,7 +85,7 @@ func onRegex(app *App) {
 		} else {
 			empty := true
 			var textBuilder strings.Builder
-			textBuilder.WriteString("<font color=green face=sans size=4>")
+			textBuilder.WriteString("<font color=green>")
 			if rx.MatchString(text) {
 				textBuilder.WriteString(`<tt>MatchString(text)</tt> → <font
 					color=blue>true</font><br>`)
@@ -142,8 +144,8 @@ func onRegex(app *App) {
 			textBuilder.WriteString("</font>")
 			output := textBuilder.String()
 			if empty {
-				output = `<font color=navy face=sans size=4>Valid regex does
-				<i>not</i> match the text.</font>`
+				output = `<font color=navy>Valid regex does <i>not</i> 
+				match the text.</font>`
 			}
 			app.regexView.SetValue(output)
 		}

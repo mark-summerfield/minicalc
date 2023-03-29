@@ -31,13 +31,12 @@ const (
 	maxCopyResults = 9
 	maxMenuTexts   = 9
 
-	errTemplate           = "<font face=sans color=red size=4>Error: %s</font>"
+	errTemplate           = "<font color=red size=4>Error: %s</font>"
 	customPlaceHolderText = `<p>
-<font size=4 face=sans color=red><i>Default custom text: go to the
-Options tab to customize this text (and this tab's title).</i></font></p>
+<font color=red><i>Default custom text: go to the Options tab to
+customize this text (and this tab's title).</i></font></p>
 <p>
-<font size=4 face=sans><b>Aliases</b></font><br>
-<font face=courier size=4>
+<b>Aliases</b><br>
 <font color=blue>gca</font> — git commit -a<br>
 <font color=blue>gco</font> — git checkout <i>branchname</i><br>
 <font color=blue>gbc</font> — git checkout -b <i>newbranchname</i><br>
@@ -54,17 +53,16 @@ Options tab to customize this text (and this tab's title).</i></font></p>
 <font color=blue>gor</font> — go run .<br>
 <font color=blue>gom</font> — go mod tidy<br>
 <font color=blue>gogu</font> — go get -u ./...<br>
-</font>
 </p>
 <p>
-<font size=4 face=sans><b>NATO Phonetic Alphabet</b></font><br>
-<font size=4 color=navy>Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, 
+<b>NATO Phonetic Alphabet</b><br>
+<font color=navy>Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, 
 Golf, Hotel, India, Juliet, Kilo, Lima, Mike, November, Oscar, Papa, 
 Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, 
 Yankee, Zulu.</font></p>
 <p>
-<font size=4 face=sans><b>Greek Alphabet</b></font><br>
-<font size=4 color=green>Α&nbsp;α&nbsp;alpha, 
+<b>Greek Alphabet</b><br>
+<font color=green>Α&nbsp;α&nbsp;alpha, 
 Β&nbsp;β&nbsp;beta, Γ&nbsp;γ&nbsp;gamma,  
 Δ&nbsp;δ&nbsp;delta, Ε&nbsp;ε&nbsp;epsilon, 
 Ζ&nbsp;ζ&nbsp;zeta, Η&nbsp;η&nbsp;eta, 
@@ -79,44 +77,36 @@ Yankee, Zulu.</font></p>
 </p>
 </body>
 </html>`
-	evalShortHelp = `<p><font color=#888 face=sans size=4>Type an
-	expression then press Enter or press F1 for help.</font></p>`
-	evalHelpHtml = `<p><font face=sans size=4>Type an expression and press
-Enter, e.g., <tt>5 + sqrt(pi)</tt>.</font></p>
-<p><font face=sans size=4>Results are automatically assigned to successive
+	evalShortHelp = `<p><font color=#888>Type an expression then press
+	Enter or press F1 for help.</font></p>`
+	evalHelpHtml = `<p>Type an expression and press Enter, e.g.,
+	<tt>5 + sqrt(pi)</tt>.</p>
+<p>Results are automatically assigned to successive
 variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with
-<tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></font></p>
-<p><font face=sans size=4>To delete a variable use <tt><i>varname</i>=</tt>
-and press Enter—or just reassign to it.</font></p>
-<p><font face=sans size=4>Supported operators: <tt>+ - * / %</tt>.
-</font></p>
-<p><font face=sans size=4>Predefined variables: <tt>pi</tt>.
-</font></p>
-<p><font face=sans size=4>Functions:
+<tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></p>
+<p>To delete a variable use <tt><i>varname</i>=</tt>
+and press Enter—or just reassign to it.</p>
+<p>Supported operators: <tt>+ - * / %</tt>.</p>
+<p>Predefined variables: <tt>pi</tt>.</p>
+<p>Functions:
 <tt>pow(<i>x</i>, <i>y</i>)</tt>,
 <tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
 <tt>sqrt(<i>n</i>)</tt>.
-</font></p>
-<p><font face=sans size=4>
-Click the menu button or press <b>F2</b> to choose a previous expression.
-</font></p>
-<p><font face=sans size=4>
-Click the X close button or press <b>Ctrl+Q</b> to quit.
-</font></p>
-</font>`
-	regexHelpHtml = `<p><font face=sans size=4>Type a regular
+</p>
+<p>Click the menu button or press <b>F2</b> to choose a previous expression.
+</p>
+<p>Click the X close button or press <b>Ctrl+Q</b> to quit.</p>`
+	regexHelpHtml = `<p>Type a regular
 expression and some text to test it on and press Enter.<br>
 Press F2 to choose a previous regex and Shift+F2 to choose a previous
-text</font></p>
-<p><font face=sans size=4>
+text.</p>
+<p>
 See also the Go regex
 <a href="https://pkg.go.dev/regexp/syntax">syntax</a> and
 <a href="https://pkg.go.dev/regexp">API</a>.
-</font></p>
-<p><font face=sans size=4>
-Click the X close button or press <b>Ctrl+Q</b> to quit.
-</font></p>`
+</p>
+<p>Click the X close button or press <b>Ctrl+Q</b> to quit.</p>`
 )
 
 //go:embed images/icon.svg

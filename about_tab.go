@@ -13,10 +13,12 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-func makeAboutTab(filename string, x, y, width, height int) {
+func makeAboutTab(app *App, x, y, width, height int) {
 	group := fltk.NewGroup(x, y, width, height, "A&bout")
-	view := fltk.NewHelpView(x, y, width, height)
-	view.SetValue(aboutHtml(filename))
+	app.aboutView = fltk.NewHelpView(x, y, width, height)
+	app.aboutView.TextFont(fltk.HELVETICA)
+	app.aboutView.TextSize(app.config.ViewFontSize)
+	app.aboutView.SetValue(aboutHtml(app.config.filename))
 	group.End()
 }
 
@@ -36,25 +38,21 @@ func aboutHtml(filename string) string {
 		}
 	}
 	return fmt.Sprintf(
-		`<p><center><font face=sans size=6 color=navy><b>%s</b> v%s</font>
-</center></p>
-<p><center><font face=sans color=navy size=4>A little GUI
-tool</font></center></p>
-<p><center><font face=sans size=4>
-<a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
-</font></center></p>
+		`<center><h3><font color=navy>%s v%s</font></h3></center>
+<p><center><font color=navy>A little GUI tool</font></center></p>
 <p><center>
-<font face=sans size=4 color=green>
-Copyright © %s Mark Summerfield.<br>
-All rights reserved.<br>
-License: GPLv3.</font>
+<a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
 </center></p>
-<p><center><font face=sans size=4>
-Configuration file:<br><tt>%s</tt></font></center></p>
-<p><center><font face=sans size=4 color=#222>%s • %s/%s</font></center><br>
-<center><font face=sans size=4 color=#222>go-fltk %s • FLTK
+<p><center>
+<font color=green>Copyright © %s Mark Summerfield.<br>
+All rights reserved.<br>
+License: GPLv3.
+</center></p>
+<p><center>Configuration file:<br><tt>%s</tt></center></p>
+<p><center><font color=#222>%s • %s/%s</font></center><br>
+<center><font color=#222>go-fltk %s • FLTK
 %s</font></center><br>
-<center><font face=sans size=4 color=#222>%s</font></center></p>`,
+<center><font color=#222>%s</font></center></p>`,
 		appName, Version, year, filename, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }
