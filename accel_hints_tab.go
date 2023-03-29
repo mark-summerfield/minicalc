@@ -76,10 +76,10 @@ func makeStatusRow(app *App, x, y, width, height int) *fltk.Flex {
 	x = width - (2 * checkWidth)
 	app.accelShowLettersCheckButton = fltk.NewCheckButton(x, y,
 		checkWidth, buttonHeight, "Sho&w Letters")
-	app.accelShowLettersCheckButton.SetValue(true)
+	app.accelShowLettersCheckButton.SetValue(app.config.AccelShowLetters)
 	app.accelShowIndexesCheckButton = fltk.NewCheckButton(x, y,
 		checkWidth, buttonHeight, "Show &Indexes")
-	app.accelShowIndexesCheckButton.SetValue(true)
+	app.accelShowIndexesCheckButton.SetValue(app.config.AccelShowIndexes)
 	hbox.Fixed(app.accelShowLettersCheckButton, checkWidth)
 	hbox.Fixed(app.accelShowIndexesCheckButton, checkWidth)
 	hbox.End()
@@ -94,9 +94,17 @@ func addCallbacks(app *App, unhintedLabel, alphabetLabel *fltk.Button) {
 	app.accelAlphabetInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	app.accelAlphabetInput.SetCallback(func() { updateAccels(app) })
 	app.accelShowLettersCheckButton.SetCallback(
-		func() { updateAccels(app) })
+		func() {
+			app.config.AccelShowLetters =
+				app.accelShowLettersCheckButton.Value()
+			updateAccels(app)
+		})
 	app.accelShowIndexesCheckButton.SetCallback(
-		func() { updateAccels(app) })
+		func() {
+			app.config.AccelShowIndexes =
+				app.accelShowIndexesCheckButton.Value()
+			updateAccels(app)
+		})
 }
 
 func updateAccels(app *App) {
@@ -159,7 +167,7 @@ func getHintHtml(unhinted, hinted []string, showLetters,
 			if showLetters {
 				text.WriteString(fmt.Sprintf(
 					"<font face=courier color=green><b>%s</b></font>"+
-						"&nbsp;&nbsp;", strings.ToUpper(accel)))
+						"&nbsp;&nbsp;&nbsp;", strings.ToUpper(accel)))
 			}
 			if showIndexes {
 				text.WriteString(fmt.Sprintf(
@@ -171,8 +179,8 @@ func getHintHtml(unhinted, hinted []string, showLetters,
 			text.WriteString(right)
 		} else {
 			if showLetters {
-				text.WriteString(
-					"<font face=courier><b>&nbsp;</b></font>&nbsp;&nbsp;")
+				text.WriteString("<font face=courier><b>&nbsp;</b></font>" +
+					"&nbsp;&nbsp;&nbsp;")
 			}
 			if showIndexes {
 				text.WriteString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")

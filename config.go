@@ -21,6 +21,8 @@ type Config struct {
 	LastTab            int
 	ShowIntialHelpText bool
 	ViewFontSize       int
+	AccelShowLetters   bool
+	AccelShowIndexes   bool
 	CustomTitle        string
 	CustomHtml         string
 }
