@@ -5,7 +5,6 @@
 *.bak
 *.class
 *.dll
-*.exe
 gpl-[0-9].[0-9].txt
 *.ld
 *.ldx
