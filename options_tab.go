@@ -25,10 +25,8 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	hbox = makeFontSizeRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
-	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, yoffset, width,
-		buttonHeight, "Show &Initial Help Text")
-	app.showInitialHelpCheckButton.SetValue(app.config.ShowIntialHelpText)
-	vbox.Fixed(app.showInitialHelpCheckButton, buttonHeight)
+	hbox = makeHelpCheckboxRow(app, x, y, yoffset, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
 	hbox = makeCustomTitleRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
@@ -105,6 +103,18 @@ func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
 	})
 	sizeLabel.SetCallback(func() { app.sizeSpinner.TakeFocus() })
 	hbox.Fixed(sizeLabel, optionsLabelWidth)
+	hbox.End()
+	return hbox
+}
+
+func makeHelpCheckboxRow(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	label := fltk.NewBox(fltk.NO_BOX, 0, 0, labelWidth, buttonHeight)
+	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, y, width,
+		buttonHeight, "Show &Initial Help Text")
+	app.showInitialHelpCheckButton.SetValue(app.config.ShowIntialHelpText)
+	hbox.Fixed(label, optionsLabelWidth)
 	hbox.End()
 	return hbox
 }
