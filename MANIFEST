@@ -1,3 +1,8 @@
+# TODO 1.7.0 branch goval: try replacing book eval lib with:
+#   https://github.com/maja42/goval
+# TODO 1.8.0 branch cpuram: try implementing a system monitor for CPU
+#   and RAM with an on/off switch or checkbox (always defaulting to off):
+#   https://github.com/shirou/gopsutil
 # TODO color syntax highlighting for custom text (when supported)
 minicalc.go
 app.go
