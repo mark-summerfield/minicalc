@@ -1,4 +1,6 @@
-# TODO 1.8.0 Add support for Unicode on ASCII page? or its own page?
+# TODO 1.8.0 Add /&Unicode\ to make it easy to
+#   (1) enter a dec or hex no. & see the Unicode char
+#   (2) scroll through Unicode chars [group v] HelpView of results
 # TODO 1.9.0 branch cpuram: try implementing a system monitor for CPU
 #   and RAM with an on/off switch or checkbox (always defaulting to off):
 #   https://github.com/shirou/gopsutil
@@ -7,7 +9,9 @@ minicalc.go
 app.go
 evaluator_tab.go
 regex_tab.go
+# cpu_ram_tab.go
 ascii_tab.go
+# unicode_tab.go
 accel_hints_tab.go
 custom_tab.go
 options_tab.go
