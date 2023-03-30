@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/go-ini/ini v1.67.0
+	github.com/maja42/goval v1.3.1
 	github.com/mark-summerfield/accelhint v0.7.6
 	github.com/mark-summerfield/gong v1.1.3
 	github.com/mark-summerfield/gset v0.8.0

@@ -4,23 +4,26 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html"
 	"math"
+	"math/rand"
 	"regexp"
 	"strings"
-	"unicode"
 
+	"github.com/maja42/goval"
 	"github.com/mark-summerfield/accelhint"
 	"github.com/mark-summerfield/gong"
 	"github.com/mark-summerfield/gset"
-	"github.com/mark-summerfield/minicalc/eval"
 	"github.com/pwiecz/go-fltk"
 )
 
+type VarMap map[string]any
+
 func makeEvaluatorTab(app *App, x, y, width, height int) {
 	nextVarName := "a"
-	evalEnv := eval.Env{"pi": math.Pi}
+	evalEnv := newEvalEnv()
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	vbox := fltk.NewFlex(x, y, width, height)
 	app.evalView = fltk.NewHelpView(x, y, width, height-buttonHeight)
@@ -40,7 +43,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 }
 
 func makeBottomRow(app *App, x, y, width, height int,
-	nextVarName string, evalEnv eval.Env) *fltk.Flex {
+	nextVarName string, evalEnv *EvalEnv) *fltk.Flex {
 	const BUTTON_WIDTH = labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
@@ -61,7 +64,7 @@ func makeBottomRow(app *App, x, y, width, height int,
 	return hbox
 }
 
-func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
+func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv,
 	nextVarName string) string {
 	input := strings.TrimSpace(app.evalInput.Value())
 	autoVar := true
@@ -76,7 +79,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
 		if expression == "" { // varName=
 			deletion = true
 			delete(userVarNames, varName)
-			delete(evalEnv, eval.Var(varName))
+			delete(evalEnv.Variables, varName)
 			text = fmt.Sprintf(
 				"<font color=purple>deleted <b>%s</b></font>", varName)
 		}
@@ -85,7 +88,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv eval.Env,
 		text, varName, nextVarName = evaluate(app, varName, nextVarName,
 			expression, autoVar, evalEnv, userVarNames)
 	}
-	populateView(varName, text, evalEnv, app.evalView)
+	populateView(varName, text, evalEnv.Variables, app.evalView)
 	return nextVarName
 }
 
@@ -106,55 +109,37 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 }
 
 func evaluate(app *App, varName, nextVarName, expression string,
-	autoVar bool, evalEnv eval.Env, userVarNames gset.Set[string]) (string,
+	autoVar bool, evalEnv *EvalEnv, userVarNames gset.Set[string]) (string,
 	string, string) {
 	var text string
-	expr, err := eval.Parse(expression)
+	evaluator := goval.NewEvaluator()
+	value, err := evaluator.Evaluate(expression, evalEnv.Variables,
+		evalEnv.Functions)
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else {
-		err := expr.Check(map[eval.Var]bool{})
-		if err != nil {
-			text = fmt.Sprintf(errTemplate, html.EscapeString(
-				err.Error()))
-		} else {
-			value := expr.Eval(evalEnv)
-			if autoVar {
-				nextVarName = getNextVarName(evalEnv, userVarNames)
-				varName = nextVarName
-			}
-			evalEnv[eval.Var(varName)] = value
-			app.evalResults = append(app.evalResults,
-				EvalResult{varName, value})
-			updateEvalCopyButton(app)
-			text = fmt.Sprintf(`<font color=green>%s = %s → </font><font
-				color=blue><b>%g</b>%s</font>`, varName, expression, value,
-				getResultDetails(value))
+		if autoVar {
+			nextVarName = getNextVarName(evalEnv.Variables, userVarNames)
+			varName = nextVarName
 		}
+		evalEnv.Variables[varName] = value
+		app.evalResults = append(app.evalResults,
+			EvalResult{varName, value})
+		updateEvalCopyButton(app)
+		text = fmt.Sprintf(`<font color=green>%s = %s → </font><font
+				color=blue><b>%v</b></font>`, varName, expression, value)
 	}
 	return text, varName, nextVarName
 }
 
-func getResultDetails(value float64) string {
-	var text string
-	if value > 0 && math.Trunc(value) == value {
-		v := int64(value)
-		text += fmt.Sprintf(" • 0x%X", v)
-		if v > 32 && v <= unicode.MaxRune {
-			text += fmt.Sprintf(" • '%c'", v)
-		}
-	}
-	return text
-}
-
-func getNextVarName(evalEnv eval.Env,
+func getNextVarName(variables VarMap,
 	userVarNames gset.Set[string]) string {
 	for i := 'a'; i <= 'z'; i++ {
 		varName := string(i)
 		if userVarNames.Contains(varName) {
 			continue
 		}
-		if _, found := evalEnv[eval.Var(varName)]; !found {
+		if _, found := variables[varName]; !found {
 			return varName
 		}
 	}
@@ -164,7 +149,7 @@ func getNextVarName(evalEnv eval.Env,
 			if userVarNames.Contains(varName) {
 				continue
 			}
-			if _, found := evalEnv[eval.Var(varName)]; !found {
+			if _, found := variables[varName]; !found {
 				return varName
 			}
 		}
@@ -172,20 +157,19 @@ func getNextVarName(evalEnv eval.Env,
 	panic("can't cope with more than 700 variables")
 }
 
-func populateView(varName, text string, evalEnv eval.Env,
+func populateView(varName, text string, variables VarMap,
 	evalView *fltk.HelpView) {
 	var textBuilder strings.Builder
-	keys := gong.SortedMapKeys(evalEnv)
+	keys := gong.SortedMapKeys(variables)
 	for _, key := range keys {
 		bs, be := "", ""
 		if string(key) == varName {
 			bs, be = "<b>", "</b>"
 		}
-		value := evalEnv[key]
+		value := variables[key]
 		textBuilder.WriteString(fmt.Sprintf(
-			`<font color=green>%s%s%s = <font color=blue>%g</font><font
-			color=#444>%s</font><br>`, bs, key, be, value,
-			getResultDetails(value)))
+			`<font color=green>%s%s%s = <font color=blue>%v</font><br>`,
+			bs, key, be, value))
 	}
 	textBuilder.WriteString(text)
 	evalView.SetValue(textBuilder.String())
@@ -195,11 +179,12 @@ func populateView(varName, text string, evalEnv eval.Env,
 }
 
 func updateEvalCopyButton(app *App) {
-	seen := gset.New[float64]()
+	seen := gset.New[string]()
 	filtered := make([]EvalResult, 0, len(app.evalResults))
 	for _, evalResult := range app.evalResults {
-		if !seen.Contains(evalResult.value) {
-			seen.Add(evalResult.value)
+		value := fmt.Sprintf("%v", evalResult.value)
+		if !seen.Contains(value) {
+			seen.Add(value)
 			filtered = append(filtered, evalResult)
 		}
 	}
@@ -221,10 +206,10 @@ func updateEvalCopyButton(app *App) {
 		if err == nil {
 			varName = hinted[i]
 		}
-		value := evalResult.value
+		value := fmt.Sprintf("%v", evalResult.value)
 		app.evalCopyButton.AddEx(fmt.Sprintf(
-			"%s = %g", varName, value), 0,
-			func() { fltk.CopyToClipboard(fmt.Sprintf("%g", value)) }, 0)
+			"%s = %s", varName, value), 0,
+			func() { fltk.CopyToClipboard(value) }, 0)
 	}
 	if app.evalCopyButton.Size() > 0 {
 		app.evalCopyButton.Activate()
@@ -235,5 +220,105 @@ func updateEvalCopyButton(app *App) {
 
 type EvalResult struct {
 	varName string
-	value   float64
+	value   any
+}
+
+type EvalEnv struct {
+	Variables VarMap
+	Functions map[string]goval.ExpressionFunction
+}
+
+func newEvalEnv() *EvalEnv {
+	Variables := make(VarMap)
+	Variables["pi"] = math.Pi
+	Functions := make(map[string]goval.ExpressionFunction)
+	Functions["len"] = func(args ...any) (any, error) {
+		if len(args) != 1 {
+			return nil, fmt.Errorf("len(v): needs one argument")
+		}
+		s, ok := args[0].(string)
+		if ok {
+			return len(s), nil
+		}
+		array, ok := args[0].([]any)
+		if ok {
+			return len(array), nil
+		}
+		obj, ok := args[0].(map[string]any)
+		if ok {
+			return len(obj), nil
+		}
+		return nil, fmt.Errorf("len(v): needs a string, array or object")
+	}
+	Functions["pow"] = func(args ...any) (any, error) {
+		if len(args) != 2 {
+			return nil, errors.New("pow(x, y): needs two arguments")
+		}
+		x, err := getReal(args[0])
+		if err != nil {
+			return nil, fmt.Errorf("pow(x, y):x: %w", err)
+		}
+		y, err := getReal(args[1])
+		if err != nil {
+			return nil, fmt.Errorf("pow(x, y):y: %w", err)
+		}
+		return math.Pow(x, y), nil
+	}
+	Functions["rand"] = func(...any) (any, error) {
+		return rand.Float64(), nil
+	}
+	Functions["randint"] = func(args ...any) (any, error) {
+		if len(args) != 1 {
+			return nil, errors.New("randint(n): needs one argument")
+		}
+		n, err := getInt(args[0])
+		if err != nil {
+			return nil, fmt.Errorf("randint(n) %w", err)
+		}
+		return rand.Intn(n), nil
+	}
+	Functions["sin"] = func(args ...any) (any, error) {
+		if len(args) != 1 {
+			return nil, errors.New("sin(n): needs one argument")
+		}
+		x, err := getReal(args[0])
+		if err != nil {
+			return nil, fmt.Errorf("sin(x): %w", err)
+		}
+		return math.Sin(x), nil
+	}
+	Functions["sqrt"] = func(args ...any) (any, error) {
+		if len(args) != 1 {
+			return nil, errors.New("sqrt(n): needs one argument")
+		}
+		x, err := getReal(args[0])
+		if err != nil {
+			return nil, fmt.Errorf("sqrt(x): %w", err)
+		}
+		if x < 0.0 {
+			return nil, errors.New("sqrt(x): x must be positive")
+		}
+		return math.Sqrt(x), nil
+	}
+	return &EvalEnv{Variables, Functions}
+}
+
+func getReal(x any) (float64, error) {
+	switch v := x.(type) {
+	case int:
+		return float64(v), nil
+	case float64:
+		return v, nil
+	}
+	return 0.0, fmt.Errorf("real expected, got %v", x)
+}
+
+func getInt(x any) (int, error) {
+	switch v := x.(type) {
+	case int:
+		return v, nil
+	case float64:
+		return int(v), nil
+	}
+	return 0.0, fmt.Errorf("int expected, got %v", x)
 }

@@ -101,10 +101,15 @@ and press Enter—or just reassign to it.</p>
 <p>Supported operators: <tt>+ - * / %</tt>.</p>
 <p>Predefined variables: <tt>pi</tt>.</p>
 <p>Functions:
+<tt>len(<i>v</i>)</tt>,
 <tt>pow(<i>x</i>, <i>y</i>)</tt>,
 <tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
 <tt>sqrt(<i>n</i>)</tt>.
+</p>
+<p>
+For the complete expression syntax see
+<a href="https://github.com/maja42/goval#Documentation">goval</a>.
 </p>
 <p>Click the menu button or press <b>F2</b> to choose a previous expression.
 </p>
