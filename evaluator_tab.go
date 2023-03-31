@@ -65,28 +65,48 @@ func makeBottomRow(app *App, x, y, width, height int,
 
 func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 	input := strings.TrimSpace(app.evalInput.Value())
-	autoVar := true
-	deletion := false
-	var text string
-	var err error
-	varName, expression, err := getVarNameAndExpression(userVarNames, input)
-	if err != nil {
-		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
-	} else if varName != "" {
-		autoVar = false
-		if expression == "" { // varName=
-			deletion = true
-			delete(userVarNames, varName)
-			delete(evalEnv.Variables, varName)
-			text = fmt.Sprintf(
-				"<font color=purple>deleted <b>%s</b></font>", varName)
+	if input == "clear()" {
+		clear(app.evalView, evalEnv.Variables)
+	} else {
+		autoVar := true
+		deletion := false
+		var text string
+		var varName string
+		var err error
+		varName, expression, err := getVarNameAndExpression(userVarNames,
+			input)
+		if err != nil {
+			text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
+		} else if varName != "" {
+			autoVar = false
+			if expression == "" { // varName=
+				deletion = true
+				delete(userVarNames, varName)
+				delete(evalEnv.Variables, varName)
+				text = fmt.Sprintf(
+					"<font color=purple>deleted <b>%s</b></font>", varName)
+			}
+		}
+		if err == nil && !deletion { // varName=expr _or_ expr
+			text, varName = evaluate(app, varName, expression, autoVar,
+				evalEnv, userVarNames)
+		}
+		populateView(varName, text, evalEnv.Variables, app.evalView)
+	}
+}
+
+func clear(evalView *fltk.HelpView, variables VarMap) {
+	n := 0
+	for name := range variables {
+		if len(name) == 1 && name[0] >= 'A' && name[0] <= 'Z' {
+			delete(variables, name)
+			n++
 		}
 	}
-	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName = evaluate(app, varName, expression, autoVar, evalEnv,
-			userVarNames)
-	}
-	populateView(varName, text, evalEnv.Variables, app.evalView)
+	text := fmt.Sprintf(
+		"<font color=purple>deleted %s automatic variables</font>",
+		gong.Commas(n))
+	populateView("", text, variables, evalView)
 }
 
 func getVarNameAndExpression(userVarNames gset.Set[string],
@@ -115,7 +135,7 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else {
 		if autoVar {
-			getNextVarName(evalEnv, userVarNames)
+			getNextVarName(evalEnv)
 			varName = evalEnv.NextVarName
 		}
 		evalEnv.Variables[varName] = value
@@ -128,30 +148,20 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 	return text, varName
 }
 
-func getNextVarName(evalEnv *EvalEnv, userVarNames gset.Set[string]) {
-	for i := 'a'; i <= 'z'; i++ {
+func getNextVarName(evalEnv *EvalEnv) {
+	for i := 'A'; i <= 'Z'; i++ {
 		varName := string(i)
-		if userVarNames.Contains(varName) {
-			continue
-		}
 		if _, found := evalEnv.Variables[varName]; !found {
 			evalEnv.NextVarName = varName
 			return
 		}
 	}
-	for i := 'a'; i <= 'z'; i++ {
-		for j := 'a'; j <= 'z'; j++ {
-			varName := string(i) + string(j)
-			if userVarNames.Contains(varName) {
-				continue
-			}
-			if _, found := evalEnv.Variables[varName]; !found {
-				evalEnv.NextVarName = varName
-				return
-			}
-		}
+	// All variables have been used, so start to reuse.
+	evalEnv.NextVarName = string(evalEnv.NextReuseCP)
+	evalEnv.NextReuseCP++
+	if evalEnv.NextReuseCP > 'Z' {
+		evalEnv.NextReuseCP = 'A'
 	}
-	panic("can't cope with more than 700 variables")
 }
 
 func populateView(varName, text string, variables VarMap,
@@ -222,6 +232,7 @@ type EvalResult struct {
 
 type EvalEnv struct {
 	NextVarName string
+	NextReuseCP rune
 	Variables   VarMap
 	Functions   map[string]goval.ExpressionFunction
 }
@@ -298,8 +309,9 @@ func newEvalEnv() *EvalEnv {
 		}
 		return math.Sqrt(x), nil
 	}
-	NextVarName := "a"
-	return &EvalEnv{NextVarName, Variables, Functions}
+	NextVarName := "A"
+	NextReuseCP := 'A'
+	return &EvalEnv{NextVarName, NextReuseCP, Variables, Functions}
 }
 
 func getReal(x any) (float64, error) {

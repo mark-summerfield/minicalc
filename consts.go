@@ -93,23 +93,27 @@ Yankee, Zulu.</font></p>
 	Enter or press F1 for help.</font></p>`
 	evalHelpHtml = `<p>Type an expression and press Enter, e.g.,
 	<tt>5 + sqrt(pi)</tt>.</p>
-<p>Results are automatically assigned to successive
-variables, <tt>a</tt>, <tt>b</tt>, ..., unless explicitly assigned with
-<tt>=</tt>, e.g., <tt>x = -19 + pow(2, 2/3)</tt></p>
+<p>Results are automatically assigned to successive uppercase
+variables, <tt>A</tt>, <tt>B</tt>, ..., <tt>Z</tt>, and once <tt>Z</tt> is
+reached these variables are reused starting again from <tt>A</tt>. You can
+assign to your own variables, e.g., <tt>a = pow(pi, 2)</tt>, <tt>total = A
++ B + x + y</tt>, etc.; these are always preserved and never reused.</p>
 <p>To delete a variable use <tt><i>varname</i>=</tt>
 and press Enter—or just reassign to it.</p>
-<p>Supported operators: <tt>+ - * / %</tt>.</p>
-<p>Predefined variables: <tt>pi</tt>.</p>
-<p>Functions:
+<p>Operators: <tt>+ - * / %</tt>.<br>
+Predefined variables: <tt>pi</tt>.<br>
+Functions:
 <tt>len(<i>v</i>)</tt>,
 <tt>pow(<i>x</i>, <i>y</i>)</tt>,
 <tt>rand()</tt>, <tt>randint(<i>x</i>)</tt>,
 <tt>sin(<i>n</i>)</tt>,
-<tt>sqrt(<i>n</i>)</tt>.
+<tt>sqrt(<i>n</i>)</tt>, and
+<tt>clear()</tt> — delete all automatic variables.
 </p>
 <p>
 For the complete expression syntax see
-<a href="https://github.com/maja42/goval#Documentation">goval</a>.
+<a href="https://github.com/maja42/goval#Documentation">goval</a>. Note
+that unlike pure goval, MiniCalc supports assignment.
 </p>
 <p>Click the menu button or press <b>F2</b> to choose a previous expression.
 </p>

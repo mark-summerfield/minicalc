@@ -51,6 +51,7 @@ func (me *App) onEvent(event fltk.Event) bool {
 			switch me.tabs.Value() {
 			case evaluatorTabIndex:
 				me.evalView.SetValue(evalHelpHtml)
+				me.evalView.TakeFocus()
 				return true
 			case regexTabIndex:
 				me.regexView.SetValue(regexHelpHtml)
