@@ -1,4 +1,6 @@
 # TODO 1.8.0 Add Unicode categories
+#   For Greek show: lower hex upper hex name
+#             e.g.: ω 03C9 Ω 03AD omega
 #   Greek | NATO Alphabet (so drop these from custom)
 #   Symbols | Math | ...
 # TODO 1.9.0 color syntax highlighting for custom text
