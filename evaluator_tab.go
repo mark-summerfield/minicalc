@@ -22,7 +22,6 @@ import (
 type VarMap map[string]any
 
 func makeEvaluatorTab(app *App, x, y, width, height int) {
-	nextVarName := "a"
 	evalEnv := newEvalEnv()
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	vbox := fltk.NewFlex(x, y, width, height)
@@ -34,7 +33,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	} else {
 		app.evalView.SetValue(evalShortHelp)
 	}
-	hbox := makeBottomRow(app, x, y, width, height, nextVarName, evalEnv)
+	hbox := makeBottomRow(app, x, y, width, height, evalEnv)
 	vbox.End()
 	vbox.Fixed(hbox, buttonHeight)
 	group.End()
@@ -43,7 +42,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 }
 
 func makeBottomRow(app *App, x, y, width, height int,
-	nextVarName string, evalEnv *EvalEnv) *fltk.Flex {
+	evalEnv *EvalEnv) *fltk.Flex {
 	const BUTTON_WIDTH = labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
@@ -57,15 +56,14 @@ func makeBottomRow(app *App, x, y, width, height int,
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)
 	app.evalInput.Input().SetCallback(func() {
 		updateInputChoice(app.evalInput)
-		nextVarName = onEval(app, userVarNames, evalEnv, nextVarName)
+		onEval(app, userVarNames, evalEnv)
 	})
 	hbox.End()
 	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
 	return hbox
 }
 
-func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv,
-	nextVarName string) string {
+func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 	input := strings.TrimSpace(app.evalInput.Value())
 	autoVar := true
 	deletion := false
@@ -85,11 +83,10 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv,
 		}
 	}
 	if err == nil && !deletion { // varName=expr _or_ expr
-		text, varName, nextVarName = evaluate(app, varName, nextVarName,
-			expression, autoVar, evalEnv, userVarNames)
+		text, varName = evaluate(app, varName, expression, autoVar, evalEnv,
+			userVarNames)
 	}
 	populateView(varName, text, evalEnv.Variables, app.evalView)
-	return nextVarName
 }
 
 func getVarNameAndExpression(userVarNames gset.Set[string],
@@ -108,9 +105,8 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 	return "", "", fmt.Errorf("%q is not a valid identifier", varName)
 }
 
-func evaluate(app *App, varName, nextVarName, expression string,
-	autoVar bool, evalEnv *EvalEnv, userVarNames gset.Set[string]) (string,
-	string, string) {
+func evaluate(app *App, varName, expression string, autoVar bool,
+	evalEnv *EvalEnv, userVarNames gset.Set[string]) (string, string) {
 	var text string
 	evaluator := goval.NewEvaluator()
 	value, err := evaluator.Evaluate(expression, evalEnv.Variables,
@@ -119,8 +115,8 @@ func evaluate(app *App, varName, nextVarName, expression string,
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else {
 		if autoVar {
-			nextVarName = getNextVarName(evalEnv.Variables, userVarNames)
-			varName = nextVarName
+			getNextVarName(evalEnv, userVarNames)
+			varName = evalEnv.NextVarName
 		}
 		evalEnv.Variables[varName] = value
 		app.evalResults = append(app.evalResults,
@@ -129,18 +125,18 @@ func evaluate(app *App, varName, nextVarName, expression string,
 		text = fmt.Sprintf(`<font color=green>%s = %s → </font><font
 				color=blue><b>%v</b></font>`, varName, expression, value)
 	}
-	return text, varName, nextVarName
+	return text, varName
 }
 
-func getNextVarName(variables VarMap,
-	userVarNames gset.Set[string]) string {
+func getNextVarName(evalEnv *EvalEnv, userVarNames gset.Set[string]) {
 	for i := 'a'; i <= 'z'; i++ {
 		varName := string(i)
 		if userVarNames.Contains(varName) {
 			continue
 		}
-		if _, found := variables[varName]; !found {
-			return varName
+		if _, found := evalEnv.Variables[varName]; !found {
+			evalEnv.NextVarName = varName
+			return
 		}
 	}
 	for i := 'a'; i <= 'z'; i++ {
@@ -149,8 +145,9 @@ func getNextVarName(variables VarMap,
 			if userVarNames.Contains(varName) {
 				continue
 			}
-			if _, found := variables[varName]; !found {
-				return varName
+			if _, found := evalEnv.Variables[varName]; !found {
+				evalEnv.NextVarName = varName
+				return
 			}
 		}
 	}
@@ -224,8 +221,9 @@ type EvalResult struct {
 }
 
 type EvalEnv struct {
-	Variables VarMap
-	Functions map[string]goval.ExpressionFunction
+	NextVarName string
+	Variables   VarMap
+	Functions   map[string]goval.ExpressionFunction
 }
 
 func newEvalEnv() *EvalEnv {
@@ -300,7 +298,8 @@ func newEvalEnv() *EvalEnv {
 		}
 		return math.Sqrt(x), nil
 	}
-	return &EvalEnv{Variables, Functions}
+	NextVarName := "a"
+	return &EvalEnv{NextVarName, Variables, Functions}
 }
 
 func getReal(x any) (float64, error) {
