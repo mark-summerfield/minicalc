@@ -1,4 +1,6 @@
 # TODO 1.8.0 Add Unicode categories
+#   Greek | NATO Alphabet (so drop these from custom)
+#   Symbols | Math | ...
 # TODO 1.9.0 color syntax highlighting for custom text
 # TODO 2.0.0 branch cpuram: try implementing a system monitor for CPU
 #   and RAM with an on/off switch or checkbox (always defaulting to off):
