@@ -8,6 +8,7 @@ import (
 	"html"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/pwiecz/go-fltk"
 )
@@ -43,7 +44,7 @@ func makeTopRow(x, y, width, height int) *fltk.Flex {
 	hbox.SetSpacing(pad)
 	colWidth := (labelWidth * 3) / 2
 	cpLabel := makeAccelLabel(0, 0, colWidth, buttonHeight, "Code &Point")
-	cpInput := fltk.NewInput(colWidth, 0, colWidth, buttonHeight)
+	cpInput := fltk.NewInput(colWidth, 0, labelWidth, buttonHeight)
 	cpLabel.SetCallback(func() { cpInput.TakeFocus() })
 	cpInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	cpOutput := fltk.NewOutput(2*colWidth, 0, colWidth, buttonHeight)
@@ -63,7 +64,7 @@ func makeTopRow(x, y, width, height int) *fltk.Flex {
 	})
 	hbox.End()
 	hbox.Fixed(cpLabel, colWidth)
-	hbox.Fixed(cpInput, colWidth)
+	hbox.Fixed(cpInput, labelWidth)
 	hbox.Fixed(cpCopyButton, labelWidth)
 	return hbox
 }
@@ -94,14 +95,30 @@ func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
 
 func cpHtml(s string) (string, fltk.Color) {
 	s = strings.TrimSpace(s)
-	i, err := strconv.ParseInt(s, 10, 64)
+	d, err := strconv.Atoi(s)
 	if err != nil {
-		i, err = strconv.ParseInt(s, 16, 64)
-		if err != nil {
-			return "integer required", fltk.RED
-		}
+		d = -1
 	}
-	return fmt.Sprintf("%c  %U  %d", i, i, i), fltk.YELLOW
+	if !unicode.IsGraphic(rune(d)) {
+		d = -1
+	}
+	u, err := strconv.ParseInt(s, 16, 64)
+	if err != nil {
+		u = -1
+	}
+	if !unicode.IsGraphic(rune(u)) {
+		u = -1
+	}
+	if d == -1 && u == -1 {
+		return "hex or dec required", fltk.RED
+	}
+	if d == -1 {
+		return fmt.Sprintf("%q  %U  %d", u, u, u), fltk.YELLOW
+	} else if u == -1 {
+		return fmt.Sprintf("%q  %U  %d", d, d, d), fltk.YELLOW
+	} else {
+		return fmt.Sprintf("%q  %U | %q %d", d, d, u, u), fltk.YELLOW
+	}
 }
 
 func getAsciiHigh() string {
