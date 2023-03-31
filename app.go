@@ -25,6 +25,7 @@ type App struct {
 	accelView                   *fltk.HelpView
 	accelShowLettersCheckButton *fltk.CheckButton
 	accelShowIndexesCheckButton *fltk.CheckButton
+	categoryChoice              *fltk.Choice
 	unicodeView                 *fltk.HelpView
 	scaleSpinner                *fltk.Spinner
 	themeChoice                 *fltk.Choice
@@ -149,7 +150,7 @@ func onTab(app *App) {
 	case accelHintsTabIndex:
 		app.accelTextEditor.TakeFocus()
 	case unicodeTabIndex:
-		app.unicodeView.TakeFocus()
+		app.categoryChoice.TakeFocus()
 	case customTabIndex:
 		app.customView.TakeFocus()
 	case optionsTabIndex:

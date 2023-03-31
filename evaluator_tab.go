@@ -214,9 +214,8 @@ func updateEvalCopyButton(app *App) {
 			varName = hinted[i]
 		}
 		value := fmt.Sprintf("%v", evalResult.value)
-		app.evalCopyButton.AddEx(fmt.Sprintf(
-			"%s = %s", varName, value), 0,
-			func() { fltk.CopyToClipboard(value) }, 0)
+		app.evalCopyButton.Add(fmt.Sprintf("%s = %s", varName, value),
+			func() { fltk.CopyToClipboard(value) })
 	}
 	if app.evalCopyButton.Size() > 0 {
 		app.evalCopyButton.Activate()

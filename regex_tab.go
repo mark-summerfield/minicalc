@@ -66,8 +66,8 @@ func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 		width-labelWidth, buttonHeight)
 	text := "scale: 1.15 width=24.5"
 	app.regexTextInput.SetValue(text)
-	app.regexTextInput.MenuButton().AddEx(text, 0,
-		func() { app.regexTextInput.Input().SetValue(text) }, 0)
+	app.regexTextInput.MenuButton().Add(text,
+		func() { app.regexTextInput.Input().SetValue(text) })
 	textLabel.SetCallback(func() { app.regexTextInput.TakeFocus() })
 	app.regexTextInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()

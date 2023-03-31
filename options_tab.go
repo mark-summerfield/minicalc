@@ -69,10 +69,10 @@ func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 		if theme == app.config.Theme {
 			app.themeChoice.SetValue(i)
 		}
-		app.themeChoice.AddEx(theme, 0, func() {
+		app.themeChoice.Add(theme, func() {
 			app.config.Theme = theme
 			fltk.SetScheme(theme)
-		}, 0)
+		})
 	}
 	themeLabel.SetCallback(func() { app.themeChoice.TakeFocus() })
 	hbox.Fixed(themeLabel, optionsLabelWidth)

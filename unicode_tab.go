@@ -18,19 +18,21 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 	hbox := makeTopRow(x, y, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	y += buttonHeight
-	hbox = makeChoiceRow(x, y, width, buttonHeight)
+	hbox = makeChoiceRow(app, x, y, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	y += buttonHeight
 	height -= (2 * buttonHeight)
 	app.unicodeView = fltk.NewHelpView(x, y, width, height)
 	app.unicodeView.TextFont(fltk.COURIER)
 	app.unicodeView.TextSize(app.config.ViewFontSize)
-	app.unicodeView.SetValue(asciiHtml())
 	vbox.End()
 	group.End()
 	group.Resizable(vbox)
 	group.End()
-	app.unicodeView.TakeFocus() // TODO change + in app.go
+	addCategories(app.categoryChoice, app.unicodeView)
+	app.unicodeView.SetValue(getAsciiHigh())
+	app.categoryChoice.SetValue(1)
+	app.categoryChoice.TakeFocus()
 }
 
 func makeTopRow(x, y, width, height int) *fltk.Flex {
@@ -63,14 +65,27 @@ func makeTopRow(x, y, width, height int) *fltk.Flex {
 	return hbox
 }
 
-func makeChoiceRow(x, y, width, height int) *fltk.Flex {
+func makeChoiceRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
-	// TODO
-	// &Category [Choice v] // ASCII (<32) | ASCII (>=32) | unicode cats...
+	colWidth := (labelWidth * 3) / 2
+	categoryLabel := makeAccelLabel(0, 0, colWidth, buttonHeight,
+		"C&ategory")
+	app.categoryChoice = fltk.NewChoice(0, 0, width-colWidth, buttonHeight)
+	categoryLabel.SetCallback(func() { app.categoryChoice.TakeFocus() })
 	hbox.End()
-	//hbox.Fixed(regexLabel, labelWidth)
+	hbox.Fixed(categoryLabel, colWidth)
 	return hbox
+}
+
+func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
+	choice.Add("ASCII (<=32)", func() {
+		view.SetValue(getAsciiLow())
+	})
+	choice.Add("ASCII (>32)", func() {
+		view.SetValue(getAsciiHigh())
+	})
+	// TODO Unicode categories
 }
 
 func cpHtml(s string) (string, fltk.Color) {
@@ -85,14 +100,8 @@ func cpHtml(s string) (string, fltk.Color) {
 	return fmt.Sprintf("%c  %U  %d", i, i, i), fltk.YELLOW
 }
 
-func asciiHtml() string {
+func getAsciiHigh() string {
 	var text strings.Builder
-	populateAsciiHigh(&text)
-	populateAsciiLow(&text)
-	return text.String()
-}
-
-func populateAsciiHigh(text *strings.Builder) {
 	text.WriteString("<p>")
 	const (
 		start  = 33
@@ -104,10 +113,11 @@ func populateAsciiHigh(text *strings.Builder) {
 		text.WriteString("&nbsp;")
 		j := start + i
 		for k := 0; k < 5; k++ {
-			populateOne(text, rune(j+(k*stride)), k == 4)
+			populateOne(&text, rune(j+(k*stride)), k == 4)
 		}
 	}
 	text.WriteString("</p>")
+	return text.String()
 }
 
 func populateOne(text *strings.Builder, i rune, isEnd bool) {
@@ -125,7 +135,8 @@ func populateOne(text *strings.Builder, i rune, isEnd bool) {
 		html.EscapeString(string(i)), end))
 }
 
-func populateAsciiLow(text *strings.Builder) {
+func getAsciiLow() string {
+	var text strings.Builder
 	text.WriteString("<p>")
 	descForChar := getDescForChar()
 	for i := 0; i < len(descForChar); i++ {
@@ -145,6 +156,7 @@ func populateAsciiLow(text *strings.Builder) {
 			&nbsp;%s&nbsp;%s<br>`, i, c, istr, charDesc.desc))
 	}
 	text.WriteString("</p>")
+	return text.String()
 }
 
 type CharDesc struct {

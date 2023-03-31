@@ -42,7 +42,7 @@ func updateInputChoice(choice *fltk.InputChoice) {
 		text := text
 		escText := strings.ReplaceAll(
 			strings.ReplaceAll(text, "\\", "\\\\"), "/", `\/`)
-		menu.AddEx(escText, 0, func() { choice.Input().SetValue(text) }, 0)
+		menu.Add(escText, func() { choice.Input().SetValue(text) })
 	}
 }
 
