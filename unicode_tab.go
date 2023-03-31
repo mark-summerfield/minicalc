@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"html"
+	"strconv"
 	"strings"
 
 	"github.com/pwiecz/go-fltk"
@@ -35,10 +36,30 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 func makeTopRow(x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
-	// TODO
-	// Code Point [hex or dec] |hex1 dec1 ch1 • hex2 dec2 ch2]
+	colWidth := (labelWidth * 3) / 2
+	cpLabel := makeAccelLabel(0, 0, colWidth, buttonHeight, "Code &Point")
+	cpInput := fltk.NewInput(colWidth, 0, colWidth, buttonHeight)
+	cpLabel.SetCallback(func() { cpInput.TakeFocus() })
+	cpInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
+	cpOutput := fltk.NewOutput(2*colWidth, 0, colWidth, buttonHeight)
+	cpOutput.ClearVisibleFocus()
+	cpInput.SetCallback(func() {
+		text, color := cpHtml(cpInput.Value())
+		cpOutput.SetColor(color)
+		cpOutput.SetValue(text)
+	})
+	cpCopyButton := fltk.NewButton(4*colWidth, 0, labelWidth, buttonHeight,
+		"&Copy")
+	cpCopyButton.SetCallback(func() {
+		for _, c := range cpOutput.Value() {
+			fltk.CopyToClipboard(string(c))
+			break
+		}
+	})
 	hbox.End()
-	//hbox.Fixed(regexLabel, labelWidth)
+	hbox.Fixed(cpLabel, colWidth)
+	hbox.Fixed(cpInput, colWidth)
+	hbox.Fixed(cpCopyButton, labelWidth)
 	return hbox
 }
 
@@ -50,6 +71,18 @@ func makeChoiceRow(x, y, width, height int) *fltk.Flex {
 	hbox.End()
 	//hbox.Fixed(regexLabel, labelWidth)
 	return hbox
+}
+
+func cpHtml(s string) (string, fltk.Color) {
+	s = strings.TrimSpace(s)
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		i, err = strconv.ParseInt(s, 16, 64)
+		if err != nil {
+			return "integer required", fltk.RED
+		}
+	}
+	return fmt.Sprintf("%c  %U  %d", i, i, i), fltk.YELLOW
 }
 
 func asciiHtml() string {
