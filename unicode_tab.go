@@ -113,11 +113,11 @@ func cpHtml(s string) (string, fltk.Color) {
 		return "hex or dec required", fltk.RED
 	}
 	if d == -1 {
-		return fmt.Sprintf("%q  %U  %d", u, u, u), fltk.YELLOW
+		return fmt.Sprintf("%c  %U  %d", u, u, u), fltk.YELLOW
 	} else if u == -1 {
-		return fmt.Sprintf("%q  %U  %d", d, d, d), fltk.YELLOW
+		return fmt.Sprintf("%c  %U  %d", d, d, d), fltk.YELLOW
 	} else {
-		return fmt.Sprintf("%q  %U | %q %d", d, d, u, u), fltk.YELLOW
+		return fmt.Sprintf("%c  %U | %q %d", d, d, u, u), fltk.YELLOW
 	}
 }
 
