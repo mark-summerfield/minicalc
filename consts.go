@@ -16,7 +16,7 @@ const (
 	appName      = "MiniCalc"
 	buttonHeight = 32
 	labelWidth   = 60
-	pad          = 3
+	pad          = 5
 
 	evaluatorTabIndex  = 0
 	regexTabIndex      = 1

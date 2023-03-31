@@ -34,7 +34,7 @@ type App struct {
 	customTitleInput            *fltk.Input
 	customTextEditor            *fltk.TextEditor
 	customTextBuffer            *fltk.TextBuffer
-	customGroup                 *fltk.Group
+	customGroup                 *fltk.Flex
 	customView                  *fltk.HelpView
 	aboutView                   *fltk.HelpView
 }

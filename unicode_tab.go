@@ -13,8 +13,10 @@ import (
 )
 
 func makeAsciiTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&Unicode")
+	group := fltk.NewFlex(x, y, width, height, "&Unicode")
+	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
+	vbox.SetSpacing(pad)
 	hbox := makeTopRow(x, y, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	y += buttonHeight
@@ -38,6 +40,7 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 func makeTopRow(x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	colWidth := (labelWidth * 3) / 2
 	cpLabel := makeAccelLabel(0, 0, colWidth, buttonHeight, "Code &Point")
 	cpInput := fltk.NewInput(colWidth, 0, colWidth, buttonHeight)
@@ -68,6 +71,7 @@ func makeTopRow(x, y, width, height int) *fltk.Flex {
 func makeChoiceRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	colWidth := (labelWidth * 3) / 2
 	categoryLabel := makeAccelLabel(0, 0, colWidth, buttonHeight,
 		"C&ategory")

@@ -13,7 +13,9 @@ import (
 
 func makeRegexTab(app *App, x, y, width, height int) {
 	group := fltk.NewFlex(x, y, width, height, "Rege&x")
+	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
+	vbox.SetSpacing(pad)
 	const yoffset = 2 * buttonHeight
 	app.regexView = fltk.NewHelpView(x, y, width, height-yoffset)
 	app.regexView.TextFont(fltk.COURIER)
@@ -46,6 +48,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, height-yoffset, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	regexLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Regex")
 	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
@@ -61,6 +64,7 @@ func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	textLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Text")
 	app.regexTextInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)

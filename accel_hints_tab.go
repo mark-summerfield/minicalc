@@ -13,8 +13,10 @@ import (
 )
 
 func makeAccelHintsTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "Accel &Hints")
+	group := fltk.NewFlex(x, y, width, height, "Accel &Hints")
+	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
+	vbox.SetSpacing(pad)
 	unhintedLabel, hbox := makeLabelRow(x, y, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	makeDataRow(app, x, y+buttonHeight, width, height-(3*buttonHeight))
@@ -35,9 +37,12 @@ func makeAccelHintsTab(app *App, x, y, width, height int) {
 func makeLabelRow(x, y, width, height int) (*fltk.Button, *fltk.Flex) {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	unhintedLabel := makeAccelLabel(0, 0, width/2, height, "&Unhinted")
-	unhintedLabel.SetAlign(fltk.ALIGN_CENTER)
-	fltk.NewBox(fltk.NO_BOX, 0, 0, width/2, height, "Hinted")
+	align := fltk.ALIGN_CENTER | fltk.ALIGN_BOTTOM | fltk.ALIGN_INSIDE
+	unhintedLabel.SetAlign(align)
+	hintedLabel := fltk.NewBox(fltk.NO_BOX, 0, 0, width/2, height, "Hinted")
+	hintedLabel.SetAlign(align)
 	hbox.End()
 	return unhintedLabel, hbox
 }
@@ -45,6 +50,7 @@ func makeLabelRow(x, y, width, height int) (*fltk.Button, *fltk.Flex) {
 func makeDataRow(app *App, x, y, width, height int) {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	app.accelTextEditor, app.accelTextBuffer = makeTextEditor(x, y, width/2,
 		height)
 	app.accelTextBuffer.SetText(defaultUnhinted)
@@ -59,6 +65,7 @@ func makeAlphabetRow(app *App, x, y, width, height int) (*fltk.Button,
 	*fltk.Flex) {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	width = (labelWidth * 5) / 4
 	alphabetLabel := makeAccelLabel(0, 0, width, height, "A&lphabet")
 	app.accelAlphabetInput = fltk.NewInput(0, 0, labelWidth, height)
@@ -71,6 +78,7 @@ func makeAlphabetRow(app *App, x, y, width, height int) (*fltk.Button,
 func makeStatusRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	app.accelStatusOutput = fltk.NewOutput(x, y, width, buttonHeight)
 	const checkWidth = 2 * labelWidth
 	x = width - (2 * checkWidth)

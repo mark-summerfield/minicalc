@@ -24,7 +24,9 @@ type VarMap map[string]any
 func makeEvaluatorTab(app *App, x, y, width, height int) {
 	evalEnv := newEvalEnv()
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
+	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
+	vbox.SetSpacing(pad)
 	app.evalView = fltk.NewHelpView(x, y, width, height-buttonHeight)
 	app.evalView.TextFont(fltk.COURIER)
 	app.evalView.TextSize(app.config.ViewFontSize)
@@ -47,6 +49,7 @@ func makeBottomRow(app *App, x, y, width, height int,
 	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	app.evalInput = fltk.NewInputChoice(x, y+height-buttonHeight,
 		width-BUTTON_WIDTH, buttonHeight)
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-buttonHeight,

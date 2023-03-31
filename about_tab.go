@@ -14,7 +14,8 @@ import (
 )
 
 func makeAboutTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "A&bout")
+	group := fltk.NewFlex(x, y, width, height, "A&bout")
+	group.SetSpacing(pad)
 	app.aboutView = fltk.NewHelpView(x, y, width, height)
 	app.aboutView.TextFont(fltk.HELVETICA)
 	app.aboutView.TextSize(app.config.ViewFontSize)

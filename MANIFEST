@@ -10,8 +10,8 @@ app.go
 evaluator_tab.go
 regex_tab.go
 # cpu_ram_tab.go
-unicode_tab.go
 accel_hints_tab.go
+unicode_tab.go
 custom_tab.go
 options_tab.go
 config.go

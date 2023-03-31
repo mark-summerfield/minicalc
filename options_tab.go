@@ -14,8 +14,10 @@ const optionsLabelWidth = labelWidth * 2
 
 func makeOptionsTab(app *App, x, y, width, height int) {
 	yoffset := 2 * buttonHeight
-	group := fltk.NewGroup(x, y, width, height, "&Options")
+	group := fltk.NewFlex(x, y, width, height, "&Options")
+	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
+	vbox.SetSpacing(pad)
 	hbox := makeScaleRow(app, x, yoffset, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
@@ -43,6 +45,7 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	scaleLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Scale")
 	app.scaleSpinner = fltk.NewSpinner(0, 0, labelWidth, buttonHeight)
 	app.scaleSpinner.SetType(fltk.SPINNER_FLOAT_INPUT)
@@ -62,6 +65,7 @@ func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	themeLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "The&me")
 	app.themeChoice = fltk.NewChoice(0, 0, optionsLabelWidth, buttonHeight)
 	for i, theme := range themes {
@@ -83,6 +87,7 @@ func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	sizeLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight,
 		"View &Font Size")
 	app.sizeSpinner = fltk.NewSpinner(0, 0, labelWidth, buttonHeight)
@@ -110,6 +115,7 @@ func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
 func makeHelpCheckboxRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	label := fltk.NewBox(fltk.NO_BOX, 0, 0, labelWidth, buttonHeight)
 	app.showInitialHelpCheckButton = fltk.NewCheckButton(x, y, width,
 		buttonHeight, "Show &Initial Help Text")
@@ -122,6 +128,7 @@ func makeHelpCheckboxRow(app *App, x, y, width, height int) *fltk.Flex {
 func makeCustomTitleRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
 	titleLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight,
 		"&Custom Title")
 	app.customTitleInput = fltk.NewInput(0, 0, labelWidth, buttonHeight)
