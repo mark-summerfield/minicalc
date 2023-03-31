@@ -66,7 +66,7 @@ func makeBottomRow(app *App, x, y, width, height int,
 func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 	input := strings.TrimSpace(app.evalInput.Value())
 	if input == "clear()" {
-		clear(app.evalView, evalEnv.Variables)
+		clear(app.evalView, evalEnv.variables)
 	} else {
 		autoVar := true
 		deletion := false
@@ -82,7 +82,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 			if expression == "" { // varName=
 				deletion = true
 				delete(userVarNames, varName)
-				delete(evalEnv.Variables, varName)
+				delete(evalEnv.variables, varName)
 				text = fmt.Sprintf(
 					"<font color=purple>deleted <b>%s</b></font>", varName)
 			}
@@ -91,7 +91,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 			text, varName = evaluate(app, varName, expression, autoVar,
 				evalEnv, userVarNames)
 		}
-		populateView(varName, text, evalEnv.Variables, app.evalView)
+		populateView(varName, text, evalEnv.variables, app.evalView)
 	}
 }
 
@@ -129,16 +129,16 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 	evalEnv *EvalEnv, userVarNames gset.Set[string]) (string, string) {
 	var text string
 	evaluator := goval.NewEvaluator()
-	value, err := evaluator.Evaluate(expression, evalEnv.Variables,
-		evalEnv.Functions)
+	value, err := evaluator.Evaluate(expression, evalEnv.variables,
+		evalEnv.functions)
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
 	} else {
 		if autoVar {
 			getNextVarName(evalEnv)
-			varName = evalEnv.NextVarName
+			varName = evalEnv.nextVarName
 		}
-		evalEnv.Variables[varName] = value
+		evalEnv.variables[varName] = value
 		app.evalResults = append(app.evalResults,
 			EvalResult{varName, value})
 		updateEvalCopyButton(app)
@@ -151,16 +151,16 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 func getNextVarName(evalEnv *EvalEnv) {
 	for i := 'A'; i <= 'Z'; i++ {
 		varName := string(i)
-		if _, found := evalEnv.Variables[varName]; !found {
-			evalEnv.NextVarName = varName
+		if _, found := evalEnv.variables[varName]; !found {
+			evalEnv.nextVarName = varName
 			return
 		}
 	}
 	// All variables have been used, so start to reuse.
-	evalEnv.NextVarName = string(evalEnv.NextReuseCP)
-	evalEnv.NextReuseCP++
-	if evalEnv.NextReuseCP > 'Z' {
-		evalEnv.NextReuseCP = 'A'
+	evalEnv.nextVarName = string(evalEnv.nextReuseRune)
+	evalEnv.nextReuseRune++
+	if evalEnv.nextReuseRune > 'Z' {
+		evalEnv.nextReuseRune = 'A'
 	}
 }
 
@@ -231,17 +231,17 @@ type EvalResult struct {
 }
 
 type EvalEnv struct {
-	NextVarName string
-	NextReuseCP rune
-	Variables   VarMap
-	Functions   map[string]goval.ExpressionFunction
+	nextVarName   string
+	nextReuseRune rune
+	variables     VarMap
+	functions     map[string]goval.ExpressionFunction
 }
 
 func newEvalEnv() *EvalEnv {
-	Variables := make(VarMap)
-	Variables["pi"] = math.Pi
-	Functions := make(map[string]goval.ExpressionFunction)
-	Functions["len"] = func(args ...any) (any, error) {
+	variables := make(VarMap)
+	variables["pi"] = math.Pi
+	functions := make(map[string]goval.ExpressionFunction)
+	functions["len"] = func(args ...any) (any, error) {
 		if len(args) != 1 {
 			return nil, fmt.Errorf("len(v): needs one argument")
 		}
@@ -259,7 +259,7 @@ func newEvalEnv() *EvalEnv {
 		}
 		return nil, fmt.Errorf("len(v): needs a string, array or object")
 	}
-	Functions["pow"] = func(args ...any) (any, error) {
+	functions["pow"] = func(args ...any) (any, error) {
 		if len(args) != 2 {
 			return nil, errors.New("pow(x, y): needs two arguments")
 		}
@@ -273,10 +273,10 @@ func newEvalEnv() *EvalEnv {
 		}
 		return math.Pow(x, y), nil
 	}
-	Functions["rand"] = func(...any) (any, error) {
+	functions["rand"] = func(...any) (any, error) {
 		return rand.Float64(), nil
 	}
-	Functions["randint"] = func(args ...any) (any, error) {
+	functions["randint"] = func(args ...any) (any, error) {
 		if len(args) != 1 {
 			return nil, errors.New("randint(n): needs one argument")
 		}
@@ -286,7 +286,7 @@ func newEvalEnv() *EvalEnv {
 		}
 		return rand.Intn(n), nil
 	}
-	Functions["sin"] = func(args ...any) (any, error) {
+	functions["sin"] = func(args ...any) (any, error) {
 		if len(args) != 1 {
 			return nil, errors.New("sin(n): needs one argument")
 		}
@@ -296,7 +296,7 @@ func newEvalEnv() *EvalEnv {
 		}
 		return math.Sin(x), nil
 	}
-	Functions["sqrt"] = func(args ...any) (any, error) {
+	functions["sqrt"] = func(args ...any) (any, error) {
 		if len(args) != 1 {
 			return nil, errors.New("sqrt(n): needs one argument")
 		}
@@ -309,9 +309,9 @@ func newEvalEnv() *EvalEnv {
 		}
 		return math.Sqrt(x), nil
 	}
-	NextVarName := "A"
-	NextReuseCP := 'A'
-	return &EvalEnv{NextVarName, NextReuseCP, Variables, Functions}
+	nextVarName := "A"
+	nextReuseRune := 'A'
+	return &EvalEnv{nextVarName, nextReuseRune, variables, functions}
 }
 
 func getReal(x any) (float64, error) {
