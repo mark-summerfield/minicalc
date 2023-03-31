@@ -95,7 +95,7 @@ func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
 		app.config.ViewFontSize = size
 		fmt.Println(size)
 		for _, widget := range []*fltk.HelpView{app.evalView, app.regexView,
-			app.accelView, app.asciiView, app.customView, app.aboutView} {
+			app.accelView, app.unicodeView, app.customView, app.aboutView} {
 			if widget != nil {
 				widget.TextSize(size)
 			}

@@ -21,15 +21,15 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 	vbox.Fixed(hbox, buttonHeight)
 	y += buttonHeight
 	height -= (2 * buttonHeight)
-	app.asciiView = fltk.NewHelpView(x, y, width, height)
-	app.asciiView.TextFont(fltk.COURIER)
-	app.asciiView.TextSize(app.config.ViewFontSize)
-	app.asciiView.SetValue(asciiHtml())
+	app.unicodeView = fltk.NewHelpView(x, y, width, height)
+	app.unicodeView.TextFont(fltk.COURIER)
+	app.unicodeView.TextSize(app.config.ViewFontSize)
+	app.unicodeView.SetValue(asciiHtml())
 	vbox.End()
 	group.End()
 	group.Resizable(vbox)
 	group.End()
-	app.asciiView.TakeFocus() // TODO change + in app.go
+	app.unicodeView.TakeFocus() // TODO change + in app.go
 }
 
 func makeTopRow(x, y, width, height int) *fltk.Flex {

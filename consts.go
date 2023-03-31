@@ -21,7 +21,7 @@ const (
 	evaluatorTabIndex  = 0
 	regexTabIndex      = 1
 	accelHintsTabIndex = 2
-	asciiTabIndex      = 3
+	unicodeTabIndex    = 3
 	customTabIndex     = 4
 	optionsTabIndex    = 5
 	aboutTabIndex      = 6
