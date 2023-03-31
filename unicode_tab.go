@@ -12,13 +12,44 @@ import (
 )
 
 func makeAsciiTab(app *App, x, y, width, height int) {
-	group := fltk.NewGroup(x, y, width, height, "&ASCII")
+	group := fltk.NewGroup(x, y, width, height, "&Unicode")
+	vbox := fltk.NewFlex(x, y, width, height)
+	hbox := makeTopRow(x, y, width, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	y += buttonHeight
+	hbox = makeChoiceRow(x, y, width, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	y += buttonHeight
+	height -= (2 * buttonHeight)
 	app.asciiView = fltk.NewHelpView(x, y, width, height)
 	app.asciiView.TextFont(fltk.COURIER)
 	app.asciiView.TextSize(app.config.ViewFontSize)
 	app.asciiView.SetValue(asciiHtml())
+	vbox.End()
 	group.End()
-	app.asciiView.TakeFocus()
+	group.Resizable(vbox)
+	group.End()
+	app.asciiView.TakeFocus() // TODO change + in app.go
+}
+
+func makeTopRow(x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	// TODO
+	// Code Point [hex or dec] |hex1 dec1 ch1 • hex2 dec2 ch2]
+	hbox.End()
+	//hbox.Fixed(regexLabel, labelWidth)
+	return hbox
+}
+
+func makeChoiceRow(x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	// TODO
+	// &Category [Choice v] // ASCII (<32) | ASCII (>=32) | unicode cats...
+	hbox.End()
+	//hbox.Fixed(regexLabel, labelWidth)
+	return hbox
 }
 
 func asciiHtml() string {
