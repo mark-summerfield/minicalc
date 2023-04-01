@@ -84,10 +84,10 @@ func makeChoiceRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
-	choice.Add("ASCII (<=32)", func() {
+	choice.Add("ASCII (0-20)", func() {
 		view.SetValue(getAsciiLow())
 	})
-	choice.Add("ASCII (>32)", func() {
+	choice.Add("ASCII (21-7F)", func() {
 		view.SetValue(getAsciiHigh())
 	})
 	// TODO Unicode categories
