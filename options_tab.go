@@ -18,7 +18,10 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
 	vbox.SetSpacing(pad)
-	hbox := makeScaleRow(app, x, yoffset, width, buttonHeight)
+	hbox := makeConfigFileRow(app, x, yoffset, width, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
+	yoffset += buttonHeight
+	hbox = makeScaleRow(app, x, yoffset, width, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
 	hbox = makeThemeRow(app, x, y, yoffset, buttonHeight)
@@ -40,6 +43,20 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	group.Resizable(vbox)
 	group.End()
 	app.scaleSpinner.TakeFocus()
+}
+
+func makeConfigFileRow(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
+	nameLabel := fltk.NewBox(fltk.NO_BOX, 0, 0, labelWidth, buttonHeight,
+		"Config File")
+	nameLabel.SetAlign(fltk.ALIGN_LEFT | fltk.ALIGN_INSIDE)
+	fltk.NewBox(fltk.DOWN_BOX, labelWidth, 0, labelWidth, buttonHeight,
+		app.config.filename)
+	hbox.Fixed(nameLabel, optionsLabelWidth)
+	hbox.End()
+	return hbox
 }
 
 func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {

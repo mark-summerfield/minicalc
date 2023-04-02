@@ -19,11 +19,11 @@ func makeAboutTab(app *App, x, y, width, height int) {
 	app.aboutView = fltk.NewHelpView(x, y, width, height)
 	app.aboutView.TextFont(fltk.HELVETICA)
 	app.aboutView.TextSize(app.config.ViewFontSize)
-	app.aboutView.SetValue(aboutHtml(app.config.filename))
+	app.aboutView.SetValue(aboutHtml())
 	group.End()
 }
 
-func aboutHtml(filename string) string {
+func aboutHtml() string {
 	var year string
 	y := time.Now().Year()
 	if y == 2023 {
@@ -49,11 +49,10 @@ func aboutHtml(filename string) string {
 All rights reserved.<br>
 License: GPLv3.
 </center></p>
-<p><center>Configuration file:<br><tt>%s</tt></center></p>
 <p><center><font color=#222>%s • %s/%s</font></center><br>
 <center><font color=#222>go-fltk %s • FLTK
 %s</font></center><br>
 <center><font color=#222>%s</font></center></p>`,
-		appName, Version, year, filename, runtime.Version(), runtime.GOOS,
+		appName, Version, year, runtime.Version(), runtime.GOOS,
 		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

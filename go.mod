@@ -6,9 +6,9 @@ require (
 	github.com/go-ini/ini v1.67.0
 	github.com/maja42/goval v1.3.1
 	github.com/mark-summerfield/accelhint v0.7.6
-	github.com/mark-summerfield/gong v1.1.3
+	github.com/mark-summerfield/gong v1.2.0
 	github.com/mark-summerfield/gset v0.8.0
-	github.com/pwiecz/go-fltk v0.0.0-20230330205935-62b332675941
+	github.com/pwiecz/go-fltk v0.0.0-20230401121245-bbadd89303c2
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 )
 

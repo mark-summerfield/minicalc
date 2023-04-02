@@ -28,7 +28,7 @@ type Config struct {
 }
 
 func newConfig() *Config {
-	filename, found := gong.GetIniFilename(appName)
+	filename, found := gong.GetIniFile(domain, appName)
 	if found {
 		cfg, err := ini.Load(filename)
 		if err != nil {
