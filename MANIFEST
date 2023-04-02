@@ -7,6 +7,7 @@
 # TODO 2.0.0 branch cpuram: try implementing a system monitor for CPU
 #   and RAM with an on/off switch or checkbox (always defaulting to off):
 #   https://github.com/shirou/gopsutil
+
 minicalc.go
 app.go
 evaluator_tab.go
