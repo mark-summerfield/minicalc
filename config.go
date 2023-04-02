@@ -5,6 +5,9 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 
 	"github.com/go-ini/ini"
 	"github.com/mark-summerfield/gong"
@@ -89,6 +92,12 @@ func (me *Config) save() {
 	if err != nil {
 		fmt.Println("save #1", me.filename, err)
 	} else {
+		dir := filepath.Dir(me.filename)
+		if dir != "." {
+			if !gong.PathExists(dir) {
+				_ = os.MkdirAll(dir, fs.ModePerm)
+			}
+		}
 		err := cfg.SaveTo(me.filename)
 		if err != nil {
 			fmt.Println("save #2", me.filename, err)
