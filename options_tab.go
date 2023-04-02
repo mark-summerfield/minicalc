@@ -49,11 +49,13 @@ func makeConfigFileRow(app *App, x, y, width, height int) *fltk.Flex {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
+	align := fltk.ALIGN_LEFT | fltk.ALIGN_INSIDE
 	nameLabel := fltk.NewBox(fltk.NO_BOX, 0, 0, labelWidth, buttonHeight,
 		"Config File")
-	nameLabel.SetAlign(fltk.ALIGN_LEFT | fltk.ALIGN_INSIDE)
-	fltk.NewBox(fltk.DOWN_BOX, labelWidth, 0, labelWidth, buttonHeight,
-		app.config.filename)
+	nameLabel.SetAlign(align)
+	filenameLabel := fltk.NewBox(fltk.DOWN_BOX, labelWidth, 0, labelWidth,
+		buttonHeight, app.config.filename)
+	filenameLabel.SetAlign(align)
 	hbox.Fixed(nameLabel, optionsLabelWidth)
 	hbox.End()
 	return hbox
