@@ -314,8 +314,6 @@ func getSymbols(runes []rune) string {
 	for _, r := range runes {
 		if r == ' ' {
 			break
-		} else if r >= 0x202A && r <= 0x202F {
-			continue
 		} else {
 			text.WriteString(fmt.Sprintf(
 				"&nbsp;<font color=navy>%s</font> %04X",
@@ -336,6 +334,9 @@ func getFullRange(step, start, end int, initials ...rune) []rune {
 	runes := make([]rune, 0)
 	runes = append(runes, initials...)
 	for i := start; i <= end; i++ {
+		if i >= 0x202A && i <= 0x202F { // skip known problem ones
+			continue
+		}
 		runes = append(runes, rune(i))
 	}
 	for len(runes)%step != 0 {
