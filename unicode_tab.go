@@ -10,6 +10,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/mark-summerfield/gset"
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -97,15 +98,14 @@ func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
 		view.SetValue(getGreek())
 	})
 	choice.Add("Symbols", func() {
-		runes := getFullRange(5, 0x2013, 0x204A, 0xD7, 0xF7)
+		runes := make([]rune, 0, 100)
+		runes = append(runes, 0xD7, 0xF7)
+		runes = getFullRange(runes, 0x2012, 0x205E)
+		//runes = getFullRange(runes, 0x2013, 0x204A)
 		view.SetValue(getSymbols(runes))
 	})
 	// TODO Unicode categories
 	/*
-		// 0x00D7-0x00F7
-		// 0x2013-0x204A
-		// 0x2012-0x2027
-		// 0x2030-0x205E
 		// 0x20A0-0x20BF
 		// 0x2100-0x214F
 		// 0x2150-0x218B
@@ -330,17 +330,18 @@ func getSymbols(runes []rune) string {
 	return text.String()
 }
 
-func getFullRange(step, start, end int, initials ...rune) []rune {
-	runes := make([]rune, 0)
-	runes = append(runes, initials...)
+var badRunes gset.Set[int]
+
+func getFullRange(runes []rune, start, end int) []rune {
+	if len(badRunes) == 0 {
+		badRunes = gset.New(0x2029, 0x202A, 0x202B, 0x202C, 0x202D, 0x202E,
+			0x202F, 0x203F, 0x2040, 0x2041, 0x2043, 0x2044)
+	}
 	for i := start; i <= end; i++ {
-		if i >= 0x202A && i <= 0x202F { // skip known problem ones
+		if badRunes.Contains(i) {
 			continue
 		}
 		runes = append(runes, rune(i))
-	}
-	for len(runes)%step != 0 {
-		runes = append(runes, ' ')
 	}
 	return runes
 }
