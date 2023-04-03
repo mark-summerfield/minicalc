@@ -97,9 +97,30 @@ func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
 		view.SetValue(getGreek())
 	})
 	choice.Add("Symbols", func() {
-		view.SetValue(getSymbols())
+		runes := getFullRange(5, 0x2013, 0x204A, 0xD7, 0xF7)
+		view.SetValue(getSymbols(runes))
 	})
 	// TODO Unicode categories
+	/*
+		// 0x00D7-0x00F7
+		// 0x2013-0x204A
+		// 0x2012-0x2027
+		// 0x2030-0x205E
+		// 0x20A0-0x20BF
+		// 0x2100-0x214F
+		// 0x2150-0x218B
+		// 0x2190-0x21FF
+		// 0x2200-0x22FF
+		// 0x2300-0x23FF
+		// 0x2460-0x24FF
+		// 0x2500-0x257F
+		// 0x2580-0x259F
+		// 0x25A0-0x25FF
+		// 0x2600-0x26FF
+		// 0x2700-0x27BF
+		// 0xFB00-0xFB06
+	*/
+
 }
 
 func cpHtml(s string) (string, fltk.Color) {
@@ -152,7 +173,7 @@ func getAsciiHigh() string {
 
 func populateOne(text *strings.Builder, i rune, isEnd bool) {
 	if i == 127 {
-		text.WriteString("7F backspace<br>")
+		text.WriteString("&nbsp;&nbsp;7F backspace<br>")
 		return
 	}
 	var end string
@@ -161,8 +182,8 @@ func populateOne(text *strings.Builder, i rune, isEnd bool) {
 	} else {
 		end = " <font color=#aaa>|</font> "
 	}
-	text.WriteString(fmt.Sprintf("%02X <font color=navy>%s</font>%s", i,
-		html.EscapeString(string(i)), end))
+	text.WriteString(fmt.Sprintf("<font color=navy>%s</font> %02X%s",
+		html.EscapeString(string(i)), i, end))
 }
 
 func getAsciiLow() string {
@@ -182,10 +203,9 @@ func getAsciiLow() string {
 			istr = "&nbsp;" + istr
 		}
 		text.WriteString(fmt.Sprintf(
-			`&nbsp;%02X&nbsp;<font color=navy>%s</font>
-			&nbsp;%s&nbsp;<font color=navy>%s</font>&nbsp;
-			<font color=green>%s</font><br>`, i, c, istr,
-			charDesc.shortDesc, charDesc.longDesc))
+			`&nbsp;<font color=navy>%s</font>&nbsp;&nbsp;%02X&nbsp;<font
+			color=navy>%s</font>%s&nbsp;<font color=green>%s</font><br>`,
+			c, i, charDesc.shortDesc, istr, charDesc.longDesc))
 	}
 	text.WriteString("</p>")
 	return text.String()
@@ -210,14 +230,14 @@ func getDescForChar() DescForCharMap {
 		{"�", "ENQ", "Enquiry"},
 		{"�", "ACK", "Acknowledge"},
 		{"\\a", "BEL", "Bell"},
-		{"\\b", "BS", "&nbsp;Backspace"},
-		{"\\t", "HT", "&nbsp;Horizontal Tab"},
-		{"\\n", "LF", "&nbsp;Line Feed"},
-		{"\\t", "VT", "&nbsp;Vertical Tab"},
-		{"\\f", "FF", "&nbsp;Form Feed"},
-		{"\\r", "CR", "&nbsp;Carriage Return"},
-		{"�", "SO", "&nbsp;Shift Out"},
-		{"�", "SI", "&nbsp;Shift In"},
+		{"\\b", "BS&nbsp;", "Backspace"},
+		{"\\t", "HT&nbsp;", "Horizontal Tab"},
+		{"\\n", "LF&nbsp;", "Line Feed"},
+		{"\\t", "VT&nbsp;", "Vertical Tab"},
+		{"\\f", "FF&nbsp;", "Form Feed"},
+		{"\\r", "CR&nbsp;", "Carriage Return"},
+		{"�", "SO&nbsp;", "Shift Out"},
+		{"�", "SI&nbsp;", "Shift In"},
 		{"�", "DLE", "Data Link Escape"},
 		{"�", "DC1", "Device Control 1"},
 		{"�", "DC2", "Device Control 2"},
@@ -227,14 +247,14 @@ func getDescForChar() DescForCharMap {
 		{"�", "SYN", "Synchronize"},
 		{"�", "ETB", "End of Transmission Block"},
 		{"�", "CAN", "Cancel"},
-		{"�", "EM", "&nbsp;End of Medium"},
+		{"�", "EM&nbsp;", "End of Medium"},
 		{"�", "SUB", "Substitute"},
 		{"�", "ESC", "Escape"},
-		{"�", "FS", "&nbsp;File Separator"},
-		{"�", "GS", "&nbsp;Group Separator"},
-		{"�", "RS", "&nbsp;Record Separator"},
-		{"�", "US", "&nbsp;Unit Separator"},
-		{"&nbsp;&nbsp;", "<i>space</i>", ""}} {
+		{"�", "FS&nbsp;", "File Separator"},
+		{"�", "GS&nbsp;", "Group Separator"},
+		{"�", "RS&nbsp;", "Record Separator"},
+		{"�", "US&nbsp;", "Unit Separator"},
+		{"&nbsp;&nbsp;", "SPC", "Space"}} {
 		descForChar[i] = charDesc
 	}
 	return descForChar
@@ -272,62 +292,45 @@ func getGreek() string {
 		{'Ψ', 'ψ', "Psi"},
 		{'Ω', 'ω', "Omega"},
 	} {
-		text.WriteString(fmt.Sprintf(`%c %03X <font color=#aaa>•</font>
-		%c %03X <font color=#aaa>•</font> %s<br>`, greek.lower, greek.lower,
-			greek.upper, greek.upper, greek.desc))
+		text.WriteString(fmt.Sprintf(`&nbsp;<font
+		color=navy>%c</font>&nbsp;%03X&nbsp;<font
+		color=navy>%c</font>&nbsp;%03X&nbsp;%s<br>`, greek.lower,
+			greek.lower, greek.upper, greek.upper, greek.desc))
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
 
 func getNato() string {
-	return "Alpha Bravo Charlie Delta Echo Foxtrot Golf Hotel India " +
-		"Juliet Kilo Lima Mike November Oscar Papa Quebec Romeo " +
-		"Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu"
+	return "<font color=navy>Alpha Bravo Charlie Delta Echo Foxtrot Golf " +
+		"Hotel India Juliet Kilo Lima Mike November Oscar Papa Quebec " +
+		"Romeo Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu</font>"
 }
 
-// TODO switch to a <table> ?
-func getSymbols() string {
+func getSymbols(runes []rune) string {
 	var text strings.Builder
 	text.WriteString("<p>")
-	runes := getFullRange(5, 0x2013, 0x204A, 0xD7, 0xF7)
-	for i, r := range runes {
-		i++
+	i := 1
+	for _, r := range runes {
 		if r == ' ' {
-			text.WriteString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+			break
+		} else if r >= 0x202A && r <= 0x202F {
+			continue
 		} else {
-			text.WriteString(fmt.Sprintf("&nbsp;%04X %s", r,
-				html.EscapeString(string(r))))
+			text.WriteString(fmt.Sprintf(
+				"&nbsp;<font color=navy>%s</font> %04X",
+				html.EscapeString(string(r)), r))
 		}
 		if i%5 == 0 {
 			text.WriteString("<br>")
 		} else {
 			text.WriteString("&nbsp;<font color=#aaa>|</font>")
 		}
+		i++
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
-
-/*
-	// 0x00D7-0x00F7
-	// 0x2013-0x204A
-	// 0x2012-0x2027
-	// 0x2030-0x205E
-	// 0x20A0-0x20BF
-	// 0x2100-0x214F
-	// 0x2150-0x218B
-	// 0x2190-0x21FF
-	// 0x2200-0x22FF
-	// 0x2300-0x23FF
-	// 0x2460-0x24FF
-	// 0x2500-0x257F
-	// 0x2580-0x259F
-	// 0x25A0-0x25FF
-	// 0x2600-0x26FF
-	// 0x2700-0x27BF
-	// 0xFB00-0xFB06
-*/
 
 func getFullRange(step, start, end int, initials ...rune) []rune {
 	runes := make([]rune, 0)
