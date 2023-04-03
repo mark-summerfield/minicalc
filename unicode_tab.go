@@ -96,6 +96,9 @@ func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
 	choice.Add("Greek", func() {
 		view.SetValue(getGreek())
 	})
+	choice.Add("Symbols", func() {
+		view.SetValue(getSymbols())
+	})
 	// TODO Unicode categories
 }
 
@@ -140,14 +143,14 @@ func getAsciiHigh() string {
 		text.WriteString("&nbsp;")
 		j := start + i
 		for k := 0; k < 5; k++ {
-			populateOneAsciiHigh(&text, rune(j+(k*stride)), k == 4)
+			populateOne(&text, rune(j+(k*stride)), k == 4)
 		}
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
 
-func populateOneAsciiHigh(text *strings.Builder, i rune, isEnd bool) {
+func populateOne(text *strings.Builder, i rune, isEnd bool) {
 	if i == 127 {
 		text.WriteString("7F backspace<br>")
 		return
@@ -283,41 +286,57 @@ func getNato() string {
 		"Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu"
 }
 
-/*
+// TODO switch to a <table> ?
 func getSymbols() string {
 	var text strings.Builder
 	text.WriteString("<p>")
-	// 00D7-00F7
-	// 2013-204A
-	// 2012-2027
-	// 2030-205E
-	// 20A0-20BF
-	// 2100-214F
-	// 2150-218B
-	// 2190-21FF
-	// 2200-22FF
-	// 2300-23FF
-	// 2460-24FF
-	// 2500-257F
-	// 2580-259F
-	// 25A0-25FF
-	// 2600-26FF
-	// 2700-27BF
-	// FB00-FB06
-	const (
-		start  = 33
-		end    = 127
-		step   = 5
-		stride = (end - start + 1) / step
-	)
-	for i := 0; i < stride; i++ {
-		text.WriteString("&nbsp;")
-		j := start + i
-		for k := 0; k < 5; k++ {
-			populateOneAsciiHigh(&text, rune(j+(k*stride)), k == 4)
+	runes := getFullRange(5, 0x2013, 0x204A, 0xD7, 0xF7)
+	for i, r := range runes {
+		i++
+		if r == ' ' {
+			text.WriteString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+		} else {
+			text.WriteString(fmt.Sprintf("&nbsp;%04X %s", r,
+				html.EscapeString(string(r))))
+		}
+		if i%5 == 0 {
+			text.WriteString("<br>")
+		} else {
+			text.WriteString("&nbsp;<font color=#aaa>|</font>")
 		}
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
+
+/*
+	// 0x00D7-0x00F7
+	// 0x2013-0x204A
+	// 0x2012-0x2027
+	// 0x2030-0x205E
+	// 0x20A0-0x20BF
+	// 0x2100-0x214F
+	// 0x2150-0x218B
+	// 0x2190-0x21FF
+	// 0x2200-0x22FF
+	// 0x2300-0x23FF
+	// 0x2460-0x24FF
+	// 0x2500-0x257F
+	// 0x2580-0x259F
+	// 0x25A0-0x25FF
+	// 0x2600-0x26FF
+	// 0x2700-0x27BF
+	// 0xFB00-0xFB06
 */
+
+func getFullRange(step, start, end int, initials ...rune) []rune {
+	runes := make([]rune, 0)
+	runes = append(runes, initials...)
+	for i := start; i <= end; i++ {
+		runes = append(runes, rune(i))
+	}
+	for len(runes)%step != 0 {
+		runes = append(runes, ' ')
+	}
+	return runes
+}
