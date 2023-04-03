@@ -67,27 +67,6 @@ customize this text (and this tab's title).</i></font></p>
 <font color=blue>gom</font> — go mod tidy<br>
 <font color=blue>gogu</font> — go get -u ./...<br>
 </p>
-<p>
-<b>NATO Phonetic Alphabet</b><br>
-<font color=navy>Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, 
-Golf, Hotel, India, Juliet, Kilo, Lima, Mike, November, Oscar, Papa, 
-Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, 
-Yankee, Zulu.</font></p>
-<p>
-<b>Greek Alphabet</b><br>
-<font color=green>Α&nbsp;α&nbsp;alpha, 
-Β&nbsp;β&nbsp;beta, Γ&nbsp;γ&nbsp;gamma,  
-Δ&nbsp;δ&nbsp;delta, Ε&nbsp;ε&nbsp;epsilon, 
-Ζ&nbsp;ζ&nbsp;zeta, Η&nbsp;η&nbsp;eta, 
-Θ&nbsp;θ&nbsp;theta, Ι&nbsp;ι&nbsp;iota, 
-Κ&nbsp;κ&nbsp;kappa, Λ&nbsp;λ&nbsp;lambda, 
-Μ&nbsp;μ&nbsp;mu, Ν&nbsp;ν&nbsp;nu, Ξ&nbsp;ξ&nbsp;xi, 
-Ο&nbsp;ο&nbsp;omicron, Π&nbsp;π&nbsp;pi, 
-Ρ&nbsp;ρ&nbsp;rho, Σ&nbsp;σ&nbsp;ς&nbsp;sigma, 
-Τ&nbsp;τ&nbsp;tau, Υ&nbsp;υ&nbsp;upsilon, 
-Φ&nbsp;φ&nbsp;phi, Χ&nbsp;χ&nbsp;chi, Ψ&nbsp;ψ&nbsp;psi, 
-Ω&nbsp;ω&nbsp;omega.</font>
-</p>
 </body>
 </html>`
 	evalShortHelp = `<p><font color=#888>Type an expression then press

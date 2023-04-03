@@ -90,6 +90,12 @@ func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
 	choice.Add("ASCII (21-7F)", func() {
 		view.SetValue(getAsciiHigh())
 	})
+	choice.Add("NATO Alphabet", func() {
+		view.SetValue(getNato())
+	})
+	choice.Add("Greek", func() {
+		view.SetValue(getGreek())
+	})
 	// TODO Unicode categories
 }
 
@@ -134,14 +140,14 @@ func getAsciiHigh() string {
 		text.WriteString("&nbsp;")
 		j := start + i
 		for k := 0; k < 5; k++ {
-			populateOne(&text, rune(j+(k*stride)), k == 4)
+			populateOneAsciiHigh(&text, rune(j+(k*stride)), k == 4)
 		}
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
 
-func populateOne(text *strings.Builder, i rune, isEnd bool) {
+func populateOneAsciiHigh(text *strings.Builder, i rune, isEnd bool) {
 	if i == 127 {
 		text.WriteString("7F backspace<br>")
 		return
@@ -174,15 +180,18 @@ func getAsciiLow() string {
 		}
 		text.WriteString(fmt.Sprintf(
 			`&nbsp;%02X&nbsp;<font color=navy>%s</font>
-			&nbsp;%s&nbsp;%s<br>`, i, c, istr, charDesc.desc))
+			&nbsp;%s&nbsp;<font color=navy>%s</font>&nbsp;
+			<font color=green>%s</font><br>`, i, c, istr,
+			charDesc.shortDesc, charDesc.longDesc))
 	}
 	text.WriteString("</p>")
 	return text.String()
 }
 
 type CharDesc struct {
-	char string
-	desc string
+	char      string
+	shortDesc string
+	longDesc  string
 }
 
 type DescForCharMap map[int]CharDesc
@@ -190,40 +199,125 @@ type DescForCharMap map[int]CharDesc
 func getDescForChar() DescForCharMap {
 	descForChar := make(DescForCharMap)
 	for i, charDesc := range []CharDesc{
-		{"�", "NUL&nbsp;Null"},
-		{"�", "SOH&nbsp;Start of Header"},
-		{"�", "STX&nbsp;Start of Text"},
-		{"�", "ETX&nbsp;End of Text"},
-		{"�", "EOT&nbsp;End of Transmission"},
-		{"�", "ENQ&nbsp;Enquiry"},
-		{"�", "ACK&nbsp;Acknowledge"},
-		{"\\a", "BEL&nbsp;Bell"},
-		{"\\b", "BS&nbsp;&nbsp;Backspace"},
-		{"\\t", "HT&nbsp;&nbsp;Horizontal Tab"},
-		{"\\n", "LF&nbsp;&nbsp;Line Feed"},
-		{"\\t", "VT&nbsp;&nbsp;Vertical Tab"},
-		{"\\f", "FF&nbsp;&nbsp;Form Feed"},
-		{"\\r", "CR&nbsp;&nbsp;Carriage Return"},
-		{"�", "SO&nbsp;&nbsp;Shift Out"},
-		{"�", "SI&nbsp;&nbsp;Shift In"},
-		{"�", "DLE&nbsp;Data Link Escape"},
-		{"�", "DC1&nbsp;Device Control 1"},
-		{"�", "DC2&nbsp;Device Control 2"},
-		{"�", "DC3&nbsp;Device Control 3"},
-		{"�", "DC4&nbsp;Device Control 4"},
-		{"�", "NAK&nbsp;Negative Acknowledge"},
-		{"�", "SYN&nbsp;Synchronize"},
-		{"�", "ETB&nbsp;End of Transmission Block"},
-		{"�", "CAN&nbsp;Cancel"},
-		{"�", "EM&nbsp;&nbsp;End of Medium"},
-		{"�", "SUB&nbsp;Substitute"},
-		{"�", "ESC&nbsp;Escape"},
-		{"�", "FS&nbsp;&nbsp;File Separator"},
-		{"�", "GS&nbsp;&nbsp;Group Separator"},
-		{"�", "RS&nbsp;&nbsp;Record Separator"},
-		{"�", "US&nbsp;&nbsp;Unit Separator"},
-		{"&nbsp;&nbsp;", "space"}} {
+		{"�", "NUL", "Null"},
+		{"�", "SOH", "Start of Header"},
+		{"�", "STX", "Start of Text"},
+		{"�", "ETX", "End of Text"},
+		{"�", "EOT", "End of Transmission"},
+		{"�", "ENQ", "Enquiry"},
+		{"�", "ACK", "Acknowledge"},
+		{"\\a", "BEL", "Bell"},
+		{"\\b", "BS", "&nbsp;Backspace"},
+		{"\\t", "HT", "&nbsp;Horizontal Tab"},
+		{"\\n", "LF", "&nbsp;Line Feed"},
+		{"\\t", "VT", "&nbsp;Vertical Tab"},
+		{"\\f", "FF", "&nbsp;Form Feed"},
+		{"\\r", "CR", "&nbsp;Carriage Return"},
+		{"�", "SO", "&nbsp;Shift Out"},
+		{"�", "SI", "&nbsp;Shift In"},
+		{"�", "DLE", "Data Link Escape"},
+		{"�", "DC1", "Device Control 1"},
+		{"�", "DC2", "Device Control 2"},
+		{"�", "DC3", "Device Control 3"},
+		{"�", "DC4", "Device Control 4"},
+		{"�", "NAK", "Negative Acknowledge"},
+		{"�", "SYN", "Synchronize"},
+		{"�", "ETB", "End of Transmission Block"},
+		{"�", "CAN", "Cancel"},
+		{"�", "EM", "&nbsp;End of Medium"},
+		{"�", "SUB", "Substitute"},
+		{"�", "ESC", "Escape"},
+		{"�", "FS", "&nbsp;File Separator"},
+		{"�", "GS", "&nbsp;Group Separator"},
+		{"�", "RS", "&nbsp;Record Separator"},
+		{"�", "US", "&nbsp;Unit Separator"},
+		{"&nbsp;&nbsp;", "<i>space</i>", ""}} {
 		descForChar[i] = charDesc
 	}
 	return descForChar
 }
+
+func getGreek() string {
+	var text strings.Builder
+	text.WriteString("<p>")
+	for _, greek := range []struct {
+		lower, upper rune
+		desc         string
+	}{
+		{'Α', 'α', "Alpha"},
+		{'Β', 'β', "Beta"},
+		{'Γ', 'γ', "Gamma"},
+		{'Δ', 'δ', "Delta"},
+		{'Ε', 'ε', "Epsilon"},
+		{'Ζ', 'ζ', "Zeta"},
+		{'Η', 'η', "Eta"},
+		{'Θ', 'θ', "Theta"},
+		{'Ι', 'ι', "Iota"},
+		{'Κ', 'κ', "Kappa"},
+		{'Λ', 'λ', "Lambda"},
+		{'Μ', 'μ', "Mu"},
+		{'Ν', 'ν', "Nu"},
+		{'Ξ', 'ξ', "Xi"},
+		{'Ο', 'ο', "Omicron"},
+		{'Π', 'π', "Pi"},
+		{'Ρ', 'ρ', "Rho"},
+		{'Σ', 'σ', "Σ sigma"},
+		{'Τ', 'τ', "Tau"},
+		{'Υ', 'υ', "Upsilon"},
+		{'Φ', 'φ', "Phi"},
+		{'Χ', 'χ', "Chi"},
+		{'Ψ', 'ψ', "Psi"},
+		{'Ω', 'ω', "Omega"},
+	} {
+		text.WriteString(fmt.Sprintf(`%c %03X <font color=#aaa>•</font>
+		%c %03X <font color=#aaa>•</font> %s<br>`, greek.lower, greek.lower,
+			greek.upper, greek.upper, greek.desc))
+	}
+	text.WriteString("</p>")
+	return text.String()
+}
+
+func getNato() string {
+	return "Alpha Bravo Charlie Delta Echo Foxtrot Golf Hotel India " +
+		"Juliet Kilo Lima Mike November Oscar Papa Quebec Romeo " +
+		"Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu"
+}
+
+/*
+func getSymbols() string {
+	var text strings.Builder
+	text.WriteString("<p>")
+	// 00D7-00F7
+	// 2013-204A
+	// 2012-2027
+	// 2030-205E
+	// 20A0-20BF
+	// 2100-214F
+	// 2150-218B
+	// 2190-21FF
+	// 2200-22FF
+	// 2300-23FF
+	// 2460-24FF
+	// 2500-257F
+	// 2580-259F
+	// 25A0-25FF
+	// 2600-26FF
+	// 2700-27BF
+	// FB00-FB06
+	const (
+		start  = 33
+		end    = 127
+		step   = 5
+		stride = (end - start + 1) / step
+	)
+	for i := 0; i < stride; i++ {
+		text.WriteString("&nbsp;")
+		j := start + i
+		for k := 0; k < 5; k++ {
+			populateOneAsciiHigh(&text, rune(j+(k*stride)), k == 4)
+		}
+	}
+	text.WriteString("</p>")
+	return text.String()
+}
+*/
