@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/pwiecz/go-fltk"
 )
@@ -205,12 +204,13 @@ func applySyntaxHighlighting(app *App) {
 	rx := regexp.MustCompile(
 		`(?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))`)
 	fmt.Println(rx)
-	text := app.customTextBuffer.Text()
-	highlight := strings.Repeat("A", utf8.RuneCountInString(text))
-	for i, m := range rx.FindAllStringSubmatch(text, -1) {
+	raw := []byte(app.customTextBuffer.Text())
+	highlight := []byte(strings.Repeat("A", len(raw)))
+	for i, m := range rx.FindAllSubmatch(raw, -1) {
 		for j, n := range m {
+			// TODO highlight[x] = y
 			fmt.Printf("[%d][%d] %q\n", i, j, n)
 		}
 	}
-	app.customTextHighlightBuffer.Append(highlight)
+	app.customTextHighlightBuffer.Append(string(highlight))
 }
