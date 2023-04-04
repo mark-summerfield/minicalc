@@ -93,6 +93,7 @@ func (me *App) onQuit() {
 	me.config.Width = me.Window.W()
 	me.config.Height = me.Window.H()
 	me.config.LastTab = me.tabs.Value()
+	me.config.LastCategory = me.categoryChoice.Value()
 	me.config.Scale = fltk.ScreenScale(0)
 	// config.Theme is set in callback
 	me.config.ShowIntialHelpText = me.showInitialHelpCheckButton.Value()

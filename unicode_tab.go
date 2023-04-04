@@ -33,9 +33,7 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 	group.End()
 	group.Resizable(vbox)
 	group.End()
-	addCategories(app.categoryChoice, app.unicodeView)
-	app.unicodeView.SetValue(getAsciiHigh())
-	app.categoryChoice.SetValue(1)
+	addCategories(app)
 	app.categoryChoice.TakeFocus()
 }
 
@@ -84,43 +82,84 @@ func makeChoiceRow(app *App, x, y, width, height int) *fltk.Flex {
 	return hbox
 }
 
-func addCategories(choice *fltk.Choice, view *fltk.HelpView) {
-	choice.Add("ASCII (0-20)", func() {
-		view.SetValue(getAsciiLow())
-	})
-	choice.Add("ASCII (21-7F)", func() {
-		view.SetValue(getAsciiHigh())
-	})
-	choice.Add("NATO Alphabet", func() {
-		view.SetValue(getNato())
-	})
-	choice.Add("Greek", func() {
-		view.SetValue(getGreek())
-	})
-	choice.Add("Symbols", func() {
-		runes := make([]rune, 0, 100)
-		runes = append(runes, 0xD7, 0xF7)
-		runes = getFullRange(runes, 0x2012, 0x205E)
-		//runes = getFullRange(runes, 0x2013, 0x204A)
-		view.SetValue(getSymbols(runes))
-	})
-	// TODO Unicode categories
-	/*
-		// 0x20A0-0x20BF
-		// 0x2100-0x214F
-		// 0x2150-0x218B
-		// 0x2190-0x21FF
-		// 0x2200-0x22FF
-		// 0x2300-0x23FF
-		// 0x2460-0x24FF
-		// 0x2500-0x257F
-		// 0x2580-0x259F
-		// 0x25A0-0x25FF
-		// 0x2600-0x26FF
-		// 0x2700-0x27BF
-		// 0xFB00-0xFB06
-	*/
-
+func addCategories(app *App) {
+	items := []struct {
+		title    string
+		callback func()
+	}{
+		{"AS&CII (00-20)", func() {
+			app.unicodeView.SetValue(getAsciiLow())
+		}},
+		{"ASC&II (21-7E)", func() {
+			app.unicodeView.SetValue(getAsciiHigh())
+		}},
+		{"&NATO Alphabet", func() {
+			app.unicodeView.SetValue(getNato())
+		}},
+		{"&Greek", func() {
+			app.unicodeView.SetValue(getGreek())
+		}},
+		{"&Symbols", func() {
+			runes := make([]rune, 0)
+			runes = append(runes, 0xD7, 0xF7)
+			runes = getFullRange(runes, 0x2012, 0x205E)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"&Arrows", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2190, 0x21FF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"&Boxes && Blocks", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2500, 0x257F)
+			runes = getFullRange(runes, 0x2580, 0x259F)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"&Dingbats", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2700, 0x27BF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"G&eometric Shapes", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x25A0, 0x25FF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"&Letterlike", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2100, 0x214F)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"Math &Op.", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2200, 0x22FF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"&Misc.", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2600, 0x26FF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"Misc. &Tech.", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2300, 0x23FF)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+		{"Number &Forms", func() {
+			runes := make([]rune, 0)
+			runes = getFullRange(runes, 0x2150, 0x218B)
+			app.unicodeView.SetValue(getSymbols(runes))
+		}},
+	}
+	index := app.config.LastCategory
+	for i, item := range items {
+		app.categoryChoice.Add(item.title, item.callback)
+		if i == index {
+			item.callback()
+		}
+	}
+	app.categoryChoice.SetValue(index)
 }
 
 func cpHtml(s string) (string, fltk.Color) {
@@ -153,37 +192,28 @@ func cpHtml(s string) (string, fltk.Color) {
 
 func getAsciiHigh() string {
 	var text strings.Builder
-	text.WriteString("<p>")
+	text.WriteString("<table border=1>")
 	const (
 		start  = 33
-		end    = 127
-		step   = 5
+		end    = 128
+		step   = 8
 		stride = (end - start + 1) / step
 	)
 	for i := 0; i < stride; i++ {
-		text.WriteString("&nbsp;")
+		text.WriteString("<tr>")
 		j := start + i
-		for k := 0; k < 5; k++ {
-			populateOne(&text, rune(j+(k*stride)), k == 4)
+		for k := 0; k < step; k++ {
+			r := rune(j + (k * stride))
+			if r < 0x7F {
+				text.WriteString(fmt.Sprintf(
+					"<td><font color=navy>%s</font> %02X</td>",
+					html.EscapeString(string(r)), r))
+			}
 		}
+		text.WriteString("</tr>")
 	}
-	text.WriteString("</p>")
+	text.WriteString("</table>")
 	return text.String()
-}
-
-func populateOne(text *strings.Builder, i rune, isEnd bool) {
-	if i == 127 {
-		text.WriteString("&nbsp;&nbsp;7F backspace<br>")
-		return
-	}
-	var end string
-	if isEnd {
-		end = "<br>"
-	} else {
-		end = " <font color=#aaa>|</font> "
-	}
-	text.WriteString(fmt.Sprintf("<font color=navy>%s</font> %02X%s",
-		html.EscapeString(string(i)), i, end))
 }
 
 func getAsciiLow() string {
@@ -230,7 +260,7 @@ func getDescForChar() DescForCharMap {
 		{"�", "ENQ", "Enquiry"},
 		{"�", "ACK", "Acknowledge"},
 		{"\\a", "BEL", "Bell"},
-		{"\\b", "BS&nbsp;", "Backspace"},
+		{"\\b", "BS&nbsp;", "Backspace (also 7F)"},
 		{"\\t", "HT&nbsp;", "Horizontal Tab"},
 		{"\\n", "LF&nbsp;", "Line Feed"},
 		{"\\t", "VT&nbsp;", "Vertical Tab"},
@@ -302,31 +332,33 @@ func getGreek() string {
 }
 
 func getNato() string {
-	return "<font color=navy>Alpha Bravo Charlie Delta Echo Foxtrot Golf " +
-		"Hotel India Juliet Kilo Lima Mike November Oscar Papa Quebec " +
-		"Romeo Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu</font>"
+	return "<font color=navy>Alpha<br>Bravo<br>Charlie<br>Delta<br>Echo" +
+		"<br>Foxtrot<br>Golf<br>Hotel<br>India<br>Juliet<br>Kilo<br>Lima" +
+		"<br>Mike<br>November<br>Oscar<br>Papa<br>Quebec<br>Romeo" +
+		"<br>Sierra<br>Tango<br>Uniform<br>Victor<br>Whiskey<br>X-ray" +
+		"<br>Yankee<br>Zulu</font>"
 }
 
 func getSymbols(runes []rune) string {
 	var text strings.Builder
-	text.WriteString("<p>")
-	i := 1
-	for _, r := range runes {
-		if r == ' ' {
-			break
-		} else {
+	text.WriteString("<table border=1>")
+	const step = 6
+	stride := len(runes) / step
+	for i := 0; i < stride; i++ {
+		text.WriteString("<tr>")
+		for k := 0; k < step; k++ {
+			index := i + (k * stride)
+			if index >= len(runes) {
+				break
+			}
+			r := runes[index]
 			text.WriteString(fmt.Sprintf(
-				"&nbsp;<font color=navy>%s</font> %04X",
+				"<td><font color=navy>%s</font> %02X</td>",
 				html.EscapeString(string(r)), r))
 		}
-		if i%5 == 0 {
-			text.WriteString("<br>")
-		} else {
-			text.WriteString("&nbsp;<font color=#aaa>|</font>")
-		}
-		i++
+		text.WriteString("</tr>")
 	}
-	text.WriteString("</p>")
+	text.WriteString("</table>")
 	return text.String()
 }
 

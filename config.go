@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-ini/ini"
 	"github.com/mark-summerfield/gong"
+	"github.com/pwiecz/go-fltk"
 )
 
 type Config struct {
@@ -22,6 +23,7 @@ type Config struct {
 	Theme              string
 	Scale              float32
 	LastTab            int
+	LastCategory       int
 	ShowIntialHelpText bool
 	ViewFontSize       int
 	AccelShowLetters   bool
@@ -42,16 +44,17 @@ func newConfig() *Config {
 			if err != nil {
 				fmt.Println("newConfig #2", filename, err)
 			} else {
+				_, _, width, height := fltk.ScreenWorkArea(0)
 				if config.CustomTitle == "" {
 					config.CustomTitle = "Custom"
 				}
 				if config.CustomHtml == "" {
 					config.CustomHtml = customPlaceHolderText
 				}
-				if config.Width < 100 || config.Width > 768 {
+				if config.Width < 100 || config.Width > width {
 					config.Width = 512
 				}
-				if config.Height < 100 || config.Height > 768 {
+				if config.Height < 100 || config.Height > height {
 					config.Height = 480
 				}
 				if config.Scale < 0.5 || config.Scale > 5 {
@@ -74,6 +77,9 @@ func newConfig() *Config {
 				if config.LastTab < 0 || config.LastTab > aboutTabIndex {
 					config.LastTab = 0
 				}
+				if config.LastCategory < 0 {
+					config.LastCategory = 1
+				}
 				return config
 			}
 
@@ -81,7 +87,7 @@ func newConfig() *Config {
 	}
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
 		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
-		ShowIntialHelpText: true, CustomTitle: "&Custom",
+		LastCategory: 1, ShowIntialHelpText: true, CustomTitle: "&Custom",
 		CustomHtml: customPlaceHolderText}
 	return config
 }
