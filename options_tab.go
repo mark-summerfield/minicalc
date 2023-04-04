@@ -5,7 +5,9 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/pwiecz/go-fltk"
 )
@@ -192,11 +194,23 @@ func makeCustomTextStyles(app *App) {
 	app.customTextStyles = []fltk.StyleTableEntry{
 		{Color: fltk.BLACK, Font: font, Size: size}, // default " " or "A"
 		{Color: fltk.BLUE, Font: font, Size: size},  // "B" — use for <tag & > & />
-		{Color: fltk.GREEN, Font: font, Size: size}, // "B" — use for key=value in tags
+		{Color: fltk.GREEN, Font: font, Size: size}, // "C" — use for key=value in tags
 	}
 }
 
 func applySyntaxHighlighting(app *App) {
 	// TODO regex the text in app.customTextBuffer to get indexes to apply
 	// styles from app.customTextStyles
+	// (?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))
+	rx := regexp.MustCompile(
+		`(?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))`)
+	fmt.Println(rx)
+	text := app.customTextBuffer.Text()
+	highlight := strings.Repeat("A", utf8.RuneCountInString(text))
+	for i, m := range rx.FindAllStringSubmatch(text, -1) {
+		for j, n := range m {
+			fmt.Printf("[%d][%d] %q\n", i, j, n)
+		}
+	}
+	app.customTextHighlightBuffer.Append(highlight)
 }

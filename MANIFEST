@@ -11,7 +11,7 @@ regex_tab.go
 accel_hints_tab.go
 unicode_tab.go
 custom_tab.go
-options_tab.go
+options_tab.go # TODO
 config.go
 about_tab.go
 util.go

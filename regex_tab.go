@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"regexp"
 	"strings"
 
@@ -99,7 +100,7 @@ func onRegex(app *App) {
 			if match != "" {
 				textBuilder.WriteString(fmt.Sprintf(
 					`<tt>FindString(text) → <font color=blue>%q
-					</font></tt><br>`, match))
+					</font></tt><br>`, html.EscapeString(match)))
 				empty = false
 			}
 			header := false
@@ -112,7 +113,8 @@ func onRegex(app *App) {
 				}
 				textBuilder.WriteString(fmt.Sprintf(
 					`&nbsp;&nbsp;&nbsp;&nbsp;[%d] =
-					<font color=blue><tt>%q</tt></font><br>`, i, match))
+					<font color=blue><tt>%q</tt></font><br>`, i,
+					html.EscapeString(match)))
 			}
 			header = false
 			for i, matches := range rx.FindAllStringSubmatch(text, -1) {
@@ -126,7 +128,7 @@ func onRegex(app *App) {
 					textBuilder.WriteString(fmt.Sprintf(
 						`&nbsp;&nbsp;&nbsp;&nbsp;[%d][%d] =
 						<font color=blue><tt>%q</tt></font><br>`, i, j,
-						match))
+						html.EscapeString(match)))
 				}
 			}
 			for i, name := range rx.SubexpNames() {
@@ -142,7 +144,7 @@ func onRegex(app *App) {
 				<br>&nbsp;&nbsp;&nbsp;&nbsp;
 				<tt>FindStringSubmatch(text)[%d]</tt> →
 				<font color=blue><tt>%q</tt></font><br>`, i, name, i,
-					match[i]))
+					html.EscapeString(match[i])))
 				empty = false
 			}
 			textBuilder.WriteString("</font>")
