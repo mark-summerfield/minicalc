@@ -166,11 +166,31 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 		"Custom &Text:")
 	app.customTextEditor, app.customTextBuffer = makeTextEditor(x, y, width,
 		height*5)
-	app.customTextBuffer.SetText(app.config.CustomHtml)
 	app.customTextEditor.SetCallback(func() {
 		app.customView.SetValue(strings.ReplaceAll(
 			app.customTextBuffer.Text(), "\"\"\"", "&quot;&quot;&quot;"))
 	})
+	app.customTextHighlightBuffer = fltk.NewTextBuffer()
+	makeCustomTextStyles(app)
+	app.customTextEditor.SetHighlightData(app.customTextHighlightBuffer,
+		app.customTextStyles)
 	textLabel.SetCallback(func() { app.customTextEditor.TakeFocus() })
+	app.customTextBuffer.SetText(app.config.CustomHtml)
+	applySyntaxHighlighting(app)
 	return textLabel
+}
+
+func makeCustomTextStyles(app *App) {
+	font := fltk.HELVETICA
+	size := 15
+	app.customTextStyles = []fltk.StyleTableEntry{
+		{Color: fltk.BLACK, Font: font, Size: size}, // default " " or "A"
+		{Color: fltk.BLUE, Font: font, Size: size},  // "B" — use for <tag & > & />
+		{Color: fltk.GREEN, Font: font, Size: size}, // "B" — use for key=value in tags
+	}
+}
+
+func applySyntaxHighlighting(app *App) {
+	// TODO regex the text in app.customTextBuffer to get indexes to apply
+	// styles from app.customTextStyles
 }
