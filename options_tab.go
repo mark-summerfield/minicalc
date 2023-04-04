@@ -92,7 +92,13 @@ func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 		if theme == app.config.Theme {
 			app.themeChoice.SetValue(i)
 		}
-		app.themeChoice.Add(theme, func() {
+		name := theme
+		if name == "Gtk" {
+			name = "G&tk"
+		} else {
+			name = "&" + name
+		}
+		app.themeChoice.Add(name, func() {
 			app.config.Theme = theme
 			fltk.SetScheme(theme)
 		})
@@ -182,7 +188,7 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 
 func makeCustomTextStyles(app *App) {
 	font := fltk.HELVETICA
-	size := 15
+	size := 14
 	app.customTextStyles = []fltk.StyleTableEntry{
 		{Color: fltk.BLACK, Font: font, Size: size}, // default " " or "A"
 		{Color: fltk.BLUE, Font: font, Size: size},  // "B" — use for <tag & > & />
