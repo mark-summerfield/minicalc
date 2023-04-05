@@ -37,8 +37,8 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 	hbox = makeCustomTitleRow(app, x, y, yoffset, buttonHeight)
 	vbox.Fixed(hbox, buttonHeight)
 	yoffset += buttonHeight
-	button := makeCustomTextRows(app, x, y, yoffset, buttonHeight)
-	vbox.Fixed(button, buttonHeight)
+	hbox = makeCustomTextRows(app, x, y, yoffset, buttonHeight)
+	vbox.Fixed(hbox, buttonHeight)
 	vbox.End()
 	group.End()
 	group.Resizable(vbox)
@@ -168,9 +168,20 @@ func makeCustomTitleRow(app *App, x, y, width, height int) *fltk.Flex {
 	return hbox
 }
 
-func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
-	textLabel := makeAccelLabel(x, y, labelWidth, buttonHeight,
+func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y, width, height)
+	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
+	textLabel := makeAccelLabel(x, y, optionsLabelWidth, buttonHeight,
 		"Custom &Text:")
+	updateButton := fltk.NewButton(x, labelWidth, labelWidth, buttonHeight,
+		"U&pdate")
+	updateButton.SetCallback(func() {
+		app.customView.SetValue(app.customTextBuffer.Text())
+	})
+	hbox.Fixed(textLabel, optionsLabelWidth)
+	hbox.Fixed(updateButton, labelWidth)
+	hbox.End()
 	app.customTextEditor, app.customTextBuffer = makeTextEditor(x, y, width,
 		height*5)
 	app.customTextEditor.SetCallback(func() {
@@ -188,7 +199,7 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 	textLabel.SetCallback(func() { app.customTextEditor.TakeFocus() })
 	app.customTextBuffer.SetText(app.config.CustomHtml)
 	applySyntaxHighlighting(app)
-	return textLabel
+	return hbox
 }
 
 func makeCustomTextStyles(app *App) {

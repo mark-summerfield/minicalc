@@ -1,4 +1,3 @@
-# TODO 1.9.0 color syntax highlighting for custom text
 # TODO 2.0.0 branch cpuram: try implementing a system monitor for CPU
 #   and RAM with an on/off switch or checkbox (always defaulting to off):
 #   https://github.com/shirou/gopsutil
@@ -11,15 +10,13 @@ regex_tab.go
 accel_hints_tab.go
 unicode_tab.go
 custom_tab.go
-options_tab.go # TODO
+options_tab.go
 config.go
 about_tab.go
 util.go
 consts.go
 
 README.md
-
-minicalc.ini
 
 go.mod
 
