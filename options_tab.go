@@ -4,6 +4,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"regexp"
 	"strings"
@@ -205,13 +206,10 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Flex {
 func makeCustomTextStyles(app *App) {
 	font := fltk.HELVETICA
 	size := 14
-	// default " " or "A"
-	// "B" — use for <tag & > & />
-	// "C" — use for key=value in tags
 	app.customTextStyles = []fltk.StyleTableEntry{
-		{Color: fltk.BLACK, Font: font, Size: size},
-		{Color: fltk.BLUE, Font: font, Size: size},
-		{Color: fltk.DARK_GREEN, Font: font, Size: size},
+		{Color: fltk.BLACK, Font: font, Size: size},      // A - default
+		{Color: fltk.BLUE, Font: font, Size: size},       // B - tags
+		{Color: fltk.DARK_GREEN, Font: font, Size: size}, // C - attribs
 	}
 }
 
@@ -219,17 +217,17 @@ func applySyntaxHighlighting(app *App) {
 	rx := regexp.MustCompile(
 		`(?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))`)
 	raw := []byte(app.customTextBuffer.Text())
-	highlight := []byte(strings.Repeat("A", len(raw)))
-	for _, indexes := range rx.FindAllSubmatchIndex(raw, -1) {
-		maybeHighlight(highlight, 'B', 2, indexes)
-		maybeHighlight(highlight, 'B', 10, indexes)
-		maybeHighlight(highlight, 'C', 4, indexes)
+	highlight := bytes.Repeat([]byte{'A'}, len(raw))
+	for _, subIndexes := range rx.FindAllSubmatchIndex(raw, -1) {
+		maybeHighlight(highlight, 'B', 2, subIndexes)
+		maybeHighlight(highlight, 'B', 10, subIndexes)
+		maybeHighlight(highlight, 'C', 4, subIndexes)
 	}
 	app.customTextHighlightBuffer.SetText(string(highlight))
 }
 
-func maybeHighlight(highlight []byte, c byte, j int, indexes []int) {
+func maybeHighlight(highlight []byte, style byte, j int, indexes []int) {
 	for k := indexes[j]; k < indexes[j+1]; k++ {
-		highlight[k] = c
+		highlight[k] = style
 	}
 }

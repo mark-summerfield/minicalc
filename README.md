@@ -9,8 +9,8 @@ my Git and Go aliases—see the Options tab to change this to what you want).
 
 Can be built for Linux and Windows.
 
-`minicalc.exe` is a Windows 64-bit binary (4.3MB SHA256
-811af51fe4c3e61da0342a371fbb9864b25d393867b95cfd20f22c8cfee60e40).
+`minicalc.exe` is a Windows 64-bit binary (4.4MB SHA256
+8744a13818a84bf77b769c4212fa8ee3cd42d1b05d2afa084e85c43504275f09).
 
 ![Screenshot (Regex tab)](images/regex-screenshot.png)
 
