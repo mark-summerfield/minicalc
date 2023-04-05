@@ -181,6 +181,10 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 	makeCustomTextStyles(app)
 	app.customTextEditor.SetHighlightData(app.customTextHighlightBuffer,
 		app.customTextStyles)
+	app.customTextEditor.SetCallbackCondition(fltk.WhenChanged)
+	app.customTextEditor.SetCallback(func() {
+		applySyntaxHighlighting(app)
+	})
 	textLabel.SetCallback(func() { app.customTextEditor.TakeFocus() })
 	app.customTextBuffer.SetText(app.config.CustomHtml)
 	applySyntaxHighlighting(app)
@@ -190,27 +194,31 @@ func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Button {
 func makeCustomTextStyles(app *App) {
 	font := fltk.HELVETICA
 	size := 14
+	// default " " or "A"
+	// "B" — use for <tag & > & />
+	// "C" — use for key=value in tags
 	app.customTextStyles = []fltk.StyleTableEntry{
-		{Color: fltk.BLACK, Font: font, Size: size}, // default " " or "A"
-		{Color: fltk.BLUE, Font: font, Size: size},  // "B" — use for <tag & > & />
-		{Color: fltk.GREEN, Font: font, Size: size}, // "C" — use for key=value in tags
+		{Color: fltk.BLACK, Font: font, Size: size},
+		{Color: fltk.BLUE, Font: font, Size: size},
+		{Color: fltk.DARK_GREEN, Font: font, Size: size},
 	}
 }
 
 func applySyntaxHighlighting(app *App) {
-	// TODO regex the text in app.customTextBuffer to get indexes to apply
-	// styles from app.customTextStyles
-	// (?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))
 	rx := regexp.MustCompile(
 		`(?s:(<[^\s/>]+?)(:?\s+([^\s/>]+?=[^\s/>]+))+(>)|(</?[^\s/>]+?>))`)
-	fmt.Println(rx)
 	raw := []byte(app.customTextBuffer.Text())
 	highlight := []byte(strings.Repeat("A", len(raw)))
-	for i, m := range rx.FindAllSubmatch(raw, -1) {
-		for j, n := range m {
-			// TODO highlight[x] = y
-			fmt.Printf("[%d][%d] %q\n", i, j, n)
-		}
+	for _, indexes := range rx.FindAllSubmatchIndex(raw, -1) {
+		maybeHighlight(highlight, 'B', 2, indexes)
+		maybeHighlight(highlight, 'B', 10, indexes)
+		maybeHighlight(highlight, 'C', 4, indexes)
 	}
-	app.customTextHighlightBuffer.Append(string(highlight))
+	app.customTextHighlightBuffer.SetText(string(highlight))
+}
+
+func maybeHighlight(highlight []byte, c byte, j int, indexes []int) {
+	for k := indexes[j]; k < indexes[j+1]; k++ {
+		highlight[k] = c
+	}
 }

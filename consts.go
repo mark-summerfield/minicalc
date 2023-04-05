@@ -35,8 +35,10 @@ const (
 	maxCopyResults  = 9
 	maxMenuTexts    = 9
 
-	errTemplate     = "<font color=red size=4>Error: %s</font>"
-	defaultUnhinted = `Undo
+	errTemplate      = "<font color=red size=4>Error: %s</font>"
+	defaultRegex     = `\s*(?P<key>\S+)\s*[=:]\s*(?P<value>\S+)`
+	defaultRegexText = "scale: 1.15 width=24.5"
+	defaultUnhinted  = `Undo
 Redo
 Copy
 Cu&t

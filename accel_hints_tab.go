@@ -53,7 +53,7 @@ func makeDataRow(app *App, x, y, width, height int) {
 	hbox.SetSpacing(pad)
 	app.accelTextEditor, app.accelTextBuffer = makeTextEditor(x, y, width/2,
 		height)
-	app.accelTextBuffer.SetText(defaultUnhinted)
+	app.accelTextBuffer.SetText(app.config.LastUnhinted)
 	app.accelTextEditor.SelectAll()
 	app.accelView = fltk.NewHelpView(x, y, width/2, height)
 	app.accelView.TextFont(fltk.HELVETICA)

@@ -53,8 +53,7 @@ func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	regexLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Regex")
 	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
-	app.regexInput.Input().SetValue(
-		`\s*(?P<key>\S+)\s*[=:]\s*(?P<value>\S+)`)
+	app.regexInput.Input().SetValue(app.config.LastRegex)
 	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
 	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
@@ -69,7 +68,7 @@ func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	textLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Text")
 	app.regexTextInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
-	text := "scale: 1.15 width=24.5"
+	text := app.config.LastRegexText
 	app.regexTextInput.SetValue(text)
 	app.regexTextInput.MenuButton().Add(text,
 		func() { app.regexTextInput.Input().SetValue(text) })

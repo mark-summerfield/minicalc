@@ -96,6 +96,9 @@ func (me *App) onQuit() {
 	me.config.Height = me.Window.H()
 	me.config.LastTab = me.tabs.Value()
 	me.config.LastCategory = me.categoryChoice.Value()
+	me.config.LastRegex = me.regexInput.Value()
+	me.config.LastRegexText = me.regexTextInput.Value()
+	me.config.LastUnhinted = me.accelTextBuffer.Text()
 	me.config.Scale = fltk.ScreenScale(0)
 	// config.Theme is set in callback
 	me.config.ShowIntialHelpText = me.showInitialHelpCheckButton.Value()

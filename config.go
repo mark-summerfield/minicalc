@@ -24,6 +24,9 @@ type Config struct {
 	Scale              float32
 	LastTab            int
 	LastCategory       int
+	LastRegex          string
+	LastRegexText      string
+	LastUnhinted       string
 	ShowIntialHelpText bool
 	ViewFontSize       int
 	AccelShowLetters   bool
@@ -34,12 +37,17 @@ type Config struct {
 
 func newConfig() *Config {
 	filename, found := gong.GetIniFile(domain, appName)
+	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
+		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
+		LastCategory: 1, LastRegex: defaultRegex,
+		LastRegexText: defaultRegexText, LastUnhinted: defaultUnhinted,
+		ShowIntialHelpText: true, CustomTitle: "&Custom",
+		CustomHtml: customPlaceHolderText}
 	if found {
 		cfg, err := ini.Load(filename)
 		if err != nil {
 			fmt.Println("newConfig #1", filename, err)
 		} else {
-			config := &Config{filename: filename, ShowIntialHelpText: true}
 			err = cfg.MapTo(config)
 			if err != nil {
 				fmt.Println("newConfig #2", filename, err)
@@ -80,15 +88,10 @@ func newConfig() *Config {
 				if config.LastCategory < 0 {
 					config.LastCategory = 1
 				}
-				return config
 			}
 
 		}
 	}
-	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
-		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
-		LastCategory: 1, ShowIntialHelpText: true, CustomTitle: "&Custom",
-		CustomHtml: customPlaceHolderText}
 	return config
 }
 
