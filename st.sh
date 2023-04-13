@@ -1,5 +1,6 @@
 #!/bin/bash
-clc -s -e eval
+clc -s
+cat Version.dat
 go mod tidy
 go fmt .
 staticcheck .
