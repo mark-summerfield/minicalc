@@ -110,87 +110,9 @@ func onConvert(app *App) {
 	fromUnit := strings.ReplaceAll(app.convFromChoice.SelectedText(), "&",
 		"")
 	toUnit := strings.ReplaceAll(app.convToChoice.SelectedText(), "&", "")
-	ok := true
-	factor := 0.0
-	switch fromUnit {
-	case "Feet":
-		switch toUnit {
-		case "Feet":
-			factor = 1
-		case "Inches":
-			factor = 12
-		case "Meters":
-			factor = 0.3048
-		case "Millimeters":
-			factor = 304.8
-		case "Points":
-			factor = 12 * 72
-		default:
-			ok = false
-		}
-	case "Inches":
-		switch toUnit {
-		case "Feet":
-			factor = 1.0 / 12.0
-		case "Inches":
-			factor = 1
-		case "Meters":
-			factor = 0.0254
-		case "Millimeters":
-			factor = 25.4
-		case "Points":
-			factor = 72
-		default:
-			ok = false
-		}
-	case "Meters":
-		switch toUnit {
-		case "Feet":
-			factor = 3.28084
-		case "Inches":
-			factor = 39.3701
-		case "Meters":
-			factor = 1
-		case "Millimeters":
-			factor = 1000
-		case "Points":
-			factor = 39.3701 * 72
-		default:
-			ok = false
-		}
-	case "Millimeters":
-		switch toUnit {
-		case "Feet":
-			factor = 0.00328084
-		case "Inches":
-			factor = 0.0393701
-		case "Meters":
-			factor = 1.0 / 1000.0
-		case "Millimeters":
-			factor = 1
-		case "Points":
-			factor = 0.0393701 * 72
-		default:
-			ok = false
-		}
-	case "Points":
-		switch toUnit {
-		case "Feet":
-			factor = 1.0 / (12.0 * 72.0)
-		case "Inches":
-			factor = 1.0 / 72.0
-		case "Meters":
-			factor = 1.0 / (39.3701 * 72.0)
-		case "Millimeters":
-			factor = 1.0 / (39.3701 * 72.0 / 1000.0)
-		case "Points":
-			factor = 1
-		default:
-			ok = false
-		}
-	}
+	factor, ok := factorForUnits[Units{fromUnit, toUnit}]
 	if ok {
-		result := app.convAmountSpinner.Value() * factor
+		result := factor * app.convAmountSpinner.Value()
 		app.convResultOutput.SetColor(fltk.YELLOW)
 		app.convResultOutput.SetValue(fmt.Sprintf("%v", result))
 	} else {
@@ -199,3 +121,43 @@ func onConvert(app *App) {
 			"Can't convert from %s to %s", fromUnit, toUnit))
 	}
 }
+
+type Units struct {
+	from string
+	to   string
+}
+
+var factorForUnits = map[Units]float64{
+	{feet, feet}:               1,
+	{feet, inches}:             12,
+	{feet, meters}:             0.3048,
+	{feet, millimeters}:        304.8,
+	{feet, points}:             12 * 72,
+	{inches, feet}:             1.0 / 12.0,
+	{inches, meters}:           0.0254,
+	{inches, millimeters}:      25.4,
+	{inches, points}:           27,
+	{meters, feet}:             3.28084,
+	{meters, inches}:           39.3701,
+	{meters, meters}:           1,
+	{meters, millimeters}:      1000,
+	{meters, points}:           39.3701 * 72,
+	{millimeters, feet}:        0.00328084,
+	{millimeters, inches}:      0.0393701,
+	{millimeters, meters}:      1.0 / 1000.0,
+	{millimeters, millimeters}: 1,
+	{millimeters, points}:      0.0393701 * 72,
+	{points, feet}:             1.0 / (12.0 * 72.0),
+	{points, inches}:           1.0 / 72.0,
+	{points, meters}:           1.0 / (39.3701 * 72.0),
+	{points, millimeters}:      1.0 / (39.3701 * 72.0 / 1000.0),
+	{points, points}:           1,
+}
+
+const (
+	feet        = "Feet"
+	inches      = "Inches"
+	meters      = "Meters"
+	millimeters = "Millimeters"
+	points      = "Points"
+)
