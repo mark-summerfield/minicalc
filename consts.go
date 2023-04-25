@@ -21,11 +21,12 @@ const (
 
 	evaluatorTabIndex  = 0
 	regexTabIndex      = 1
-	accelHintsTabIndex = 2
-	unicodeTabIndex    = 3
-	customTabIndex     = 4
-	optionsTabIndex    = 5
-	aboutTabIndex      = 6
+	conversionTabIndex = 2
+	accelHintsTabIndex = 3
+	unicodeTabIndex    = 4
+	customTabIndex     = 5
+	optionsTabIndex    = 6
+	aboutTabIndex      = 7
 
 	defaultThemeIndex = 3
 

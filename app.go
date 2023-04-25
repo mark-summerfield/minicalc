@@ -18,6 +18,10 @@ type App struct {
 	regexView                   *fltk.HelpView
 	regexInput                  *fltk.InputChoice
 	regexTextInput              *fltk.InputChoice
+	convFromChoice              *fltk.Choice
+	convToChoice                *fltk.Choice
+	convAmountSpinner           *fltk.Spinner
+	convResultOutput            *fltk.Output
 	accelTextEditor             *fltk.TextEditor
 	accelTextBuffer             *fltk.TextBuffer
 	accelAlphabetInput          *fltk.Input
@@ -137,6 +141,7 @@ func addTabs(app *App) {
 	height -= buttonHeight // Allow room for tab
 	makeEvaluatorTab(app, 0, buttonHeight, width, height)
 	makeRegexTab(app, 0, buttonHeight, width, height)
+	makeConversionTab(app, 0, buttonHeight, width, height)
 	makeAccelHintsTab(app, 0, buttonHeight, width, height)
 	makeAsciiTab(app, 0, buttonHeight, width, height)
 	makeCustomTab(app, 0, buttonHeight, width, height)
@@ -153,6 +158,8 @@ func onTab(app *App) {
 		app.evalInput.TakeFocus()
 	case regexTabIndex:
 		app.regexInput.TakeFocus()
+	case conversionTabIndex:
+		app.convFromChoice.TakeFocus()
 	case accelHintsTabIndex:
 		app.accelTextEditor.TakeFocus()
 	case unicodeTabIndex:
