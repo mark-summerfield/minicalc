@@ -91,10 +91,12 @@ func newConfig() *Config {
 				if config.LastCategory < 0 {
 					config.LastCategory = 1
 				}
-				if config.LastFromIndex < 0 {
+				size := len(factorForUnits) / 2
+				if config.LastFromIndex < 0 ||
+					config.LastFromIndex >= size {
 					config.LastFromIndex = 0
 				}
-				if config.LastToIndex < 0 ||
+				if config.LastToIndex < 0 || config.LastToIndex >= size ||
 					config.LastToIndex == config.LastFromIndex {
 					config.LastToIndex = 2
 				}
