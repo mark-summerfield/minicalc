@@ -27,6 +27,9 @@ type Config struct {
 	LastRegex          string
 	LastRegexText      string
 	LastUnhinted       string
+	LastFromIndex      int
+	LastToIndex        int
+	LastAmount         float64
 	ShowIntialHelpText bool
 	ViewFontSize       int
 	AccelShowLetters   bool
@@ -40,9 +43,9 @@ func newConfig() *Config {
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
 		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
 		LastCategory: 1, LastRegex: defaultRegex,
-		LastRegexText: defaultRegexText, LastUnhinted: defaultUnhinted,
-		ShowIntialHelpText: true, CustomTitle: "&Custom",
-		CustomHtml: customPlaceHolderText}
+		LastRegexText: defaultRegexText, LastToIndex: 2, LastAmount: 1.0,
+		LastUnhinted: defaultUnhinted, ShowIntialHelpText: true,
+		CustomTitle: "&Custom", CustomHtml: customPlaceHolderText}
 	if found {
 		cfg, err := ini.Load(filename)
 		if err != nil {
@@ -87,6 +90,16 @@ func newConfig() *Config {
 				}
 				if config.LastCategory < 0 {
 					config.LastCategory = 1
+				}
+				if config.LastFromIndex < 0 {
+					config.LastFromIndex = 0
+				}
+				if config.LastToIndex < 0 ||
+					config.LastToIndex == config.LastFromIndex {
+					config.LastToIndex = 2
+				}
+				if config.LastAmount < 0 {
+					config.LastAmount = 1
 				}
 			}
 

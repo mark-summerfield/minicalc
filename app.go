@@ -103,6 +103,9 @@ func (me *App) onQuit() {
 	me.config.LastRegex = me.regexInput.Value()
 	me.config.LastRegexText = me.regexTextInput.Value()
 	me.config.LastUnhinted = me.accelTextBuffer.Text()
+	me.config.LastFromIndex = me.convFromChoice.Value()
+	me.config.LastToIndex = me.convToChoice.Value()
+	me.config.LastAmount = me.convAmountSpinner.Value()
 	me.config.Scale = fltk.ScreenScale(0)
 	// config.Theme is set in callback
 	me.config.ShowIntialHelpText = me.showInitialHelpCheckButton.Value()

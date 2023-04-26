@@ -70,6 +70,7 @@ func makeAmountRow(app *App, x, y, width, height int) *fltk.Flex {
 	app.convAmountSpinner.SetType(fltk.SPINNER_FLOAT_INPUT)
 	app.convAmountSpinner.SetMinimum(0)
 	app.convAmountSpinner.SetMaximum(1e9)
+	app.convAmountSpinner.SetValue(app.config.LastAmount)
 	app.convAmountSpinner.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	app.convAmountSpinner.SetCallback(func() { onConvert(app) })
 	amountLabel.SetCallback(func() { app.convAmountSpinner.TakeFocus() })
@@ -101,8 +102,8 @@ func addUnits(app *App) {
 		app.convFromChoice.Add(name, callback)
 		app.convToChoice.Add(name, callback)
 	}
-	app.convFromChoice.SetValue(app.convFromChoice.FindIndex("&Feet"))
-	app.convToChoice.SetValue(app.convFromChoice.FindIndex("&Meters"))
+	app.convFromChoice.SetValue(app.config.LastFromIndex)
+	app.convToChoice.SetValue(app.config.LastToIndex)
 	onConvert(app)
 }
 
