@@ -12,7 +12,7 @@ import (
 
 func makeConversionTab(app *App, x, y, width, height int) {
 	yoffset := 2 * buttonHeight
-	group := fltk.NewFlex(x, y, width, height, "&Conversion")
+	group := fltk.NewFlex(x, y, width, height, "Co&nversion")
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
 	vbox.SetSpacing(pad)
