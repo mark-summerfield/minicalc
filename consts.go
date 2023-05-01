@@ -68,6 +68,7 @@ customize this text (and this tab's title).</i></font></p>
 <font color=green><i># delete branch</i></font><br>
 <font color=blue>gor</font> — go run .<br>
 <font color=blue>gom</font> — go mod tidy<br>
+<font color=blue>gtc</font> — go test -cover<br>
 <font color=blue>gogu</font> — go get -u ./...<br>
 </p>
 </body>
