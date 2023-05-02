@@ -30,7 +30,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	app.evalView = fltk.NewHelpView(x, y, width, height-buttonHeight)
 	app.evalView.TextFont(fltk.COURIER)
 	app.evalView.TextSize(app.config.ViewFontSize)
-	if app.config.ShowIntialHelpText {
+	if app.config.ShowInitialHelpText {
 		app.evalView.SetValue(evalHelpHtml)
 	} else {
 		app.evalView.SetValue(evalShortHelp)
@@ -52,8 +52,11 @@ func makeBottomRow(app *App, x, y, width, height int,
 	hbox.SetSpacing(pad)
 	app.evalInput = fltk.NewInputChoice(x, y+height-buttonHeight,
 		width-BUTTON_WIDTH, buttonHeight)
+	app.evalInput.SetTooltip("Enter an expression or click to choose a " +
+		"previous expression.")
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-buttonHeight,
 		BUTTON_WIDTH, buttonHeight, "&Copy")
+	app.evalCopyButton.SetTooltip("Copy a result to the clipboard.")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
 	app.evalInput.Input().SetCallbackCondition(fltk.WhenEnterKeyAlways)

@@ -15,27 +15,28 @@ import (
 )
 
 type Config struct {
-	filename           string
-	X                  int
-	Y                  int
-	Width              int
-	Height             int
-	Theme              string
-	Scale              float32
-	LastTab            int
-	LastCategory       int
-	LastRegex          string
-	LastRegexText      string
-	LastUnhinted       string
-	LastFromIndex      int
-	LastToIndex        int
-	LastAmount         float64
-	ShowIntialHelpText bool
-	ViewFontSize       int
-	AccelShowLetters   bool
-	AccelShowIndexes   bool
-	CustomTitle        string
-	CustomHtml         string
+	filename            string
+	X                   int
+	Y                   int
+	Width               int
+	Height              int
+	Theme               string
+	Scale               float32
+	LastTab             int
+	LastCategory        int
+	LastRegex           string
+	LastRegexText       string
+	LastUnhinted        string
+	LastFromIndex       int
+	LastToIndex         int
+	LastAmount          float64
+	ShowTooltips        bool
+	ShowInitialHelpText bool
+	ViewFontSize        int
+	AccelShowLetters    bool
+	AccelShowIndexes    bool
+	CustomTitle         string
+	CustomHtml          string
 }
 
 func newConfig() *Config {
@@ -44,8 +45,9 @@ func newConfig() *Config {
 		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
 		LastCategory: 1, LastRegex: defaultRegex,
 		LastRegexText: defaultRegexText, LastToIndex: 2, LastAmount: 1.0,
-		LastUnhinted: defaultUnhinted, ShowIntialHelpText: true,
-		CustomTitle: "&Custom", CustomHtml: customPlaceHolderText}
+		LastUnhinted: defaultUnhinted, ShowTooltips: true,
+		ShowInitialHelpText: true, CustomTitle: "&Custom",
+		CustomHtml: customPlaceHolderText}
 	if found {
 		cfg, err := ini.Load(filename)
 		if err != nil {

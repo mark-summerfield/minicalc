@@ -21,7 +21,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 	app.regexView = fltk.NewHelpView(x, y, width, height-yoffset)
 	app.regexView.TextFont(fltk.COURIER)
 	app.regexView.TextSize(app.config.ViewFontSize)
-	if app.config.ShowIntialHelpText {
+	if app.config.ShowInitialHelpText {
 		app.regexView.SetValue(regexHelpHtml)
 	}
 	hbox := makeRegexRow(app, x, y, width, height, yoffset)
@@ -40,7 +40,7 @@ func makeRegexTab(app *App, x, y, width, height int) {
 		updateInputChoice(app.regexTextInput)
 		onRegex(app)
 	})
-	if !app.config.ShowIntialHelpText {
+	if !app.config.ShowInitialHelpText {
 		onRegex(app)
 	}
 	app.regexInput.TakeFocus()
@@ -54,6 +54,8 @@ func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
 	app.regexInput.Input().SetValue(app.config.LastRegex)
+	app.regexInput.SetTooltip("Enter a regular expression or click to " +
+		"choose a previous one.")
 	regexLabel.SetCallback(func() { app.regexInput.TakeFocus() })
 	app.regexInput.SetCallbackCondition(fltk.WhenEnterKeyChanged)
 	hbox.End()
@@ -68,6 +70,8 @@ func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 	textLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Text")
 	app.regexTextInput = fltk.NewInputChoice(0, buttonHeight,
 		width-labelWidth, buttonHeight)
+	app.regexTextInput.SetTooltip("Enter text to match or click to " +
+		"choose a previous one.")
 	text := app.config.LastRegexText
 	app.regexTextInput.SetValue(text)
 	app.regexTextInput.MenuButton().Add(text,
