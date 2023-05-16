@@ -4,12 +4,6 @@
 package main
 
 import (
-	"fmt"
-	"os/exec"
-	"runtime"
-	"strings"
-	"time"
-
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -21,38 +15,4 @@ func makeAboutTab(app *App, x, y, width, height int) {
 	app.aboutView.TextSize(app.config.ViewFontSize)
 	app.aboutView.SetValue(aboutHtml())
 	group.End()
-}
-
-func aboutHtml() string {
-	var year string
-	y := time.Now().Year()
-	if y == 2023 {
-		year = fmt.Sprintf("%d", y)
-	} else {
-		year = fmt.Sprintf("2023-%d", y-2000)
-	}
-	distro := ""
-	if runtime.GOOS == "linux" {
-		if out, err := exec.Command("lsb_release",
-			"-ds").Output(); err == nil {
-			distro = strings.TrimSpace(string(out))
-		}
-	}
-	return fmt.Sprintf(
-		`<center><h3><font color=navy>%s v%s</font></h3></center>
-<p><center><font color=navy>A little GUI tool</font></center></p>
-<p><center>
-<a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
-</center></p>
-<p><center>
-<font color=green>Copyright © %s Mark Summerfield.<br>
-All rights reserved.<br>
-License: GPLv3.
-</center></p>
-<p><center><font color=#222>%s • %s/%s</font></center><br>
-<center><font color=#222>go-fltk %s • FLTK
-%s</font></center><br>
-<center><font color=#222>%s</font></center></p>`,
-		appName, Version, year, runtime.Version(), runtime.GOOS,
-		runtime.GOARCH, fltk.GoVersion(), fltk.Version(), distro)
 }

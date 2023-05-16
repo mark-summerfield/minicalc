@@ -10,8 +10,8 @@ Options tab to change this to what you want).
 
 Can be built for Linux and Windows.
 
-`minicalc.exe` is a Windows 64-bit binary (4.4MB SHA256
-2cab9d95942bdda53096b5c4f78199be5283a6c077ba2445ab4e693093495b12).
+`minicalc.exe` is a Windows 64-bit binary (4.5MB SHA256
+790babcca1b792e631d015296d8a1b27cf74160db153820e4d02e9b50e1a2b61).
 
 ![Screenshot (Regex tab)](images/regex-screenshot.png)
 
