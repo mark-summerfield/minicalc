@@ -118,12 +118,12 @@ func clear(evalView *fltk.HelpView, variables VarMap) {
 func getVarNameAndExpression(userVarNames gset.Set[string],
 	expression string) (string, string, error) {
 	identifierRx := regexp.MustCompile(`^\pL[\pL\d_]*$`)
-	parts := strings.SplitN(expression, "=", 2)
-	if len(parts) == 1 {
+	left, right, found := strings.Cut(expression, "=")
+	if !found {
 		return "", strings.TrimSpace(expression), nil
 	}
-	varName := strings.TrimSpace(parts[0])
-	expression = strings.TrimSpace(parts[1])
+	varName := strings.TrimSpace(left)
+	expression = strings.TrimSpace(right)
 	if identifierRx.MatchString(varName) {
 		userVarNames.Add(varName)
 		return varName, expression, nil
