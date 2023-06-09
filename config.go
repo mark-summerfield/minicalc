@@ -35,6 +35,8 @@ type Config struct {
 	ViewFontSize        int
 	AccelShowLetters    bool
 	AccelShowIndexes    bool
+	EvalShowHex         bool
+	EvalShowUnicode     bool
 	CustomTitle         string
 	CustomHtml          string
 }

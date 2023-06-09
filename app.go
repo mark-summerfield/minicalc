@@ -13,6 +13,8 @@ type App struct {
 	tabs                        *fltk.Tabs
 	evalView                    *fltk.HelpView
 	evalInput                   *fltk.InputChoice
+	evalShowHexCheckButton      *fltk.CheckButton
+	evalShowUnicodeCheckButton  *fltk.CheckButton
 	evalResults                 []EvalResult
 	evalCopyButton              *fltk.MenuButton
 	regexView                   *fltk.HelpView

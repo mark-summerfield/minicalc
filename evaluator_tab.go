@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/maja42/goval"
 	"github.com/mark-summerfield/accelhint"
@@ -35,15 +36,18 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 	} else {
 		app.evalView.SetValue(evalShortHelp)
 	}
-	hbox := makeBottomRow(app, x, y, width, height, evalEnv)
+	hbox := makeEntryRow(app, x, y, width, height, evalEnv)
+	vbox.Fixed(hbox, buttonHeight)
+	hbox = makeConfigRow(app, x, y, width, height)
 	vbox.End()
 	vbox.Fixed(hbox, buttonHeight)
 	group.End()
 	group.Resizable(vbox)
+	addCheckboxCallbacks(app)
 	app.evalInput.TakeFocus()
 }
 
-func makeBottomRow(app *App, x, y, width, height int,
+func makeEntryRow(app *App, x, y, width, height int,
 	evalEnv *EvalEnv) *fltk.Flex {
 	const BUTTON_WIDTH = labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
@@ -69,10 +73,40 @@ func makeBottomRow(app *App, x, y, width, height int,
 	return hbox
 }
 
+func makeConfigRow(app *App, x, y, width, height int) *fltk.Flex {
+	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
+	hbox.SetType(fltk.ROW)
+	hbox.SetSpacing(pad)
+	const checkWidth = 2 * labelWidth
+	x = width - (2 * checkWidth)
+	app.evalShowHexCheckButton = fltk.NewCheckButton(x, y, checkWidth,
+		buttonHeight, "&Show Hex")
+	app.evalShowHexCheckButton.SetValue(app.config.EvalShowHex)
+	app.evalShowUnicodeCheckButton = fltk.NewCheckButton(x, y, checkWidth,
+		buttonHeight, "Show Un&icode")
+	app.evalShowUnicodeCheckButton.SetValue(app.config.EvalShowUnicode)
+	hbox.Fixed(app.evalShowHexCheckButton, checkWidth)
+	hbox.Fixed(app.evalShowUnicodeCheckButton, checkWidth)
+	hbox.End()
+	return hbox
+}
+
+func addCheckboxCallbacks(app *App) {
+	app.evalShowHexCheckButton.SetCallback(
+		func() {
+			app.config.EvalShowHex = app.evalShowHexCheckButton.Value()
+		})
+	app.evalShowUnicodeCheckButton.SetCallback(
+		func() {
+			app.config.EvalShowUnicode =
+				app.evalShowUnicodeCheckButton.Value()
+		})
+}
+
 func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 	input := strings.TrimSpace(app.evalInput.Value())
 	if input == "clear()" {
-		clear(app.evalView, evalEnv.variables)
+		clear(app, app.evalView, evalEnv.variables)
 	} else {
 		autoVar := true
 		deletion := false
@@ -97,11 +131,11 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 			text, varName = evaluate(app, varName, expression, autoVar,
 				evalEnv, userVarNames)
 		}
-		populateView(varName, text, evalEnv.variables, app.evalView)
+		populateView(app, varName, text, evalEnv.variables, app.evalView)
 	}
 }
 
-func clear(evalView *fltk.HelpView, variables VarMap) {
+func clear(app *App, evalView *fltk.HelpView, variables VarMap) {
 	n := 0
 	for name := range variables {
 		if len(name) == 1 && name[0] >= 'A' && name[0] <= 'Z' {
@@ -112,7 +146,7 @@ func clear(evalView *fltk.HelpView, variables VarMap) {
 	text := fmt.Sprintf(
 		"<font color=purple>deleted %s automatic variables</font>",
 		gong.Commas(n))
-	populateView("", text, variables, evalView)
+	populateView(app, "", text, variables, evalView)
 }
 
 func getVarNameAndExpression(userVarNames gset.Set[string],
@@ -170,7 +204,7 @@ func getNextVarName(evalEnv *EvalEnv) {
 	}
 }
 
-func populateView(varName, text string, variables VarMap,
+func populateView(app *App, varName, text string, variables VarMap,
 	evalView *fltk.HelpView) {
 	var textBuilder strings.Builder
 	keys := gong.SortedMapKeys(variables)
@@ -181,8 +215,25 @@ func populateView(varName, text string, variables VarMap,
 		}
 		value := variables[key]
 		textBuilder.WriteString(fmt.Sprintf(
-			`<font color=green>%s%s%s = <font color=blue>%v</font><br>`,
+			`<font color=green>%s%s%s = <font color=blue>%v</font>`,
 			bs, key, be, value))
+		var i int
+		r, ok := value.(float64)
+		if ok {
+			i = int(math.Round(r))
+		} else {
+			i, ok = value.(int)
+		}
+		if ok {
+			if app.evalShowHexCheckButton.Value() {
+				textBuilder.WriteString(fmt.Sprintf(" 0x%X", i))
+			}
+			if app.evalShowUnicodeCheckButton.Value() &&
+				i >= ' ' && utf8.ValidRune(rune(i)) {
+				textBuilder.WriteString(fmt.Sprintf(" %c", i))
+			}
+		}
+		textBuilder.WriteString("</font><br>")
 	}
 	textBuilder.WriteString(text)
 	evalView.SetValue(textBuilder.String())
