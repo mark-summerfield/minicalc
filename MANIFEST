@@ -1,14 +1,10 @@
 # TODO Add tooltips to all interactive widgets
-# TODO 2.0.0 branch cpuram: try implementing a system monitor for CPU
-#   and RAM with an on/off switch or checkbox (always defaulting to off):
-#   https://github.com/shirou/gopsutil
 
 minicalc.go
 app.go
 evaluator_tab.go
 regex_tab.go
 conversion_tab.go
-# cpu_ram_tab.go
 accel_hints_tab.go
 unicode_tab.go
 custom_tab.go
