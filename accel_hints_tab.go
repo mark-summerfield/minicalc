@@ -117,7 +117,7 @@ func addCallbacks(app *App, unhintedLabel, alphabetLabel *fltk.Button) {
 
 func updateAccels(app *App) {
 	alphabet := getAlphabet(app.accelAlphabetInput)
-	unhinted := make([]string, 0)
+	unhinted := []string{}
 	for _, item := range strings.Split(app.accelTextBuffer.Text(), "\n") {
 		item = strings.TrimSpace(item)
 		if item != "" {

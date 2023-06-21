@@ -49,8 +49,7 @@ type App struct {
 }
 
 func newApp(config *Config) *App {
-	app := &App{Window: nil, config: config,
-		evalResults: make([]EvalResult, 0)}
+	app := &App{Window: nil, config: config, evalResults: []EvalResult{}}
 	app.Window = fltk.NewWindow(config.Width, config.Height)
 	if config.X > -1 && config.Y > -1 {
 		app.Window.SetPosition(config.X, config.Y)

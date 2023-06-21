@@ -100,54 +100,54 @@ func addCategories(app *App) {
 			app.unicodeView.SetValue(getGreek())
 		}},
 		{"&Symbols", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = append(runes, 0xD7, 0xF7)
 			runes = getFullRange(runes, 0x2012, 0x205E)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"&Arrows", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2190, 0x21FF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"&Boxes && Blocks", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2500, 0x257F)
 			runes = getFullRange(runes, 0x2580, 0x259F)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"&Dingbats", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2700, 0x27BF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"G&eometric Shapes", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x25A0, 0x25FF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"&Letterlike", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2100, 0x214F)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"Math &Op.", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2200, 0x22FF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"&Misc.", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2600, 0x26FF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"Misc. &Tech.", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2300, 0x23FF)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
 		{"Number &Forms", func() {
-			runes := make([]rune, 0)
+			runes := []rune{}
 			runes = getFullRange(runes, 0x2150, 0x218B)
 			app.unicodeView.SetValue(getSymbols(runes))
 		}},
@@ -250,7 +250,7 @@ type CharDesc struct {
 type DescForCharMap map[int]CharDesc
 
 func getDescForChar() DescForCharMap {
-	descForChar := make(DescForCharMap)
+	descForChar := DescForCharMap{}
 	for i, charDesc := range []CharDesc{
 		{"�", "NUL", "Null"},
 		{"�", "SOH", "Start of Header"},

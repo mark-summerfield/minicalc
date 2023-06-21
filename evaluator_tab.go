@@ -294,9 +294,9 @@ type EvalEnv struct {
 }
 
 func newEvalEnv() *EvalEnv {
-	variables := make(VarMap)
+	variables := VarMap{}
 	variables["pi"] = math.Pi
-	functions := make(map[string]goval.ExpressionFunction)
+	functions := map[string]goval.ExpressionFunction{}
 	functions["len"] = func(args ...any) (any, error) {
 		if len(args) != 1 {
 			return nil, fmt.Errorf("len(v): needs one argument")
