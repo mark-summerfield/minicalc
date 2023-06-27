@@ -29,7 +29,7 @@ func aboutHtml() string {
 		`<center><h3><font color=navy>%s v%s</font></h3></center>
 <p><center><font color=navy>A little GUI tool</font></center></p>
 <p><center>
-<a href=\"https://github.com/mark-summerfield/minicalc\">https://github.com/mark-summerfield/minicalc</a>
+<a href="https://github.com/mark-summerfield/minicalc">https://github.com/mark-summerfield/minicalc</a>
 </center></p>
 <p><center>
 <font color=green>Copyright © %s Mark Summerfield.<br>
