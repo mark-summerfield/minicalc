@@ -38,7 +38,7 @@ func makeLabelRow(x, y, width, height int) (*fltk.Button, *fltk.Flex) {
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
-	unhintedLabel := makeAccelLabel(0, 0, width/2, height, "&Unhinted")
+	unhintedLabel := makeAccelLabel(0, 0, width/2, height, "Unh&inted")
 	align := fltk.ALIGN_CENTER | fltk.ALIGN_BOTTOM | fltk.ALIGN_INSIDE
 	unhintedLabel.SetAlign(align)
 	hintedLabel := fltk.NewBox(fltk.NO_BOX, 0, 0, width/2, height, "Hinted")
