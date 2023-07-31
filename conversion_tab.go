@@ -11,6 +11,7 @@ import (
 )
 
 func makeConversionTab(app *App, x, y, width, height int) {
+	buttonHeight := app.config.buttonHeight
 	yoffset := 2 * buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "Co&nversion")
 	group.SetSpacing(pad)
@@ -36,6 +37,9 @@ func makeConversionTab(app *App, x, y, width, height int) {
 }
 
 func makeFromUnitRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -49,6 +53,9 @@ func makeFromUnitRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeToUnitRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -62,6 +69,9 @@ func makeToUnitRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeAmountRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -80,6 +90,9 @@ func makeAmountRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeResultRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)

@@ -23,6 +23,7 @@ import (
 type VarMap map[string]any
 
 func makeEvaluatorTab(app *App, x, y, width, height int) {
+	buttonHeight := app.config.buttonHeight
 	evalEnv := newEvalEnv()
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	group.SetSpacing(pad)
@@ -49,17 +50,19 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 
 func makeEntryRow(app *App, x, y, width, height int,
 	evalEnv *EvalEnv) *fltk.Flex {
-	const BUTTON_WIDTH = labelWidth + (2 * pad)
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	buttonWidth := labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
 	app.evalInput = fltk.NewInputChoice(x, y+height-buttonHeight,
-		width-BUTTON_WIDTH, buttonHeight)
+		width-buttonWidth, buttonHeight)
 	app.evalInput.SetTooltip("Enter an expression or click to choose a " +
 		"previous expression.")
 	app.evalCopyButton = fltk.NewMenuButton(x, y+height-buttonHeight,
-		BUTTON_WIDTH, buttonHeight, "&Copy")
+		buttonWidth, buttonHeight, "&Copy")
 	app.evalCopyButton.SetTooltip("Copy a result to the clipboard.")
 	app.evalCopyButton.ClearVisibleFocus()
 	app.evalCopyButton.Deactivate()
@@ -69,15 +72,17 @@ func makeEntryRow(app *App, x, y, width, height int,
 		onEval(app, userVarNames, evalEnv)
 	})
 	hbox.End()
-	hbox.Fixed(app.evalCopyButton, BUTTON_WIDTH)
+	hbox.Fixed(app.evalCopyButton, buttonWidth)
 	return hbox
 }
 
 func makeConfigRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
-	const checkWidth = 2 * labelWidth
+	checkWidth := 2 * labelWidth
 	x = width - (2 * checkWidth)
 	app.evalShowHexCheckButton = fltk.NewCheckButton(x, y, checkWidth,
 		buttonHeight, "&Show Hex")

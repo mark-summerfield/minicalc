@@ -13,6 +13,7 @@ import (
 )
 
 func makeAccelHintsTab(app *App, x, y, width, height int) {
+	buttonHeight := app.config.buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "Accel &Hints")
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
@@ -63,6 +64,7 @@ func makeDataRow(app *App, x, y, width, height int) {
 
 func makeAlphabetRow(app *App, x, y, width, height int) (*fltk.Button,
 	*fltk.Flex) {
+	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -76,11 +78,13 @@ func makeAlphabetRow(app *App, x, y, width, height int) (*fltk.Button,
 }
 
 func makeStatusRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
 	app.accelStatusOutput = fltk.NewOutput(x, y, width, buttonHeight)
-	const checkWidth = 2 * labelWidth
+	checkWidth := 2 * labelWidth
 	x = width - (2 * checkWidth)
 	app.accelShowLettersCheckButton = fltk.NewCheckButton(x, y,
 		checkWidth, buttonHeight, "Sho&w Letters")

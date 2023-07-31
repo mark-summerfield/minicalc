@@ -13,11 +13,12 @@ import (
 )
 
 func makeRegexTab(app *App, x, y, width, height int) {
+	buttonHeight := app.config.buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "Rege&x")
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
 	vbox.SetSpacing(pad)
-	const yoffset = 2 * buttonHeight
+	yoffset := 2 * buttonHeight
 	app.regexView = fltk.NewHelpView(x, y, width, height-yoffset)
 	app.regexView.TextFont(fltk.COURIER)
 	app.regexView.TextSize(app.config.ViewFontSize)
@@ -47,12 +48,14 @@ func makeRegexTab(app *App, x, y, width, height int) {
 }
 
 func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, height-yoffset, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
 	regexLabel := makeAccelLabel(0, 0, labelWidth, buttonHeight, "&Regex")
-	app.regexInput = fltk.NewInputChoice(0, buttonHeight,
-		width-labelWidth, buttonHeight)
+	app.regexInput = fltk.NewInputChoice(0, buttonHeight, width-labelWidth,
+		buttonHeight)
 	app.regexInput.Input().SetValue(app.config.LastRegex)
 	app.regexInput.SetTooltip("Enter a regular expression or click to " +
 		"choose a previous one.")
@@ -64,6 +67,8 @@ func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 }
 
 func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)

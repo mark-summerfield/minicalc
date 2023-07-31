@@ -51,6 +51,9 @@ type App struct {
 func newApp(config *Config) *App {
 	app := &App{Window: nil, config: config, evalResults: []EvalResult{}}
 	app.Window = fltk.NewWindow(config.Width, config.Height)
+	width, height := fltk.MeasureText("X", false)
+	config.buttonHeight = int(float64(height) * 2.25)
+	config.labelWidth = int(float64(width) * 7.5)
 	if config.X > -1 && config.Y > -1 {
 		app.Window.SetPosition(config.X, config.Y)
 	}
@@ -76,6 +79,7 @@ func (me *App) onConfigTooltips() {
 }
 
 func (me *App) addTabs() {
+	buttonHeight := me.config.buttonHeight
 	width := me.Window.W()
 	height := me.Window.H()
 	me.tabs = fltk.NewTabs(0, 0, width, height)

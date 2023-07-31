@@ -12,9 +12,8 @@ import (
 	"github.com/pwiecz/go-fltk"
 )
 
-const optionsLabelWidth = labelWidth * 2
-
 func makeOptionsTab(app *App, x, y, width, height int) {
+	buttonHeight := app.config.buttonHeight
 	yoffset := 2 * buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "&Options")
 	group.SetSpacing(pad)
@@ -48,6 +47,9 @@ func makeOptionsTab(app *App, x, y, width, height int) {
 }
 
 func makeConfigFileRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -64,6 +66,9 @@ func makeConfigFileRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -84,6 +89,9 @@ func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -112,6 +120,9 @@ func makeThemeRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -140,6 +151,7 @@ func makeFontSizeRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeCheckboxRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -159,6 +171,9 @@ func makeCheckboxRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeCustomTitleRow(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -176,6 +191,9 @@ func makeCustomTitleRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeCustomTextRows(app *App, x, y, width, height int) *fltk.Flex {
+	buttonHeight := app.config.buttonHeight
+	labelWidth := app.config.labelWidth
+	optionsLabelWidth := labelWidth * 2
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
