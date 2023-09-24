@@ -11,8 +11,7 @@ import (
 
 func addIcons(window *fltk.Window, svgText string) {
 	if svg, err := fltk.NewSvgImageFromString(svgText); err == nil {
-		icon := fltk.NewRgbImageFromSvg(svg)
-		window.SetIcons([]*fltk.RgbImage{icon})
+		window.SetIcons([]*fltk.RgbImage{&svg.RgbImage})
 	}
 }
 
