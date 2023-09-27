@@ -5,11 +5,11 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/mark-summerfield/accelhint"
 	"github.com/pwiecz/go-fltk"
-	"golang.org/x/exp/slices"
 )
 
 func makeAccelHintsTab(app *App, x, y, width, height int) {
