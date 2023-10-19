@@ -62,6 +62,7 @@ customize this text (and this tab's title).</i></font></p>
 <font color=blue>gblm</font> — git branch
 --merged <font color=green><i># deletable</i></font><br>
 <font color=blue>gst</font> — git status<br>
+<font color=blue>gip</font> — git push<br>
 <font color=blue>git branch -d <i>branchname</i></font>
 <font color=green><i># delete branch</i></font><br>
 <font color=blue>gor</font> — go run .<br>
