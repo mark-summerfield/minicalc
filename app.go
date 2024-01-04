@@ -60,6 +60,7 @@ func newApp(config *Config) *App {
 	app.Window.Resizable(app.Window)
 	app.Window.SetEventHandler(app.onEvent)
 	app.Window.SetLabel(appName)
+	app.Window.SetXClass(appName)
 	addIcons(app.Window, iconSvg)
 	app.addTabs()
 	app.Window.End()
