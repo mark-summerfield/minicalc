@@ -23,7 +23,6 @@ import (
 type VarMap map[string]any
 
 func makeEvaluatorTab(app *App, x, y, width, height int) {
-	buttonHeight := app.config.buttonHeight
 	evalEnv := newEvalEnv()
 	group := fltk.NewFlex(x, y, width, height, "E&valuator")
 	group.SetSpacing(pad)
@@ -50,8 +49,6 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 
 func makeEntryRow(app *App, x, y, width, height int,
 	evalEnv *EvalEnv) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	buttonWidth := labelWidth + (2 * pad)
 	userVarNames := gset.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
@@ -77,8 +74,6 @@ func makeEntryRow(app *App, x, y, width, height int,
 }
 
 func makeConfigRow(app *App, x, y, width, height int) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)

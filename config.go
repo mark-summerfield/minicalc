@@ -16,8 +16,6 @@ import (
 
 type Config struct {
 	filename            string
-	buttonHeight        int
-	labelWidth          int
 	X                   int
 	Y                   int
 	Width               int

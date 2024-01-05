@@ -13,9 +13,11 @@ var Version string
 var themes = []string{"Base", "Gleam", "Gtk", "Oxy", "Plastic"}
 
 const (
-	domain  = "qtrac.eu"
-	appName = "MiniCalc"
-	pad     = 5
+	domain       = "qtrac.eu"
+	appName      = "MiniCalc"
+	pad          = 5
+	buttonHeight = 36
+	labelWidth   = 84
 
 	evaluatorTabIndex  = 0
 	regexTabIndex      = 1

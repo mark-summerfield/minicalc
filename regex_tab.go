@@ -13,7 +13,6 @@ import (
 )
 
 func makeRegexTab(app *App, x, y, width, height int) {
-	buttonHeight := app.config.buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "Rege&x")
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
@@ -48,8 +47,6 @@ func makeRegexTab(app *App, x, y, width, height int) {
 }
 
 func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, height-yoffset, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -67,8 +64,6 @@ func makeRegexRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
 }
 
 func makeTextRow(app *App, x, y, width, height, yoffset int) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)

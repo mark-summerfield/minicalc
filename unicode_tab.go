@@ -15,7 +15,6 @@ import (
 )
 
 func makeAsciiTab(app *App, x, y, width, height int) {
-	buttonHeight := app.config.buttonHeight
 	group := fltk.NewFlex(x, y, width, height, "&Unicode")
 	group.SetSpacing(pad)
 	vbox := fltk.NewFlex(x, y, width, height)
@@ -39,8 +38,6 @@ func makeAsciiTab(app *App, x, y, width, height int) {
 }
 
 func makeTopRow(app *App, x, y, width, height int) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -72,8 +69,6 @@ func makeTopRow(app *App, x, y, width, height int) *fltk.Flex {
 }
 
 func makeChoiceRow(app *App, x, y, width, height int) *fltk.Flex {
-	buttonHeight := app.config.buttonHeight
-	labelWidth := app.config.labelWidth
 	hbox := fltk.NewFlex(x, y, width, height)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
