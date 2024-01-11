@@ -387,5 +387,5 @@ func getInt(x any) (int, error) {
 	case float64:
 		return int(v), nil
 	}
-	return 0.0, fmt.Errorf("int expected, got %v", x)
+	return 0, fmt.Errorf("int expected, got %v", x)
 }
