@@ -120,6 +120,22 @@ func onRegex(app *App) {
 					html.EscapeString(match)))
 			}
 			header = false
+			if matches := rx.FindStringSubmatch(text); matches != nil {
+				for i, match := range matches {
+					if !header {
+						textBuilder.WriteString(
+							`<tt>FindStringSubmatch(text)</tt> →
+							<tt>[]string</tt><br>`)
+						header = true
+						empty = false
+					}
+					textBuilder.WriteString(fmt.Sprintf(
+						`&nbsp;&nbsp;&nbsp;&nbsp;[%d] =
+						<font color=blue><tt>%q</tt></font><br>`, i,
+						html.EscapeString(match)))
+				}
+			}
+			header = false
 			for i, matches := range rx.FindAllStringSubmatch(text, -1) {
 				if !header {
 					textBuilder.WriteString(`<tt>FindAllStringSubmatch(text,
