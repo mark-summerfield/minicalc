@@ -140,7 +140,7 @@ func updateAccels(app *App) {
 			showIndexes))
 		app.accelStatusOutput.SetColor(fltk.YELLOW)
 		app.accelStatusOutput.SetValue(fmt.Sprintf(
-			"Hinted — %d/%d — %.0f%%", n, len(unhinted),
+			"%d/%d • %.0f%% Hinted", n, len(unhinted),
 			(float64(n) / float64(len(unhinted)) * 100.0)))
 	}
 	app.Window.Redraw()
