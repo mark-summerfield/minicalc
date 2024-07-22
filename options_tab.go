@@ -72,7 +72,7 @@ func makeScaleRow(app *App, x, y, width, height int) *fltk.Flex {
 	app.scaleSpinner.SetType(fltk.SPINNER_FLOAT_INPUT)
 	app.scaleSpinner.SetMinimum(0.5)
 	app.scaleSpinner.SetMaximum(3.5)
-	app.scaleSpinner.SetStep(0.1)
+	app.scaleSpinner.SetStep(0.01)
 	app.scaleSpinner.SetValue(float64(app.config.Scale))
 	app.scaleSpinner.SetCallback(func() {
 		fltk.SetScreenScale(0, float32(app.scaleSpinner.Value()))
