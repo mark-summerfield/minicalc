@@ -10,14 +10,16 @@ import (
 	"math"
 	"math/rand"
 	"regexp"
+	"slices"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/maja42/goval"
 	"github.com/mark-summerfield/accelhint"
-	"github.com/mark-summerfield/gong"
-	"github.com/mark-summerfield/gset"
+	"github.com/mark-summerfield/set"
+	"github.com/mark-summerfield/ureal"
 	"github.com/pwiecz/go-fltk"
+	"golang.org/x/exp/maps"
 )
 
 type VarMap map[string]any
@@ -50,7 +52,7 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 func makeEntryRow(app *App, x, y, width, height int,
 	evalEnv *EvalEnv) *fltk.Flex {
 	buttonWidth := labelWidth + (2 * pad)
-	userVarNames := gset.New[string]()
+	userVarNames := set.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
 	hbox.SetType(fltk.ROW)
 	hbox.SetSpacing(pad)
@@ -103,7 +105,7 @@ func addCheckboxCallbacks(app *App) {
 		})
 }
 
-func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
+func onEval(app *App, userVarNames set.Set[string], evalEnv *EvalEnv) {
 	input := strings.TrimSpace(app.evalInput.Value())
 	if input == "clear()" {
 		clear(app, app.evalView, evalEnv.variables)
@@ -121,7 +123,7 @@ func onEval(app *App, userVarNames gset.Set[string], evalEnv *EvalEnv) {
 			autoVar = false
 			if expression == "" { // varName=
 				deletion = true
-				delete(userVarNames, varName)
+				userVarNames.Delete(varName)
 				delete(evalEnv.variables, varName)
 				text = fmt.Sprintf(
 					"<font color=purple>deleted <b>%s</b></font>", varName)
@@ -145,11 +147,11 @@ func clear(app *App, evalView *fltk.HelpView, variables VarMap) {
 	}
 	text := fmt.Sprintf(
 		"<font color=purple>deleted %s automatic variables</font>",
-		gong.Commas(n))
+		ureal.Commas(n))
 	populateView(app, "", text, variables, evalView)
 }
 
-func getVarNameAndExpression(userVarNames gset.Set[string],
+func getVarNameAndExpression(userVarNames set.Set[string],
 	expression string) (string, string, error) {
 	identifierRx := regexp.MustCompile(`^\pL[\pL\d_]*$`)
 	left, right, found := strings.Cut(expression, "=")
@@ -166,7 +168,7 @@ func getVarNameAndExpression(userVarNames gset.Set[string],
 }
 
 func evaluate(app *App, varName, expression string, autoVar bool,
-	evalEnv *EvalEnv, userVarNames gset.Set[string]) (string, string) {
+	evalEnv *EvalEnv, userVarNames set.Set[string]) (string, string) {
 	var text string
 	evaluator := goval.NewEvaluator()
 	value, err := evaluator.Evaluate(expression, evalEnv.variables,
@@ -207,7 +209,8 @@ func getNextVarName(evalEnv *EvalEnv) {
 func populateView(app *App, varName, text string, variables VarMap,
 	evalView *fltk.HelpView) {
 	var textBuilder strings.Builder
-	keys := gong.SortedMapKeys(variables)
+	keys := maps.Keys(variables)
+	slices.Sort(keys)
 	for _, key := range keys {
 		bs, be := "", ""
 		if string(key) == varName {
@@ -243,7 +246,7 @@ func populateView(app *App, varName, text string, variables VarMap,
 }
 
 func updateEvalCopyButton(app *App) {
-	seen := gset.New[string]()
+	seen := set.New[string]()
 	filtered := make([]EvalResult, 0, len(app.evalResults))
 	for _, evalResult := range app.evalResults {
 		value := fmt.Sprintf("%v", evalResult.value)

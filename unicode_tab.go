@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/mark-summerfield/gset"
+	"github.com/mark-summerfield/set"
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -362,11 +362,11 @@ func getSymbols(runes []rune) string {
 	return text.String()
 }
 
-var badRunes gset.Set[int]
+var badRunes set.Set[int]
 
 func getFullRange(runes []rune, start, end int) []rune {
-	if len(badRunes) == 0 {
-		badRunes = gset.New(0x2029, 0x202A, 0x202B, 0x202C, 0x202D, 0x202E,
+	if badRunes.IsEmpty() {
+		badRunes = set.New(0x2029, 0x202A, 0x202B, 0x202C, 0x202D, 0x202E,
 			0x202F, 0x203F, 0x2040, 0x2041, 0x2043, 0x2044)
 	}
 	for i := start; i <= end; i++ {

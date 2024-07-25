@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/go-ini/ini"
-	"github.com/mark-summerfield/gong"
+	"github.com/mark-summerfield/ufile"
 	"github.com/pwiecz/go-fltk"
 )
 
@@ -42,7 +42,7 @@ type Config struct {
 }
 
 func newConfig() *Config {
-	filename, found := gong.GetIniFile(domain, appName)
+	filename, found := ufile.GetIniFile(domain, appName)
 	config := &Config{filename: filename, X: -1, Width: 512, Height: 480,
 		Theme: themes[defaultThemeIndex], Scale: 1.0, ViewFontSize: 14,
 		LastCategory: 1, LastRegex: defaultRegex,
@@ -122,7 +122,7 @@ func (me *Config) save() {
 	} else {
 		dir := filepath.Dir(me.filename)
 		if dir != "." {
-			if !gong.PathExists(dir) {
+			if !ufile.PathExists(dir) {
 				_ = os.MkdirAll(dir, fs.ModePerm)
 			}
 		}
