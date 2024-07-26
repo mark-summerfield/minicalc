@@ -170,8 +170,7 @@ func getVarNameAndExpression(userVarNames set.Set[string],
 func evaluate(app *App, varName, expression string, autoVar bool,
 	evalEnv *EvalEnv, userVarNames set.Set[string]) (string, string) {
 	var text string
-	evaluator := goval.NewEvaluator()
-	value, err := evaluator.Evaluate(expression, evalEnv.variables,
+	value, err := evaluate_(expression, evalEnv.variables,
 		evalEnv.functions)
 	if err != nil {
 		text = fmt.Sprintf(errTemplate, html.EscapeString(err.Error()))
@@ -188,6 +187,18 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 				color=blue><b>%v</b></font>`, varName, expression, value)
 	}
 	return text, varName
+}
+
+func evaluate_(expression string, variables VarMap,
+	functions map[string]goval.ExpressionFunction) (result any, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = nil
+			err = fmt.Errorf("%v", r)
+		}
+	}()
+	evaluator := goval.NewEvaluator()
+	return evaluator.Evaluate(expression, variables, functions)
 }
 
 func getNextVarName(evalEnv *EvalEnv) {
