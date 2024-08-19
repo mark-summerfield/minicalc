@@ -15,13 +15,13 @@ replace github.com/mark-summerfield/utext => /home/mark/app/golib/utext
 require (
 	github.com/go-ini/ini v1.67.0
 	github.com/gonutz/w32/v2 v2.11.1
-	github.com/maja42/goval v1.3.1
+	github.com/maja42/goval v1.4.0
 	github.com/mark-summerfield/accelhint v0.8.0
 	github.com/mark-summerfield/set v1.0.0
 	github.com/mark-summerfield/ufile v1.0.0
 	github.com/mark-summerfield/ureal v1.0.0
-	github.com/pwiecz/go-fltk v0.0.0-20240103212031-a509cedbac17
-	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
+	github.com/pwiecz/go-fltk v0.0.0-20240724161056-c83737161420
+	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa
 )
 
 require (
