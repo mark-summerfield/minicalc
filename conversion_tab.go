@@ -101,8 +101,8 @@ func makeResultRow(app *App, x, y, width, height int) *fltk.Flex {
 
 func addUnits(app *App) {
 	callback := func() { onConvert(app) }
-	for _, name := range []string{"&Feet", "&Inches", "&Meters",
-		"Mi&llimeters", "&Points"} {
+	for _, name := range []string{"&Feet", "&Inches", "&Kg", "&Meters",
+		"&lb", "Millim&eters", "&Points", "&Stones"} {
 		app.convFromChoice.Add(name, callback)
 		app.convToChoice.Add(name, callback)
 	}
@@ -157,12 +157,24 @@ var factorForUnits = map[Units]float64{
 	{points, meters}:           1.0 / (39.3701 * 72.0),
 	{points, millimeters}:      1.0 / (39.3701 * 72.0 / 1000.0),
 	{points, points}:           1,
+	{kg, kg}:                   1,
+	{kg, lb}:                   2.2046226218,
+	{lb, lb}:                   1,
+	{lb, kg}:                   0.45359237,
+	{stones, stones}:           1,
+	{stones, lb}:               14,
+	{lb, stones}:               1 / 14.0,
+	{stones, kg}:               6.35029318,
+	{kg, stones}:               0.1574730444,
 }
 
 const (
 	feet        = "Feet"
 	inches      = "Inches"
+	kg          = "Kg"
+	lb          = "lb"
 	meters      = "Meters"
 	millimeters = "Millimeters"
 	points      = "Points"
+	stones      = "Stones"
 )
