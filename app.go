@@ -123,6 +123,7 @@ func (me *App) onEvent(event fltk.Event) bool {
 	switch fltk.EventType() {
 	case fltk.SHORTCUT:
 		if key == fltk.ESCAPE {
+			me.onQuit()
 			return true
 		}
 	case fltk.KEY:
