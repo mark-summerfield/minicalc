@@ -256,9 +256,9 @@ func populateView(app *App, varName, text string, variables VarMap,
 		out.WriteString("</font>")
 		out.WriteString("</tr>")
 	}
-	out.WriteString("<tr bgcolor=#EBEBEB><td>")
+	out.WriteString("<tr bgcolor=#EBEBEB><td colspan=3>")
 	out.WriteString(text)
-	out.WriteString("</td><td></td></tr>")
+	out.WriteString("</td></tr>")
 	out.WriteString("</table>")
 	evalView.SetValue(out.String())
 	// Scroll to end
