@@ -6,7 +6,7 @@ replace github.com/mark-summerfield/accelhint => /home/mark/app/golib/accelhint
 
 replace github.com/mark-summerfield/set => /home/mark/app/golib/set
 
-replace github.com/mark-summerfield/ureal => /home/mark/app/golib/ureal
+replace github.com/mark-summerfield/unum => /home/mark/app/golib/unum
 
 replace github.com/mark-summerfield/ufile => /home/mark/app/golib/ufile
 
@@ -19,7 +19,7 @@ require (
 	github.com/mark-summerfield/accelhint v0.8.0
 	github.com/mark-summerfield/set v1.0.0
 	github.com/mark-summerfield/ufile v1.0.0
-	github.com/mark-summerfield/ureal v1.0.0
+	github.com/mark-summerfield/unum v1.0.0
 	github.com/pwiecz/go-fltk v0.0.0-20240724161056-c83737161420
 	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa
 )

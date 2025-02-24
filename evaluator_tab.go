@@ -17,7 +17,7 @@ import (
 	"github.com/maja42/goval"
 	"github.com/mark-summerfield/accelhint"
 	"github.com/mark-summerfield/set"
-	"github.com/mark-summerfield/ureal"
+	"github.com/mark-summerfield/unum"
 	"github.com/pwiecz/go-fltk"
 	"golang.org/x/exp/maps"
 )
@@ -50,7 +50,8 @@ func makeEvaluatorTab(app *App, x, y, width, height int) {
 }
 
 func makeEntryRow(app *App, x, y, width, height int,
-	evalEnv *EvalEnv) *fltk.Flex {
+	evalEnv *EvalEnv,
+) *fltk.Flex {
 	buttonWidth := labelWidth + (2 * pad)
 	userVarNames := set.New[string]()
 	hbox := fltk.NewFlex(x, y+height-buttonHeight, width, buttonHeight)
@@ -100,8 +101,7 @@ func addCheckboxCallbacks(app *App) {
 		})
 	app.evalShowUnicodeCheckButton.SetCallback(
 		func() {
-			app.config.EvalShowUnicode =
-				app.evalShowUnicodeCheckButton.Value()
+			app.config.EvalShowUnicode = app.evalShowUnicodeCheckButton.Value()
 		})
 }
 
@@ -147,12 +147,13 @@ func clear(app *App, evalView *fltk.HelpView, variables VarMap) {
 	}
 	text := fmt.Sprintf(
 		"<font color=purple>deleted %s automatic variables</font>",
-		ureal.Commas(n))
+		unum.Commas(n))
 	populateView(app, "", text, variables, evalView)
 }
 
 func getVarNameAndExpression(userVarNames set.Set[string],
-	expression string) (string, string, error) {
+	expression string,
+) (string, string, error) {
 	identifierRx := regexp.MustCompile(`^\pL[\pL\d_]*$`)
 	left, right, found := strings.Cut(expression, "=")
 	if !found {
@@ -168,7 +169,8 @@ func getVarNameAndExpression(userVarNames set.Set[string],
 }
 
 func evaluate(app *App, varName, expression string, autoVar bool,
-	evalEnv *EvalEnv, userVarNames set.Set[string]) (string, string) {
+	evalEnv *EvalEnv, userVarNames set.Set[string],
+) (string, string) {
 	var text string
 	value, err := evaluate_(expression, evalEnv.variables,
 		evalEnv.functions)
@@ -190,7 +192,8 @@ func evaluate(app *App, varName, expression string, autoVar bool,
 }
 
 func evaluate_(expression string, variables VarMap,
-	functions map[string]goval.ExpressionFunction) (result any, err error) {
+	functions map[string]goval.ExpressionFunction,
+) (result any, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = nil
@@ -218,19 +221,22 @@ func getNextVarName(evalEnv *EvalEnv) {
 }
 
 func populateView(app *App, varName, text string, variables VarMap,
-	evalView *fltk.HelpView) {
-	var textBuilder strings.Builder
+	evalView *fltk.HelpView,
+) {
+	var out strings.Builder
+	out.WriteString("<table>")
 	keys := maps.Keys(variables)
 	slices.Sort(keys)
 	for _, key := range keys {
+		out.WriteString("<tr>")
 		bs, be := "", ""
 		if string(key) == varName {
 			bs, be = "<b>", "</b>"
 		}
 		value := variables[key]
-		textBuilder.WriteString(fmt.Sprintf(
-			`<font color=green>%s%s%s = <font color=blue>%v</font>`,
-			bs, key, be, value))
+		out.WriteString(fmt.Sprintf(
+			`<td><font color=green>%s%s%s = `+
+				`<font color=blue>%v</font></td>`, bs, key, be, value))
 		var i int
 		r, ok := value.(float64)
 		if ok {
@@ -240,17 +246,21 @@ func populateView(app *App, varName, text string, variables VarMap,
 		}
 		if ok {
 			if app.evalShowHexCheckButton.Value() {
-				textBuilder.WriteString(fmt.Sprintf(" 0x%X", i))
+				out.WriteString(fmt.Sprintf("<td>0x%X</td>", i))
 			}
 			if app.evalShowUnicodeCheckButton.Value() &&
 				i >= ' ' && utf8.ValidRune(rune(i)) {
-				textBuilder.WriteString(fmt.Sprintf(" %c", i))
+				out.WriteString(fmt.Sprintf("<td>%c</td>", i))
 			}
 		}
-		textBuilder.WriteString("</font><br>")
+		out.WriteString("</font>")
+		out.WriteString("</tr>")
 	}
-	textBuilder.WriteString(text)
-	evalView.SetValue(textBuilder.String())
+	out.WriteString("<tr bgcolor=#EBEBEB><td>")
+	out.WriteString(text)
+	out.WriteString("</td><td></td></tr>")
+	out.WriteString("</table>")
+	evalView.SetValue(out.String())
 	// Scroll to end
 	evalView.SetTopLine(999999)
 	evalView.SetTopLine(evalView.TopLine() - evalView.H())
